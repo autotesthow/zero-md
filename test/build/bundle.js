@@ -518,7 +518,6 @@ class ZeroMd extends HTMLElement {
             }px"`;
             tocLinks.push(`<div ${indentInsideToc}><a href="#${id}">${pureWithoutTags}</a></div>`);
           }
-          console.log('pure', pure)
 
           return `<h${level}>${encodeURI(id) === id ? '' : `<span id="${encodeURI(id)}"></span>`}
           <a id="${id}" class="anchor" aria-hidden="true" href="#${id}"></a>${pure}</h${level}>`
