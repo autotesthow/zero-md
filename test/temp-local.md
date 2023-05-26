@@ -43,7 +43,12 @@
 <!--java~{{by}}~By.*(value)~-->
 <!--cs~{{by}}~By.*(value)~-->
 
-<not-js-ts>NOT JS TS PYTON</not-js-ts>
+<!--~{{red}}~<p>dfgsdfgsdf</p>~-->
+<!--~{{Blue}}~<p>dfgsdfgsdf</p>~-->
+<!--~{{Yellow}}~<p>dfgsdfgsdf</p>~-->
+
+
+
 
 # <ru>Селениды: Быстрый Старт</ru><uk>Селеніди: Швидкий Старт</uk><en>Selenides: Quick Start</en> (<js>JS</js><ts>TS</ts><py>Python</py><java>Java</java><cs>C#</cs>)
 

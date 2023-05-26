@@ -513,6 +513,10 @@ class ZeroMd extends HTMLElement {
           <a id="${id}" class="anchor" aria-hidden="true" href="#${id}"></a>${pure}</h${level}>`
         };
 
+        // GENERAL TRANSLATIONS
+        const generalTranslations = /<!--~{{fghfgh}}~<p>sdfgsdfgsd<p>~-->/gim;
+        
+
         const imgBase = /]\(\.\.?\/resources/gim; // todo: move ../resources to config
         md = md.replace(imgBase, '](' + this.config.imgBaseNew);
 
@@ -551,8 +555,6 @@ class ZeroMd extends HTMLElement {
         ];
         // todo: change to ```poetry ... ``` style
         const poetries = /---[a-z]*\n([\s\S]*?)\n---/gim;
-        // const backTickPoetries = /```poetry[a-z]*\n([\s\S]*?)\n```/gim
-        // const backTickPoetries = /```poetry(:?( [a-z]+)+)?\n([\s\S]*?)\n```/gim;
         const backTickPoetries = /```poetry: (.+)\n([\s\S]*?)\n```/gim;
         const poetryRules = [
           [/(___)(.*?)\1/gim, '<em>$2</em>'], //emphasis
@@ -599,7 +601,6 @@ class ZeroMd extends HTMLElement {
             res.replace(/(__)(.*?)\1/gim, '‡‡‡$2‡‡‡'); // to encode original __
           }
           
-          // return `<pre><code>${res}</code></pre>`;
           return langs
             ? langs
                 .map((lang, index) => `<pre><code class="language-${lang}" poetry ${customNames[index] ? `data-customname="${customNames[index]}"` : ''}>${res}</code></pre>`)
