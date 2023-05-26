@@ -43,16 +43,17 @@
 <!--java~{{by}}~By.*(value)~-->
 <!--cs~{{by}}~By.*(value)~-->
 
-<!--~{{red}}~<p>dfgsdfgsdf</p>~-->
-<!--~{{Blue}}~<p>dfgsdfgsdf</p>~-->
-<!--~{{Yellow}}~<p>dfgsdfgsdf</p>~-->
-
-
+<!--~{{Red}}~<p style="color: red; font-size: 24px;">red</p>~-->
+<!--~{{Blue}}~<p style="color: blue; font-size: 24px;">blue</p>~-->
+<!--~{{Yellow}}~<p style="color: lime; font-size: 24px;">yellow</p>~-->
 
 
 # <ru>Селениды: Быстрый Старт</ru><uk>Селеніди: Швидкий Старт</uk><en>Selenides: Quick Start</en> (<js>JS</js><ts>TS</ts><py>Python</py><java>Java</java><cs>C#</cs>)
+{{ Red}}
 
+{{Blue}}
 
+{{Yellow}}
 
 
 [TOC]<!--TOC>1-->

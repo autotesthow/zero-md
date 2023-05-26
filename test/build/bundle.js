@@ -461,7 +461,7 @@ class ZeroMd extends HTMLElement {
 
         const translationPerLangOption = /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
         ;[...md.matchAll(translationPerLangOption)].forEach(([match, perLang, __, from, to]) => {
-
+         
           if (perLang.split('-').length > 1) {
             perLang = perLang.split('-')
           }
@@ -514,8 +514,13 @@ class ZeroMd extends HTMLElement {
         };
 
         // GENERAL TRANSLATIONS
-        const generalTranslations = /<!--~{{fghfgh}}~<p>sdfgsdfgsd<p>~-->/gim;
-        
+        const generalTranslations = /<!--((?![\s])\W)(.+)\1(.+)\1-->/gim;
+        const [...generalTranslationsMatch]  = md.matchAll(generalTranslations);
+
+        generalTranslationsMatch.forEach(([match, __, from, to]) => {
+
+          md = md.replace(new RegExp(from, 'gmi'), to);
+        })
 
         const imgBase = /]\(\.\.?\/resources/gim; // todo: move ../resources to config
         md = md.replace(imgBase, '](' + this.config.imgBaseNew);

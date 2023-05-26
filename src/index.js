@@ -499,6 +499,15 @@ export class ZeroMd extends HTMLElement {
           <a id="${id}" class="anchor" aria-hidden="true" href="#${id}"></a>${pure}</h${level}>`
         };
 
+        // GENERAL TRANSLATIONS
+        const generalTranslations = /<!--((?![\s])\W)(.+)\1(.+)\1-->/gim;
+        const [...generalTranslationsMatch]  = md.matchAll(generalTranslations);
+
+        generalTranslationsMatch.forEach(([match, __, from, to]) => {
+
+          md = md.replace(new RegExp(from, 'gmi'), to);
+        })
+
         const imgBase = /]\(\.\.?\/resources/gim; // todo: move ../resources to config
         md = md.replace(imgBase, '](' + this.config.imgBaseNew);
 
