@@ -458,19 +458,29 @@ export class ZeroMd extends HTMLElement {
         });
 
         if (shouldBeCodalized) {
-          const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim;
+          const codalized = /<((?:not-)?(js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim;
           md = md.replace(codalized, (match, $1, __, ___, $4) => {
             const candidates = $1.split('-');
+            const exeptionCandidates = candidates[0] === 'not' ? true : false
+          
             return `<span class="inline-content${
-              candidates.includes(this.code || defaultCodeFromMd) ? ' active' : ''
+              !exeptionCandidates
+                ? candidates.includes(this.code || defaultCodeFromMd) ? ' active' : ''
+                : candidates.includes(this.code || defaultCodeFromMd) ? '' : ' active'
             }" id="${$1}">${$4}</span>`
           });
         }
 
         if (shouldBeLocalized) {
-          const localized = /<(uk|ru|en)>([\s\S]*?)<\/\1>/gim;
-          md = md.replace(localized, (match, $1, $2) => {
-            return $1 === (this.lang || defaultLangFromMd) ? $2 : ''
+          const localized = /<((?:not-)?(uk|ru|en)(-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim;
+          md = md.replace(localized, (match, $1, $2, $3, $4) => {
+
+            const candidates = $1.split('-');
+            const exeptionCandidates = candidates[0] === 'not' ? true : false
+
+            return !exeptionCandidates
+                ? candidates.includes(this.lang || defaultLangFromMd) ? $4 : ''
+                : candidates.includes(this.lang || defaultLangFromMd) ? '' : $4
           });
         }
 

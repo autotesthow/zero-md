@@ -43,10 +43,12 @@
 <!--java~{{by}}~By.*(value)~-->
 <!--cs~{{by}}~By.*(value)~-->
 
-<not-js-ts>NOT JS TS PYTON</not-js-ts>
+<not-js-ts>NOT JS TS</not-js-ts>
+<not-ru-uk>only english</not-ru-uk>
+
+
 
 # <ru>Селениды: Быстрый Старт</ru><uk>Селеніди: Швидкий Старт</uk><en>Selenides: Quick Start</en> (<js>JS</js><ts>TS</ts><py>Python</py><java>Java</java><cs>C#</cs>)
-
 
 
 
