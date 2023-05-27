@@ -23,6 +23,16 @@
 <!--ru-en~{{Testing}}~test all lang~-->
 
 
+<!--en~{{multiline lang translation}}~
+
+multiline lang translation
+multiline lang translation
+multiline lang translation
+multiline lang translation
+multiline lang translation
+
+~-->
+
 <codalized main="js"/>
 
 <!--js~{{Selenide}}~SelenideJs~-->
@@ -43,7 +53,24 @@
 <!--java~{{by}}~By.*(value)~-->
 <!--cs~{{by}}~By.*(value)~-->
 
-<not-js-ts>NOT JS TS PYTON</not-js-ts>
+
+<!--java~{{multiline code translation}}~
+
+multiline code translation
+multiline code translation
+multiline code translation
+multiline code translation
+multiline code translation
+multiline code translation
+
+~-->
+
+{{multiline code translation}}
+
+{{multiline lang translation}}
+
+
+<!-- <not-js-ts>NOT JS TS PYTON</not-js-ts> -->
 
 # <ru>Селениды: Быстрый Старт</ru><uk>Селеніди: Швидкий Старт</uk><en>Selenides: Quick Start</en> (<js>JS</js><ts>TS</ts><py>Python</py><java>Java</java><cs>C#</cs>)
 

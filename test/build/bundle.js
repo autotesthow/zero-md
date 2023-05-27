@@ -428,7 +428,6 @@ class ZeroMd extends HTMLElement {
 
             if (response.ok) {
               const importedContent = await response.text();
-              // console.log(importedContent)
               md = md.replace(match, importedContent)
             }
           }))
@@ -447,27 +446,31 @@ class ZeroMd extends HTMLElement {
           ? localizedMatch
           : [[]];
 
-        const translationPerCodeOption = /<!--((?:js|ts|java|py|cs)(?:-(?:js|ts|java|py|cs))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
+        const translationPerCodeOption = /<!--((?:js|ts|java|py|cs)(?:-(?:js|ts|java|py|cs))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
         ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perCode, __, from, to]) => {
+          to = to.split('\n')
+          to = to.slice(1)
 
           if (perCode.split('-').length > 1) {
             perCode = perCode.split('-')
           }
 
           if (perCode instanceof Array ? perCode.includes(this.code || defaultCodeFromMd) : (this.code || defaultCodeFromMd) === perCode) {
-            md = md.replace(new RegExp(from, 'gmi'), to);
+            md = md.replace(new RegExp(from, 'gmi'), to.join('</br>'));
           }
         });
 
-        const translationPerLangOption = /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
+        const translationPerLangOption = /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
         ;[...md.matchAll(translationPerLangOption)].forEach(([match, perLang, __, from, to]) => {
+          to = to.split('\n')
+          to = to.slice(1)
 
           if (perLang.split('-').length > 1) {
             perLang = perLang.split('-')
           }
 
           if (perLang instanceof Array ? perLang.includes(this.lang || defaultLangFromMd) : (this.lang || defaultLangFromMd) === perLang) {
-            md = md.replace(new RegExp(from, 'gmi'), to);
+            md = md.replace(new RegExp(from, 'gmi'), to.join('</br>'));
           }
         });
 
@@ -475,6 +478,7 @@ class ZeroMd extends HTMLElement {
           const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim;
           md = md.replace(codalized, (match, $1, __, ___, $4) => {
             const candidates = $1.split('-');
+
             return `<span class="inline-content${
               candidates.includes(this.code || defaultCodeFromMd) ? ' active' : ''
             }" id="${$1}">${$4}</span>`
@@ -484,6 +488,7 @@ class ZeroMd extends HTMLElement {
         if (shouldBeLocalized) {
           const localized = /<(uk|ru|en)>([\s\S]*?)<\/\1>/gim;
           md = md.replace(localized, (match, $1, $2) => {
+
             return $1 === (this.lang || defaultLangFromMd) ? $2 : ''
           });
         }
