@@ -491,9 +491,13 @@ class ZeroMd extends HTMLElement {
         let tocLinks = [];
         const tocStartLevelOption = /<!--TOC>(\d)-->/i;
         const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0];
+      
         renderer.heading = (text, level) => {
+          console.log('text', text) 
           const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/im) || [null, text];
+          console.log(pure)
           const pureWithoutTags = pure.replace(/<\/?\w+>/g, '');
+          console.log('pureWithoutTags', pureWithoutTags)
           const anchorIdsToLowerCase = this.config.anchorIdsToLowerCase;
           const id =
             userId ||
