@@ -472,9 +472,11 @@ class ZeroMd extends HTMLElement {
         });
 
         if (shouldBeCodalized) {
-          const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim;
+          const codalized = /<((js|ts|py|python|java|cs)(-js|-ts|-py|-python|-java|-cs)*)>([\s\S]*?)<\/\1>/gim;
           md = md.replace(codalized, (match, $1, __, ___, $4) => {
-            const candidates = $1.split('-');
+            let candidates = $1.split('-');
+            candidates =  candidates.map((item) => item === 'python' ? 'py' : item)
+
             return `<span class="inline-content${
               candidates.includes(this.code || defaultCodeFromMd) ? ' active' : ''
             }" id="${$1}">${$4}</span>`
