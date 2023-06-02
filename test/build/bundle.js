@@ -488,7 +488,7 @@ class ZeroMd extends HTMLElement {
           });
         }
 
-        let tocLinks = [];
+        let tocLinks = []111;
         const tocStartLevelOption = /<!--TOC>(\d)-->/i;
         const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0];
         renderer.heading = (text, level) => {
