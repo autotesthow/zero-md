@@ -490,9 +490,7 @@ export class ZeroMd extends HTMLElement {
             const candidates = $1.split('-')
             const exeptionCandidates = candidates[0] === 'not' ? true : false
 
-            if (exeptionCandidates) {
-              console.log('candidates', candidates)
-            }
+            console.log('candidates', candidates)
 
             return `<span class="inline-content${
               !exeptionCandidates
@@ -512,9 +510,7 @@ export class ZeroMd extends HTMLElement {
             const candidates = $1.split('-')
             const exeptionCandidates = candidates[0] === 'not' ? true : false
 
-            if (exeptionCandidates) {
-              console.log('candidates', candidates)
-            }
+            console.log('candidates', candidates)
 
             return !exeptionCandidates
               ? candidates.includes(this.lang || defaultLangFromMd)
