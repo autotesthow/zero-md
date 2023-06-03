@@ -485,40 +485,36 @@ export class ZeroMd extends HTMLElement {
 
         if (shouldBeCodalized) {
           const codalized =
-            /<((?:not-)?(js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim
-          md = md.replace(codalized, (match, $1, __, ___, $4) => {
-            const candidates = $1.split('-')
-            const exeptionCandidates = candidates[0] === 'not' ? true : false
+            /<((not-)?(js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim
+          md = md.replace(codalized, (match, tag, inverted, ___, ____, content) => {
+            const candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
 
-            console.log('candidates', candidates)
-
+            // TODO: consider using div if noticed \n inside content
             return `<span class="inline-content${
-              !exeptionCandidates
+              inverted
                 ? candidates.includes(this.code || defaultCodeFromMd)
-                  ? ' active'
-                  : ''
+                  ? ''
+                  : ' active'
                 : candidates.includes(this.code || defaultCodeFromMd)
-                ? ''
-                : ' active'
-            }" id="${$1}">${$4}</span>`
+                ? ' active'
+                : ''
+            }" id="${tag}">${content}</span>`
           })
         }
 
         if (shouldBeLocalized) {
-          const localized = /<((?:not-)?(uk|ru|en)(-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
-          md = md.replace(localized, (match, $1, $2, $3, $4) => {
-            const candidates = $1.split('-')
-            const exeptionCandidates = candidates[0] === 'not' ? true : false
+          const localized = /<((not-)?(uk|ru|en)(-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
+          md = md.replace(localized, (match, tag, inverted, ___, ____, content) => {
+            const candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
 
-            console.log('candidates', candidates)
-
-            return !exeptionCandidates
+            // TODO: consider wrapping into span/div like for shouldBeCodalized
+            return inverted
               ? candidates.includes(this.lang || defaultLangFromMd)
-                ? $4
-                : ''
+                ? ''
+                : content
               : candidates.includes(this.lang || defaultLangFromMd)
-              ? ''
-              : $4
+              ? content
+              : ''
           })
         }
 

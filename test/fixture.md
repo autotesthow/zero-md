@@ -59,6 +59,23 @@ First paragraph
 * Второй айтем
 </ru>
 
+# not lang
+
+<not-en>Кирилиц(а|я)</not-en>
+
+# code test
+
+<js-ts>SelenideJs</js-ts>
+<py>Selene</py>
+<java>Selenide</java>
+<cs>NSelene</cs>
+
+# not code
+
+<not-js-ts-java>Selene is the term used in Python and C#</not-js-ts-java>
+
+<not-py-cs>Selenide is the term used in JavaScript and Java</not-py-cs>
+
 ## Multi code block test
 
 ::::::::::::::::::
