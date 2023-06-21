@@ -160,34 +160,6 @@ export class ZeroMd extends HTMLElement {
         .inline-content.active {
           display: inline;
         }
-        
-        code, pre {
-          color:#000 !important;
-          background:0 0 !important;
-          text-shadow:0 1px #fff !important;
-          font-family:Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace !important;
-          font-size:1em   !important;
-          text-align:left !important;
-          white-space:pre !important;
-          word-spacing:normal !important;
-          word-break:normal !important;
-          word-wrap:normal !important;
-          line-height:1.5 !important;
-          -moz-tab-size:4 !important;
-          -o-tab-size:4 !important;
-          tab-size:4 !important;
-          -webkit-hyphens:none !important;
-          -moz-hyphens:none !important;
-          -ms-hyphens:none !important;
-          hyphens:none !important;
-          // background: #f5f2f0 !important;
-        }
-        pre{
-          margin: 0 !important;
-        }
-        :not(pre)>code,pre{
-          background:#f5f2f0 !important;
-        }
         `,
       baseUrl: '',
       gitlab: {
@@ -563,32 +535,22 @@ export class ZeroMd extends HTMLElement {
       )
     }
 
-    const codalizedOption =
-      /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
-    const [shouldBeCodalized, defaultCodeFromMd] = [...md.matchAll(codalizedOption)].at(-1) || []
-    this.debug && console.log('===shouldBeCodalized===\n' + shouldBeCodalized)
-    this.debug && console.log('===defaultCodeFromMd===\n' + defaultCodeFromMd)
+    const codalizedMatch = [
+      ...md.matchAll(
+        /<codalized( main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim,
+      ),
+    ]
+    const [[shouldBeCodalized, __, defaultCodeFromMd]] = codalizedMatch.length
+      ? codalizedMatch
+      : [[]]
 
-    const localizedOption = /<localized(?: main="(uk|ru|en)")?\/>/gim
-    const [shouldBeLocalized, defaultLangFromMd] = [...md.matchAll(localizedOption)].at(-1) || []
-
-    const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gim
-    this.debug && console.log('===translation===\n')
-    ;[...md.matchAll(translation)].forEach(([_match, _delimiter, from, to]) => {
-      try {
-        md = md.replace(new RegExp(from, 'gmi'), to)
-      } catch (e) {
-        this.debug && console.log('===match\n' + _match)
-        this.debug && console.log('===delimiter\n' + _delimiter)
-        this.debug && console.log('===from\n' + from)
-        this.debug && console.log('===to\n' + to)
-        console.error(e)
-      }
-    })
-    this.debug && console.log('=================\n')
+    const localizedMatch = [...md.matchAll(/<localized( main="(uk|ru|en)")?\/>/gim)]
+    const [[shouldBeLocalized, _, defaultLangFromMd]] = localizedMatch.length
+      ? localizedMatch
+      : [[]]
 
     const translationPerCodeOption =
-      /<!--((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
+      /<!--((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
     ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
       if (perCode.split('-').length > 1) {
         perCode = perCode.split('-')
@@ -602,8 +564,9 @@ export class ZeroMd extends HTMLElement {
         md = md.replace(new RegExp(from, 'gmi'), to)
       }
     })
+
     const translationPerLangOption =
-      /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
+      /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
     ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
       if (perLang.split('-').length > 1) {
         perLang = perLang.split('-')
