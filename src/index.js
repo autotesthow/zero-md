@@ -191,7 +191,7 @@ export class ZeroMd extends HTMLElement {
         }
         pre{
           padding:1em !important;
-          margin:.5em 0 !important;
+          margin:0 0 1em 0 !important;
           overflow:auto !important;
         }
         :not(pre)>code,pre{
@@ -651,9 +651,16 @@ export class ZeroMd extends HTMLElement {
     this.debug && console.log('===md after codalized\n' + md)
 
     if (shouldBeLocalized) {
-      const localizable = /<((?:uk|ru|en)(?:-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
-      const localize = (match, candidates, content) => {
-        return candidates.split('-').includes(this.lang || defaultLangFromMd) ? content : ''
+      const localizable = /<((not-)?(?:uk|ru|en)(?:-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
+      const localize = (match, tag, inverted, content) => {
+        const candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
+        return inverted
+          ? candidates.includes(this.lang || defaultLangFromMd)
+            ? ''
+            : content
+          : candidates.includes(this.lang || defaultLangFromMd)
+          ? content
+          : ''
       }
       while (md.match(localizable)) {
         md = md.replace(localizable, localize)
