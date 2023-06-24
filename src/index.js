@@ -116,7 +116,6 @@ export class ZeroMd extends HTMLElement {
         .codeGroup {
           width: auto;
           margin: auto;
-          background-color: rgba(27,31,35,.05);
           background-color: #F7F7F7;
           border-radius: 10px;
           box-shadow: 0px 5px 15px rgba(0, 0, 0, .1);
@@ -128,8 +127,6 @@ export class ZeroMd extends HTMLElement {
           padding: 10px;
           # background-color: #bccbe9;
           background-color: rgba(27,31,35,.05);
-          // background-color: #F7F7F7;
-
           # color: #8e9ead;
           color: #778796;
           font-size: 12px;
@@ -165,9 +162,7 @@ export class ZeroMd extends HTMLElement {
         }
         
         code, pre {
-          color:#000 !important;
           color: #3d3d3d  !important;
-
           background:0 0 !important;
           text-shadow:0 1px #fff !important;
           font-family:Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace !important;
@@ -177,9 +172,7 @@ export class ZeroMd extends HTMLElement {
           word-spacing:normal !important;
           word-break:normal !important;
           word-wrap:normal !important;
-          line-height:1.5 !important;
           line-height:25px !important;
-
           -moz-tab-size:4 !important;
           -o-tab-size:4 !important;
           tab-size:4 !important;
@@ -202,7 +195,6 @@ export class ZeroMd extends HTMLElement {
           overflow:auto !important;
         }
         :not(pre)>code,pre{
-          background:#f5f2f0 !important;
           background:#F7F7F7 !important;
         }
         `,
@@ -392,7 +384,7 @@ export class ZeroMd extends HTMLElement {
       * because there the parsing logic depends on "not having langauge-xxxx hint for poetries"...
       */
       // unhinted.forEach(block => block.classList.add('language-text'))
-   
+
       this.debug &&
         console.log(
           '\n===highlighting...\n' +
