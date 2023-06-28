@@ -1035,6 +1035,31 @@ export class ZeroMd extends HTMLElement {
       /* PROCESS CODE GROUP - START */
       const tabsWrappers = node.querySelectorAll('.codeGroup')
       tabsWrappers.forEach(tabsWrapper => {
+
+        function setActiveTabInAllCodeGroups(activeValue) {
+          node.querySelectorAll('.codeGroup .tab-button').forEach(tabButton => {
+            if (tabButton.dataset.id === activeValue) {
+              tabButton.classList.add('active')
+            } else {
+              tabButton.classList.remove('active')
+            }
+          })
+  
+          node.querySelectorAll(`.tab-content,.inline-content`).forEach(content => {
+            if (content.id.split('-').includes(activeValue)) {
+              content.classList.add('active')
+            } else {
+              content.classList.remove('active')
+            }
+          })
+        }
+
+      const codalizedOption =
+        /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
+      const [shouldBeCodalized, defaultCodeFromMd] = [...md.matchAll(codalizedOption)].at(-1) || []
+      if (shouldBeCodalized) {
+        setActiveTabInAllCodeGroups(defaultCodeFromMd, node)
+      }
         if (tabsWrapper.querySelectorAll('.tab-content.active').length === 0) {
           // hide everything if no active content found
           tabsWrapper.style.display = 'none'
@@ -1047,21 +1072,7 @@ export class ZeroMd extends HTMLElement {
 
           if (isElementANonActiveTabButton) {
             if (this.config.groupCodeGroups) {
-              node.querySelectorAll('.codeGroup .tab-button').forEach(tabButton => {
-                if (tabButton.dataset.id === newActiveContentId) {
-                  tabButton.classList.add('active')
-                } else {
-                  tabButton.classList.remove('active')
-                }
-              })
-
-              node.querySelectorAll(`.tab-content,.inline-content`).forEach(content => {
-                if (content.id.split('-').includes(newActiveContentId)) {
-                  content.classList.add('active')
-                } else {
-                  content.classList.remove('active')
-                }
-              })
+              setActiveTabInAllCodeGroups(newActiveContentId, node)
             } else {
               const buttonsWrapper = element.parentElement
               buttonsWrapper.querySelector('.tab-button.active').classList.remove('active')
