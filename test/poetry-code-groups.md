@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-<!--«tabNameBrackets»-->
-=======
->>>>>>> 4acb445dcde0de6329ebb7c7b34a3037cf72674e
 <localized main="en"/>
-<codalized main="js"/>
+<codalized main="py"/>
 
 <py>
 

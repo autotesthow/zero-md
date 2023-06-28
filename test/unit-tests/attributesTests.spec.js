@@ -24,7 +24,7 @@ export default function() {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      zero.remove()
+      // zero.remove()
     })
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
@@ -38,11 +38,11 @@ export default function() {
       zero.appendChild(script)
     }
 
-    it('converts md from src to html', async () => {
-      zero.src = './fixtures/h1.md'
-
+    it('should change lang from <localized main="..."/ inside MD>', async () => {
+      zero.src = './unit-tests/test-files/localization-test-1.md'
+      
       await zero.render()
-
+   
       assert(zeroBody$('h1').innerText === 'First level header')
     })
 
