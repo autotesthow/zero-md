@@ -1,4 +1,3 @@
-<<<<<<< HEAD:test/unit-tests/unit-tests.spec.js
 /* eslint-env mocha */
 /* global chai */
 
