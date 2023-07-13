@@ -574,11 +574,11 @@ export class ZeroMd extends HTMLElement {
 
     const codalizedOption =
       /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
-    const [_, defaultCodeFromMd] = [...md.matchAll(codalizedOption)].at(-1) || []
+    const [shouldBeCodalized, defaultCodeFromMd] = [...md.matchAll(codalizedOption)].at(-1) || []
     this.debug && console.log('===defaultCodeFromMd===\n' + defaultCodeFromMd)
 
     const localizedOption = /<localized(?: main="(uk|ru|en)")?\/>/gim
-    const [__, defaultLangFromMd = 'uk'] = [...md.matchAll(localizedOption)].at(-1) || []
+    const [shouldBeLocalized, defaultLangFromMd] = [...md.matchAll(localizedOption)].at(-1) || []
 
     const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gim
     this.debug && console.log('===translation===\n')
@@ -627,7 +627,7 @@ export class ZeroMd extends HTMLElement {
     })
 
     this.debug && console.log('===md\n' + md)
-    const codalization = () => {
+    if (shouldBeCodalized) {
       const codalizable =
         /<((not-)?(?:js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
       const codalize = (match, tag, inverted, content) => {
@@ -647,11 +647,10 @@ export class ZeroMd extends HTMLElement {
         md = md.replace(codalizable, codalize)
       }
     }
-    codalization()
 
     this.debug && console.log('===md after codalized\n' + md)
 
-    const localization = () => {
+    if (shouldBeLocalized) {
       const localizable = /<((not-)?(?:uk|ru|en)(?:-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
       const localize = (match, tag, inverted, content) => {
         const candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
@@ -667,7 +666,6 @@ export class ZeroMd extends HTMLElement {
         md = md.replace(localizable, localize)
       }
     }
-    localization()
 
     this.debug && console.log('===md after localized\n' + md)
 
@@ -752,9 +750,8 @@ export class ZeroMd extends HTMLElement {
     ]
     isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption = poetryBoldStart !== '__'
 
-    const backTickPoetries = /```poetry(?::( .+))?([\s\S]*?)\n```/gim
+    const backTickPoetries = /```poetry(?::( .+))?(?:\n|\r\n)([\s\S]*?)\n```/gim
     const processPoetry = rules => (match, info, content) => {
-      content = content.replace(/\n/, '').replace(/\r/, '')
       // const titles = info.split(/\s+/)
       // const maybeCodeOrCustomNameOrBoth =
       // /(?:^|\s+)(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?(?:"(.+?)")?"/g
@@ -820,7 +817,7 @@ export class ZeroMd extends HTMLElement {
     md = md.replace(poetries, processPoetry(poetryRulesExceptBold))
     md = md.replace(backTickPoetries, processPoetry(poetryRulesExceptBold))
 
-    const multiCodeBlocks = /```((?:[a-z]+)(?: [a-z]+)+)([\s\S]*?)\n```/gim
+    const multiCodeBlocks = /```((?:[a-z]+)(?: [a-z]+)+)(?:\n|\r\n)([\s\S]*?)\n```/gim
     md = md.replace(multiCodeBlocks, (match, codes, content) => {
       return codes
         .split(/\s+/)
@@ -832,8 +829,7 @@ export class ZeroMd extends HTMLElement {
     // but was implemented here just for knowledge sharing purposes
     // probably we gonna remove it one day...
     const multiTabsWithCustomNamesCodeBlocks =
-      /```\b(?!poetry\b)([a-z]+)(?:: (.+))([\s\S]*?)\n```/gim
-
+      /```\b(?!poetry\b)([a-z]+)(?:: (.+))(?:\n|\r\n)([\s\S]*?)\n```/gim
     md = md.replace(multiTabsWithCustomNamesCodeBlocks, (match, code, info, content) => {
       const customNames = [
         ...info.matchAll(new RegExp(tabNameStart + '(.+?)' + tabNameEnd, 'gim')),
@@ -1069,7 +1065,7 @@ export class ZeroMd extends HTMLElement {
           .querySelector('zero-md')
           .getAttribute('code')
 
-        const urlParams = new URLSearchParams(window.location.search)
+          const urlParams = new URLSearchParams(window.location.search)
         if (!urlParams.get('code')) {
           if (shouldBeCodalized && !codeValueFromAttributesSetByButtons) {
             setActiveTabInAllCodeGroups(this.code || defaultCodeFromMd)

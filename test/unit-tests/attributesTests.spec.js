@@ -8,7 +8,6 @@ export default function() {
 
   chai.config.truncateThreshold = 0
   const assert = chai.assert
-  const expect = chai.expect
 
   const add = (html) => {
     const template = document.createElement('template')
@@ -27,7 +26,6 @@ export default function() {
   const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
   const zeroBody = () => zero$('.markdown-body')
   const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-  const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
 
   const zeroAppendScriptMD = (text) => {
     const script = document.createElement('script')
@@ -36,8 +34,8 @@ export default function() {
     zero.appendChild(script)
   }
 
-  describe('LOCALIZATION testing', () => {
-    it('should change lang from <localized main="..."/ inside MD>', async () => {
+  describe('Localization testing', () => {
+    it('should load lang from <localized main="..."/ inside MD>', async () => {
       zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
       
       await zero.render()
@@ -45,8 +43,8 @@ export default function() {
       assert(zeroBody$('localized').innerText === 'Hello')
     })
 
-    it('should change lang from ZeroMdConfig>', async () => {
-      zeroAppendScriptMD('<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+    it('should load lang from ZeroMdConfig', async () => {
+      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
 
       zero.config.lang = 'uk'
       await zero.render()
@@ -54,8 +52,8 @@ export default function() {
       assert(zeroBody$('p').innerText === 'Привіт')
     })
 
-    it('should change lang from ATTRIBUTES>', async () => {
-      zeroAppendScriptMD('<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+    it('should load lang from attributes', async () => {
+      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
 
       zero.setAttribute('lang', 'ru')
       await zero.render()
@@ -63,8 +61,8 @@ export default function() {
       assert(zeroBody$('p').innerText === 'Привет')
     })
 
-    it('should change lang from URLSerachParams>', async () => {
-      zeroAppendScriptMD('<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+    it('should load lang from URLSerachParams', async () => {
+      zeroAppendScriptMD('<localized main="uk"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
       
       let baseUrl = window.location.href.split('?')[0];
       const newQueryString = '?lang=en';
@@ -84,7 +82,7 @@ export default function() {
       assert(zeroBody$('localized').innerText === 'Привет')
     })
 
-    it('valuе from ATTRIBUTES should override value from ZeroMdConfig', async () => {
+    it('valuе from attributes should override value from ZeroMdConfig', async () => {
       zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
 
       zero.config.lang = 'ru'
@@ -94,7 +92,7 @@ export default function() {
       assert(zeroBody$('localized').innerText === 'Привіт')
     })
 
-    it('valuе from URLSerachParams should override value from ATTRIBUTES', async () => {
+    it('valuе from URLSerachParams should override value from attributes', async () => {
       zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
 
       zero.setAttribute('lang', 'ru')
@@ -122,8 +120,8 @@ export default function() {
     })
   })
 
-  describe('CODALIZATION testing', () => {
-    it('should change code from <codalized main="..."/ inside MD>', async () => {
+  describe('Codalization testing', () => {
+    it('should load code from <codalized main="..."/ inside MD>', async () => {
       zeroAppendScriptMD('<codalized main="java"/>' +
       '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
       
@@ -132,8 +130,8 @@ export default function() {
       assert(zeroBody$('.inline-content.active').innerText === 'JAVA')
     })
 
-    it('should change code from ZeroMdConfig>', async () => {
-      zeroAppendScriptMD('<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+    it('should load code from ZeroMdConfig', async () => {
+      zeroAppendScriptMD('<codalized main="java"/><js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
 
       zero.config.code = 'py'
       await zero.render()
@@ -141,8 +139,8 @@ export default function() {
       assert(zeroBody$('.inline-content.active').innerText === 'PY')
     })
 
-    it('should change code from ATTRIBUTES>', async () => {
-      zeroAppendScriptMD('<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+    it('should load code from attributes', async () => {
+      zeroAppendScriptMD('<codalized main="java"/><js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
 
       zero.setAttribute('code', 'cs')
       await zero.render()
@@ -150,8 +148,8 @@ export default function() {
       assert(zeroBody$('.inline-content.active').innerText === 'CS')
     })
 
-    it('should change code from URLSerachParams>', async () => {
-      zeroAppendScriptMD('<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+    it('should load code from URLSerachParams', async () => {
+      zeroAppendScriptMD('<codalized main="java"/><js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
 
       let baseUrl = window.location.href.split('?')[0];
       const newQueryString = '?code=ts';
@@ -172,7 +170,7 @@ export default function() {
       assert(zeroBody$('.inline-content.active').innerText === 'PY')
     })
 
-    it('valuе from ATTRIBUTES should override value from ZeroMdConfig', async () => {
+    it('valuе from attributes should override value from ZeroMdConfig', async () => {
       zeroAppendScriptMD('<codalized main="java"/>' +
       '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
      
@@ -183,7 +181,7 @@ export default function() {
       assert(zeroBody$('.inline-content.active').innerText === 'CS')
     })
 
-    it('valuе from URLSerachParams should override value from ATTRIBUTES', async () => {
+    it('valuе from URLSerachParams should override value from attributes', async () => {
       zeroAppendScriptMD('<codalized main="java"/>' +
       '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
       
@@ -213,10 +211,10 @@ export default function() {
     })
   })
 
-  describe(' LOCALIZATION and CODALIZATION with CODEGROUPS testing', () => {
+  describe('Localization and codalization with codegroups testing', () => {
 
-    it('should set LANG and CODE from CODALIZED аnd LOCALIZED tag if other options wasn\'t set' +
-    ' AND switch appropriate TAB and LANGUAGE', async () => {
+    it('should set lang and code from codalized аnd localized tag if other options wasn\'t set' +
+    ' AND switch appropriate tab and language', async () => {
       zeroAppendScriptMD('<localized main="uk"/>\n' +
       '<codalized main="java"/>\n' +
       '<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>\n' +
@@ -243,8 +241,8 @@ export default function() {
       assert(zeroBody$('.tab-content.active').innerText.split('\n')[0] === 'Привіт')
     })
 
-    it('values from ZeroMdConfig should override values from  CODALIZED аnd LOCALIZED' +
-    ' AND switch appropriate TAB and LANGUAGE', async () => {
+    it('values from ZeroMdConfig should override values from  codalized аnd localized' +
+    ' AND switch appropriate tab and language', async () => {
       zeroAppendScriptMD('<localized main="uk"/>\n' +
       '<codalized main="java"/>\n' +
       '<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>\n' +
@@ -273,8 +271,8 @@ export default function() {
       assert(zeroBody$('.tab-content.active').innerText.split('\n')[0] === 'Привет')
     })
 
-    it('values from ATTRIBUTES should override values from ZeroMdConfig' +
-    ' AND switch appropriate TAB and LANGUAGE', async () => {
+    it('values from attributes should override values from ZeroMdConfig' +
+    ' AND switch appropriate tab and language', async () => {
       zeroAppendScriptMD('<localized main="uk"/>\n' +
       '<codalized main="java"/>\n' +
       '<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>\n' +
@@ -310,7 +308,7 @@ export default function() {
     })
 
     it('values from URLSerachParams should be the highest priority' +
-    ' AND switch appropriate TAB and LANGUAGE', async () => {
+    ' AND switch appropriate tab and language', async () => {
       zeroAppendScriptMD('<localized main="uk"/>\n' +
       '<codalized main="java"/>\n' +
       '<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>\n' +
@@ -335,7 +333,7 @@ export default function() {
       '```cs\n' +
       '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
       '```\n' +
-      '::::::::::::\n' 
+      '::::::::::::\n'
       )
 
       zero.config.lang = 'ru'
@@ -352,6 +350,123 @@ export default function() {
       assert(zeroBody$('.tab-button.active').innerText === 'cs')
       assert(zeroBody$('.tab-content.active').innerText.split('\n')[0] === 'Привіт')
       window.history.replaceState(null, null, baseUrl);
+    })
+  })
+
+  describe('Depending on URLSearchParams behavior testing', () => {
+    let baseUrl = window.location.href
+    afterEach(() => {
+      window.history.replaceState(null, null, baseUrl);
+    })
+
+    it('should load lang from URLSerachParams>', async () => {
+      zeroAppendScriptMD('<localized main="uk"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+      
+      const newQueryString = '?lang=en';
+      window.history.pushState(null, null, baseUrl + newQueryString)
+      await zero.render()
+   
+      assert(zeroBody$('p').innerText === 'Hello')
+    })
+
+    it('lang valuе from URLSerachParams should override value from attributes', async () => {
+      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+
+      zero.setAttribute('lang', 'ru')
+      const newQueryString = '?lang=uk';
+      window.history.pushState(null, null, baseUrl + newQueryString)
+      await zero.render() 
+   
+      assert(zeroBody$('localized').innerText === 'Привіт')
+    })
+
+    it('should choose the most preferred lang option', async () => {
+      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+
+      zero.config.lang = 'uk'
+      zero.setAttribute('lang', 'ru')
+      const newQueryString = '?lang=en';
+      window.history.pushState(null, null, baseUrl + newQueryString)
+      await zero.render() 
+   
+      assert(zeroBody$('localized').innerText === 'Hello')
+    })
+
+    it('should load code from URLSerachParams', async () => {
+      zeroAppendScriptMD('<codalized main="java"/><js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+
+      const newQueryString = '?code=ts';
+      window.history.pushState(null, null, baseUrl + newQueryString)
+      await zero.render()
+   
+      assert(zeroBody$('.inline-content.active').innerText === 'TS')
+    })
+
+    it('code valuе from URLSerachParams should override value from attributes', async () => {
+      zeroAppendScriptMD('<codalized main="java"/>' +
+      '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+      
+      zero.setAttribute('code', 'cs')
+      const newQueryString = '?code=ts';
+      window.history.pushState(null, null, baseUrl + newQueryString)
+      await zero.render() 
+   
+      assert(zeroBody$('.inline-content.active').innerText === 'TS')
+    })
+
+    it('should choose the most preferred code option', async () => {
+      zeroAppendScriptMD('<codalized main="java"/>' +
+      '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+
+      zero.config.code = 'ts'
+      zero.setAttribute('code', 'cs')
+      const newQueryString = '?code=py';
+      window.history.pushState(null, null, baseUrl + newQueryString)
+      await zero.render() 
+   
+      assert(zeroBody$('.inline-content.active').innerText === 'PY')
+    })
+
+    it('values from URLSerachParams should be the highest priority' +
+    ' AND switch appropriate tab and language', async () => {
+      zeroAppendScriptMD('<localized main="uk"/>\n' +
+      '<codalized main="java"/>\n' +
+      '<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>\n' +
+      '<ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>\n' +
+      '<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>\n' +
+      '<py>PYTHON CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></py>\n' +
+      '<cs>CS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></cs>\n' +
+      '\n' +
+      '::::::::::::\n' +
+      '```js\n' +
+      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
+      '```\n' +
+      '```ts\n' +
+      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
+      '```\n' +
+      '```java\n' +
+      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
+      '```\n' +
+      '```py\n' +
+      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
+      '```\n' +
+      '```cs\n' +
+      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
+      '```\n' +
+      '::::::::::::\n'
+      )
+
+      zero.config.lang = 'ru'
+      zero.config.code = 'ts'
+      zero.setAttribute('lang', 'en')
+      zero.setAttribute('code', 'py')
+      const newQueryString = '?lang=uk&code=cs';
+      window.history.pushState(null, null, window.location.href + newQueryString)
+      await zero.render()
+
+      assert(zeroBody$('.inline-content.active').innerText === 'CS CONTENT Привіт')
+      assert(zeroBody$('.tab-button.active').innerText === 'cs')
+      assert(zeroBody$('.tab-content.active').innerText.split('\n')[0] === 'Привіт')
     })
   })
 }
