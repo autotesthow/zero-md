@@ -61,18 +61,6 @@ export default function() {
       assert(zeroBody$('p').innerText === 'Привет')
     })
 
-    it('should load lang from URLSerachParams', async () => {
-      zeroAppendScriptMD('<localized main="uk"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
-      
-      let baseUrl = window.location.href.split('?')[0];
-      const newQueryString = '?lang=en';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render()
-   
-      assert(zeroBody$('p').innerText === 'Hello')
-      window.history.replaceState(null, null, baseUrl);
-    })
-
     it('valuе from ZeroMdConfig should override value from <localized main="..."/>', async () => {
       zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
 
@@ -90,33 +78,6 @@ export default function() {
       await zero.render() 
    
       assert(zeroBody$('localized').innerText === 'Привіт')
-    })
-
-    it('valuе from URLSerachParams should override value from attributes', async () => {
-      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
-
-      zero.setAttribute('lang', 'ru')
-      let baseUrl = window.location.href.split('?')[0];
-      const newQueryString = '?lang=uk';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render() 
-   
-      assert(zeroBody$('localized').innerText === 'Привіт')
-      window.history.replaceState(null, null, baseUrl);
-    })
-
-    it('should choose the most preferred option', async () => {
-      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
-
-      zero.config.lang = 'uk'
-      zero.setAttribute('lang', 'ru')
-      let baseUrl = window.location.href.split('?')[0];
-      const newQueryString = '?lang=en';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render() 
-   
-      assert(zeroBody$('localized').innerText === 'Hello')
-      window.history.replaceState(null, null, baseUrl);
     })
   })
 
@@ -148,18 +109,6 @@ export default function() {
       assert(zeroBody$('.inline-content.active').innerText === 'CS')
     })
 
-    it('should load code from URLSerachParams', async () => {
-      zeroAppendScriptMD('<codalized main="java"/><js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
-
-      let baseUrl = window.location.href.split('?')[0];
-      const newQueryString = '?code=ts';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render()
-   
-      assert(zeroBody$('.inline-content.active').innerText === 'TS')
-      window.history.replaceState(null, null, baseUrl);
-    })
-
     it('valuе from ZeroMdConfig should override value from <codalized main="..."/>', async () => {
       zeroAppendScriptMD('<codalized main="java"/>' +
       '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
@@ -179,35 +128,6 @@ export default function() {
       await zero.render()
    
       assert(zeroBody$('.inline-content.active').innerText === 'CS')
-    })
-
-    it('valuе from URLSerachParams should override value from attributes', async () => {
-      zeroAppendScriptMD('<codalized main="java"/>' +
-      '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
-      
-      zero.setAttribute('code', 'cs')
-      let baseUrl = window.location.href.split('?')[0];
-      const newQueryString = '?code=ts';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render() 
-   
-      assert(zeroBody$('.inline-content.active').innerText === 'TS')
-      window.history.replaceState(null, null, baseUrl);
-    })
-
-    it('should choose the most preferred option', async () => {
-      zeroAppendScriptMD('<codalized main="java"/>' +
-      '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
-
-      zero.config.code = 'ts'
-      zero.setAttribute('code', 'cs')
-      let baseUrl = window.location.href.split('?')[0];
-      const newQueryString = '?code=py';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render() 
-   
-      assert(zeroBody$('.inline-content.active').innerText === 'PY')
-      window.history.replaceState(null, null, baseUrl);
     })
   })
 
@@ -306,51 +226,6 @@ export default function() {
       assert(zeroBody$('.tab-button.active').innerText === 'py')
       assert(zeroBody$('.tab-content.active').innerText.split('\n')[0] === 'Hello')
     })
-
-    it('values from URLSerachParams should be the highest priority' +
-    ' AND switch appropriate tab and language', async () => {
-      zeroAppendScriptMD('<localized main="uk"/>\n' +
-      '<codalized main="java"/>\n' +
-      '<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>\n' +
-      '<ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>\n' +
-      '<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>\n' +
-      '<py>PYTHON CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></py>\n' +
-      '<cs>CS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></cs>\n' +
-      '\n' +
-      '::::::::::::\n' +
-      '```js\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```ts\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```java\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```py\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```cs\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '::::::::::::\n'
-      )
-
-      zero.config.lang = 'ru'
-      zero.config.code = 'ts'
-      zero.setAttribute('lang', 'en')
-      zero.setAttribute('code', 'py')
-      let baseUrl = window.location.href.split('?')[0];
-      const newQueryString = '?lang=uk&code=cs';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-
-      await zero.render()
-
-      assert(zeroBody$('.inline-content.active').innerText === 'CS CONTENT Привіт')
-      assert(zeroBody$('.tab-button.active').innerText === 'cs')
-      assert(zeroBody$('.tab-content.active').innerText.split('\n')[0] === 'Привіт')
-      window.history.replaceState(null, null, baseUrl);
-    })
   })
 
   describe('Depending on URLSearchParams behavior testing', () => {
@@ -359,7 +234,7 @@ export default function() {
       window.history.replaceState(null, null, baseUrl);
     })
 
-    it('should load lang from URLSerachParams>', async () => {
+    it('should load lang from URLSerachParams', async () => {
       zeroAppendScriptMD('<localized main="uk"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
       
       const newQueryString = '?lang=en';
