@@ -43,7 +43,7 @@ export default function() {
 
       await zero.render()
 
-      assert(zeroBody$('h1').innerText === 'First level header')
+      expect(zeroBody$('h1').innerText).to.equal('First level header')
     })
 
     it('falls back to script when src is falsy', async () => {
@@ -106,7 +106,7 @@ export default function() {
 
       await zero.render()
 
-      assert(zero.shadowRoot.querySelector('.markdown-body>h1').innerText === 'fallback')
+      expect(zero.shadowRoot.querySelector('.markdown-body>h1').innerText).to.equal('fallback')
     })
 
     // TODO: make it pass

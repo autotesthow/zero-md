@@ -21,7 +21,7 @@ export default function () {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      // zero.remove()
+      zero.remove()
     })
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
@@ -40,7 +40,7 @@ export default function () {
 
       await zero.render()
 
-      assert.equal(zeroBody$('.buttonWrapper').children.length, 5)
+      expect(zeroBody$('.buttonWrapper').children.length).to.equal(5)
     })
 
     it('should render correct number of tabs CONTENT', async () => {
@@ -48,7 +48,7 @@ export default function () {
 
       await zero.render()
 
-      assert.equal(zeroBody$('.contentWrapper').children.length, 5)
+      expect(zeroBody$('.contentWrapper').children.length).to.equal(5)
     })
 
     it.skip('renders ACTIVE tab by main attribute in codalized option', async () => {
@@ -59,13 +59,13 @@ export default function () {
       assert.equal(zeroBody$('.tab-button.active').getAttribute('data-id'), zeroBody$('codalized').getAttribute('main'))
     })
 
-    it.only('renders ACTIVE tab by CODE', async () => {
+    it('renders ACTIVE tab by CODE', async () => {
       zero.src = './unit-tests/tabs-template.md'
       zero.code = 'ts'
 
       await zero.render()
 
-      assert.equal(zeroBody$('.tab-button.active').getAttribute('data-id'), zero.code)
+      expect(zeroBody$('.tab-button.active').getAttribute('data-id')).to.equal(zero.code)
     })
 
     it('', async () => {
@@ -74,7 +74,7 @@ export default function () {
       
       await zero.render()
 
-      assert.equal(zeroBody$('.tab-button.active').getAttribute('data-id'), zero.code)
+      expect(zeroBody$('.tab-button.active').getAttribute('data-id')).to.equal(zero.code)
     })
   })
 }

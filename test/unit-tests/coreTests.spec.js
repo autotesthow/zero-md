@@ -56,7 +56,7 @@ export default function() {
     it('should merge ZeroMdConfig opts into config', async () => {
       const f = add(`<zero-md manual-render></zero-md>`)
       await f.waitForReady()
-      assert(f.config.foo === 'bar')
+      expect(f.config.foo).to.equal('bar')
       f.remove()
     })
   })
@@ -69,9 +69,9 @@ export default function() {
     after(() => f.remove())
 
     it('src reflects', () => {
-      assert(f.src === 'dummy.md')
+      expect(f.src).to.equal('dummy.md')
       f.src = 'dummy2.md'
-      assert(f.getAttribute('src') === 'dummy2.md')
+      expect(f.getAttribute('src')).to.equal('dummy2.md')
     })
 
     it('boolean equates to true in class prop', () => {
@@ -135,14 +135,14 @@ export default function() {
 
     it('stamps html body into shadow dom', () => {
       zero.stampBody('<div class="test">hello</div>')
-      assert(zero.shadowRoot.querySelector('.test').innerHTML === 'hello')
+      expect(zero.shadowRoot.querySelector('.test').innerHTML).to.equal('hello')
     })
 
     it('stamps html body into light dom if no-shadow set', () => {
       zero.remove()
       zero = add(`<zero-md manual-render no-shadow></zero-md>`)
       zero.stampBody('<div class="test">hello</div>')
-      assert(zero.querySelector('.test').innerHTML === 'hello')
+      expect(zero.querySelector('.test').innerHTML).to.equal('hello')
     })
   })
 
@@ -232,7 +232,7 @@ export default function() {
       assert(detail.stamped && detail.stamped.body === true)
       assert(detail.stamped && !detail.stamped.styles)
       const h1 = f.shadowRoot.querySelector('h1')
-      assert(window.getComputedStyle(h1).getPropertyValue('color') === 'rgb(255, 0, 0)')
+      expect(window.getComputedStyle(h1).getPropertyValue('color')).to.equal('rgb(255, 0, 0)')
     })
 
     it('renders partially if styles change but body does not', async () => {
@@ -251,7 +251,7 @@ export default function() {
       assert(detail.stamped && detail.stamped.styles === true)
       assert(detail.stamped && !detail.stamped.body)
       const h1 = f.shadowRoot.querySelector('h1')
-      assert(window.getComputedStyle(h1).getPropertyValue('color') === 'rgb(0, 0, 255)')
+      expect(window.getComputedStyle(h1).getPropertyValue('color')).to.equal('rgb(0, 0, 255)')
     })
   })
 
@@ -285,7 +285,7 @@ export default function() {
       a.click()
       await sleep(50)
       assert(f.scrollTop > 0)
-      assert(location.hash === '#tamen-et-veri')
+      expect(location.hash).to.equal('#tamen-et-veri')
     })
   })
 
@@ -299,11 +299,11 @@ export default function() {
       f = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
       f.addEventListener('zero-md-rendered', () => {
         if (isInitialRender) {
-          assert(f.shadowRoot.querySelector('h1').innerHTML === 'markdown-fixture')
+          expect(f.shadowRoot.querySelector('h1').innerHTML).to.equal('markdown-fixture')
           isInitialRender = false
           f.querySelector('script').innerHTML = '# updated markdown-fixture'
         } else {
-          assert(f.shadowRoot.querySelector('h1').innerHTML === 'updated markdown-fixture')
+          expect(f.shadowRoot.querySelector('h1').innerHTML).to.equal('updated markdown-fixture')
           done()
         }
       })
@@ -320,12 +320,12 @@ export default function() {
         const h1 = f.shadowRoot.querySelector('h1')
         const computedStyle = window.getComputedStyle(h1)
         if (isInitialRender) {
-          assert(computedStyle.color === 'rgb(255, 0, 0)')
+          expect(computedStyle.color).to.equal('rgb(255, 0, 0)')
           isInitialRender = false
           f.querySelector('template').content.firstElementChild.innerHTML =
             'h1 { color: rgb(0, 255, 0); }'
-        } else {
-          assert(computedStyle.color === 'rgb(0, 255, 0)')
+        } else { 
+          expect(computedStyle.color).to.equal('rgb(0, 255, 0)')
           done()
         }
       })
@@ -348,7 +348,7 @@ export default function() {
       await tick()
       node.remove()
       window.removeEventListener('zero-md-ready', handler)
-      assert(count === 2)
+      expect(count).to.equal(2)
       console.log('Complete')
     })
   })
