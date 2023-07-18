@@ -3,7 +3,70 @@
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
 A Lorem Ipsum generator that doesn't suck. :P
 
-![cat!](test1/cat.jpg)
+![cat!](fixtures/cat.jpg)
+
+## Indented translation definition to align translations for easier refactoring
+
+<!--js-ts~{{browser\.config\.baseUrl}}~browser.config.baseUrl~-->
+<!-----py~{{browser\.config\.baseUrl}}~browser.config.base_url~-->
+<!---java~{{browser\.config\.baseUrl}}~Configuration.baseUrl~-->
+<!-----cs~{{browser\.config\.baseUrl}}~Configuration.BaseUrl~-->
+
+Option to configure base url: `{{browser.config.baseUrl}}`
+
+## Nested translations
+
+<!--~{{CHILD}}~son~-->
+
+<!--~{{PARENT_AND_CHILD}}~Father loves his {{CHILD}}~-->
+
+Father's {{CHILD}} is a good boy.
+
+{{PARENT_AND_CHILD}}.
+
+## Should have no longBreak ====+ inside code blocks
+
+```js
+/*
+
+====
+
+*/
+```
+
+::::::::::manual
+```poetry: js"js (poetry)"
+/*
+
+====
+
+*/
+```
+::::::::::
+
+## Should have longBreak instead of ====+
+
+====
+
+There should be long break above starting from the header.
+
+## Should have longBreak instead of ====+ from variable
+
+<!--ru~{{SOLUTION}}~,,,,,,,,,,,,
+**⇩РЕШЕНИЕ⇩**
+============~-->
+<!--uk~{{SOLUTION}}~,,,,,,,,,,,,
+**⇩РОЗВ‘ЯЗОК⇩**
+============~-->
+<!--en~{{SOLUTION}}~,,,,,,,,,,,,
+**⇩SOLUTION⇩**
+============~-->
+
+You will see answer to the main question in the universe after long break below...
+
+{{SOLUTION}}
+
+42
 
 ## Templates + General Translation + Translation to multiline
 
