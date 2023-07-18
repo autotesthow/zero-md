@@ -22,6 +22,8 @@ export default function() {
   afterEach(() => {
      zero.remove()
   })
+  
+  let baseUrl = window.location.href
 
   const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
   const zeroBody = () => zero$('.markdown-body')
@@ -79,6 +81,44 @@ export default function() {
 
       expect(zeroBody$('localized').innerText).to.equal('Привіт')
     })
+
+    describe('Depending on URLSearchParams behavior testing', () => {
+      afterEach(() => {
+        window.history.replaceState(null, null, baseUrl);
+      })
+      it('should load lang from URLSearchParams>', async () => {
+        zeroAppendScriptMD('<localized main="uk"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+        
+        const newQueryString = '?lang=en';
+        window.history.pushState(null, null, baseUrl + newQueryString)
+        await zero.render()
+     
+        expect(zeroBody$('p').innerText).to.equal('Hello')
+      })
+  
+      it('lang value from URLSearchParams should override value from attributes', async () => {
+        zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+  
+        zero.setAttribute('lang', 'ru')
+        const newQueryString = '?lang=uk';
+        window.history.pushState(null, null, baseUrl + newQueryString)
+        await zero.render() 
+     
+        expect(zeroBody$('localized').innerText).to.equal('Привіт')
+      })
+  
+      it('should choose the most preferred lang option', async () => {
+        zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+  
+        zero.config.lang = 'uk'
+        zero.setAttribute('lang', 'ru')
+        const newQueryString = '?lang=en';
+        window.history.pushState(null, null, baseUrl + newQueryString)
+        await zero.render()
+     
+        expect(zeroBody$('localized').innerText).to.equal('Hello')
+      }) 
+    })
   })
 
   describe('Codalization testing', () => {
@@ -128,6 +168,47 @@ export default function() {
       await zero.render()
    
       expect(zeroBody$('.inline-content.active').innerText).to.equal('CS')
+    })
+
+    describe('Depending on URLSearchParams behavior testing', () => {
+      afterEach(() => {
+        window.history.replaceState(null, null, baseUrl);
+      })
+  
+      it('should load code from URLSearchParams', async () => {
+        zeroAppendScriptMD('<codalized main="java"/><js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+  
+        const newQueryString = '?code=ts';
+        window.history.pushState(null, null, baseUrl + newQueryString)
+        await zero.render()
+     
+        expect(zeroBody$('.inline-content.active').innerText).to.equal('TS')
+      })
+  
+      it('code value from URLSearchParams should override value from attributes', async () => {
+        zeroAppendScriptMD('<codalized main="java"/>' +
+        '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+        
+        zero.setAttribute('code', 'cs')
+        const newQueryString = '?code=ts';
+        window.history.pushState(null, null, baseUrl + newQueryString)
+        await zero.render() 
+     
+        expect(zeroBody$('.inline-content.active').innerText).to.equal('TS')
+      })
+  
+      it('should choose the most preferred code option', async () => {
+        zeroAppendScriptMD('<codalized main="java"/>' +
+        '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+  
+        zero.config.code = 'ts'
+        zero.setAttribute('code', 'cs')
+        const newQueryString = '?code=py';
+        window.history.pushState(null, null, baseUrl + newQueryString)
+        await zero.render() 
+     
+        expect(zeroBody$('.inline-content.active').innerText).to.equal('PY')
+      }) 
     })
   })
 
@@ -225,120 +306,51 @@ export default function() {
       expect(zeroBody$('.tab-button.active').innerText).to.equal('py')
       expect(zeroBody$('.tab-content.active').innerText.split('\n')[0]).to.equal('Hello')
     })
-  })
 
-  describe('Depending on URLSearchParams behavior testing', () => {
-    let baseUrl = window.location.href
-    afterEach(() => {
-      window.history.replaceState(null, null, baseUrl);
-    })
+    describe('Depending on URLSearchParams behavior testing', () => {
+      afterEach(() => {
+        window.history.replaceState(null, null, baseUrl);
+      })
+  
+      it('values from URLSearchParams should be the highest priority' +
+      ' AND switch appropriate tab and language', async () => {
+        zeroAppendScriptMD('<localized main="uk"/>\n' +
+        '<codalized main="java"/>\n' +
+        '<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>\n' +
+        '<py>PYTHON CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></py>\n' +
+        '<cs>CS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></cs>\n' +
+        '\n' +
+        '::::::::::::\n' +
+        '```js\n' +
+        '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
+        '```\n' +
+        '```ts\n' +
+        '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
+        '```\n' +
+        '```java\n' +
+        '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
+        '```\n' +
+        '```py\n' +
+        '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
+        '```\n' +
+        '```cs\n' +
+        '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
+        '```\n' +
+        '::::::::::::\n'
+        )
 
-    it('should load lang from URLSearchParams>', async () => {
-      zeroAppendScriptMD('<localized main="uk"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
-      
-      const newQueryString = '?lang=en';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render()
-   
-      expect(zeroBody$('p').innerText).to.equal('Hello')
-    })
+        zero.config.lang = 'ru'
+        zero.config.code = 'ts'
+        zero.setAttribute('lang', 'en')
+        zero.setAttribute('code', 'py')
+        const newQueryString = '?lang=uk&code=cs';
+        window.history.pushState(null, null, window.location.href + newQueryString)
+        await zero.render()
 
-    it('lang value from URLSearchParams should override value from attributes', async () => {
-      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
-
-      zero.setAttribute('lang', 'ru')
-      const newQueryString = '?lang=uk';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render() 
-   
-      expect(zeroBody$('localized').innerText).to.equal('Привіт')
-    })
-
-    it('should choose the most preferred lang option', async () => {
-      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
-
-      zero.config.lang = 'uk'
-      zero.setAttribute('lang', 'ru')
-      const newQueryString = '?lang=en';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render()
-   
-      expect(zeroBody$('localized').innerText).to.equal('Hello')
-    })
-
-    it('should load code from URLSearchParams', async () => {
-      zeroAppendScriptMD('<codalized main="java"/><js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
-
-      const newQueryString = '?code=ts';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render()
-   
-      expect(zeroBody$('.inline-content.active').innerText).to.equal('TS')
-    })
-
-    it('code value from URLSearchParams should override value from attributes', async () => {
-      zeroAppendScriptMD('<codalized main="java"/>' +
-      '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
-      
-      zero.setAttribute('code', 'cs')
-      const newQueryString = '?code=ts';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render() 
-   
-      expect(zeroBody$('.inline-content.active').innerText).to.equal('TS')
-    })
-
-    it('should choose the most preferred code option', async () => {
-      zeroAppendScriptMD('<codalized main="java"/>' +
-      '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
-
-      zero.config.code = 'ts'
-      zero.setAttribute('code', 'cs')
-      const newQueryString = '?code=py';
-      window.history.pushState(null, null, baseUrl + newQueryString)
-      await zero.render() 
-   
-      expect(zeroBody$('.inline-content.active').innerText).to.equal('PY')
-    })
-
-    it('values from URLSearchParams should be the highest priority' +
-    ' AND switch appropriate tab and language', async () => {
-      zeroAppendScriptMD('<localized main="uk"/>\n' +
-      '<codalized main="java"/>\n' +
-      '<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>\n' +
-      '<py>PYTHON CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></py>\n' +
-      '<cs>CS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></cs>\n' +
-      '\n' +
-      '::::::::::::\n' +
-      '```js\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```ts\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```java\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```py\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```cs\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '::::::::::::\n'
-      )
-
-      zero.config.lang = 'ru'
-      zero.config.code = 'ts'
-      zero.setAttribute('lang', 'en')
-      zero.setAttribute('code', 'py')
-      const newQueryString = '?lang=uk&code=cs';
-      window.history.pushState(null, null, window.location.href + newQueryString)
-      await zero.render()
-
-      expect(zeroBody$('.inline-content.active').innerText).to.equal('CS CONTENT Привіт')
-      expect(zeroBody$('.tab-button.active').innerText).to.equal('cs')
-      expect(zeroBody$('.tab-content.active').innerText.split('\n')[0]).to.equal('Привіт')
+        expect(zeroBody$('.inline-content.active').innerText).to.equal('CS CONTENT Привіт')
+        expect(zeroBody$('.tab-button.active').innerText).to.equal('cs')
+        expect(zeroBody$('.tab-content.active').innerText.split('\n')[0]).to.equal('Привіт')
+      })
     })
   })
 }
