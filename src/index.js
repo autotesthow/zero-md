@@ -584,11 +584,11 @@ export class ZeroMd extends HTMLElement {
     const localizedOption = /<localized(?: main="(uk|ru|en)")?\/>/gim
     const [shouldBeLocalized, defaultLangFromMd] = [...md.matchAll(localizedOption)].at(-1) || []
 
-    const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gim
     this.debug && console.log('===translation===\n')
-    ;[...md.matchAll(translation)].forEach(([_match, _delimiter, from, to]) => {
+    const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gm
+    const translate = ([_match, _delimiter, from, to]) => {
       try {
-        md = md.replace(new RegExp(from, 'gmi'), to)
+        md = md.replace(new RegExp('(?<!<!--\\W)' + from, 'gm'), to)
       } catch (e) {
         this.debug && console.log('===match\n' + _match)
         this.debug && console.log('===delimiter\n' + _delimiter)
@@ -596,11 +596,18 @@ export class ZeroMd extends HTMLElement {
         this.debug && console.log('===to\n' + to)
         console.error(e)
       }
-    })
+    }
+    ;[...md.matchAll(translation)].forEach(translate)
+    this.debug && console.log('===md after first general translation\n' + md)
+    // next duplicated line is a crazy hack...
+    // to allow nested translations to work... (at least one-level-nested)
+    // TODO: refactor it for proper implementation
+    ;[...md.matchAll(translation)].forEach(translate)
     this.debug && console.log('=================\n')
+    this.debug && console.log('===md after general translations\n' + md)
 
     const translationPerCodeOption =
-      /<!--((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
+      /<!--(?:-*)((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
     ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
       if (perCode.split('-').length > 1) {
         perCode = perCode.split('-')
@@ -611,11 +618,11 @@ export class ZeroMd extends HTMLElement {
           ? perCode.includes(this.code || defaultCodeFromMd)
           : (this.code || defaultCodeFromMd) === perCode
       ) {
-        md = md.replace(new RegExp(from, 'gmi'), to)
+        md = md.replace(new RegExp(from, 'gm'), to)
       }
     })
     const translationPerLangOption =
-      /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
+      /<!--(?:-*)((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
     ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
       if (perLang.split('-').length > 1) {
         perLang = perLang.split('-')
@@ -626,11 +633,12 @@ export class ZeroMd extends HTMLElement {
           ? perLang.includes(this.lang || defaultLangFromMd)
           : (this.lang || defaultLangFromMd) === perLang
       ) {
-        md = md.replace(new RegExp(from, 'gmi'), to)
+        md = md.replace(new RegExp(from, 'gm'), to)
       }
     })
 
     this.debug && console.log('===md\n' + md)
+
     if (shouldBeCodalized) {
       const codalizable =
         /<((not-)?(?:js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
@@ -701,10 +709,7 @@ export class ZeroMd extends HTMLElement {
     const shortBreaks = /^,,,,+/gim
     md = md.replace(shortBreaks, '<br/>'.repeat(this.config.shortBreaksNumber))
 
-    const longBreaks = /^====+/gim
-    md = md.replace(longBreaks, '<br/>'.repeat(this.config.longBreaksNumber))
-
-    const pageBreaks = /^===/gim
+    const pageBreaks = /^===$/gim
     md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>')
 
     this.config.disableCodeHighlightingFor.forEach(lang => {
@@ -829,17 +834,24 @@ export class ZeroMd extends HTMLElement {
         .join('\n')
     })
 
-    // this part is actually have not business value
-    // but was implemented here just for knowledge sharing purposes
-    // probably we gonna remove it one day...
     const multiTabsWithCustomNamesCodeBlocks =
       /```\b(?!poetry\b)([a-z]+)(?:: (.+))(?:\n|\r\n)([\s\S]*?)\n```/gim
     md = md.replace(multiTabsWithCustomNamesCodeBlocks, (match, code, info, content) => {
-      const customNames = [
-        ...info.matchAll(new RegExp(tabNameStart + '(.+?)' + tabNameEnd, 'gim')),
-      ].map(matched => matched[1])
-      return customNames
-        .map(customName => htmlTemplate.codeBlock({ content, customName, code }))
+      const customNameAndMaybeCode = [
+        ...info.matchAll(
+          new RegExp(
+            '(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
+              tabNameStart +
+              '(.+?)' +
+              tabNameEnd,
+            'gim',
+          ),
+        ),
+      ].map(matched => ({ maybeCode: matched[1], customName: matched[2] }))
+      return customNameAndMaybeCode
+        .map(({ maybeCode, customName }) =>
+          htmlTemplate.codeBlock({ content, customName, code: maybeCode ?? code }),
+        )
         .join('\n')
     })
 
@@ -856,6 +868,18 @@ export class ZeroMd extends HTMLElement {
     /* PROCESS HTML */
 
     this.debug && console.log('===html before processing\n' + html)
+
+    /* long breaks moved to be processed after md processing
+     * as a draft workaround to disable longBreaks processing inside code blocks
+     */
+    // const longBreaks = /^====+/gim
+    const longBreakInParagrapth = /<p>====+<\/p>/gim
+    html = html.replace(longBreakInParagrapth, '<br/>'.repeat(this.config.longBreaksNumber))
+    const longBreakAtParagraphEnding = /^====+<\/p>/gim
+    html = html.replace(
+      longBreakAtParagraphEnding,
+      '<br/>'.repeat(this.config.longBreaksNumber) + '</p>',
+    )
 
     // decode previously decoded
     if (isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption) {
