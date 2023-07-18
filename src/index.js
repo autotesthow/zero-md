@@ -113,10 +113,6 @@ export class ZeroMd extends HTMLElement {
       hostCss:
         ':host{display:block;position:relative;contain:content;}:host([hidden]){display:none;}' +
         `
-        .tlk-userbar__popup-link:hover { 
-          color: #00b7ce !important;
-        }
-
         .markdown-body a {
           color: #00b7ce !important;
         }
