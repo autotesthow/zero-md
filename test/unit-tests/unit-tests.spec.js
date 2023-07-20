@@ -78,7 +78,7 @@ export default function() {
       assert(el.classList.contains('token'))
     })
 
-    it('language-detects unhinted code blocks as js o_O', async () => {
+    it('language-detects unhinted code blocks as NOTHING o_O', async () => {
       zeroAppendScriptMD(
         '\n' +
           '\n```' +
@@ -93,7 +93,10 @@ export default function() {
 
       await zero.render()
 
-      assert(zeroBody$('pre>code').classList.contains('language-js'))
+      // TODO: uncomment when prismajs is fixed and unhinted code is again marked as language-text
+      //       (as part of https://kanbanflow.com/t/S7V4boFD)
+      // expect([...zeroBody$('pre>code').classList]).to.contain('language-text')
+      expect([...zeroBody$('pre>code').classList]).to.be.empty
     })
 
     it('dedents when script data-dedent set', async () => {
