@@ -754,7 +754,6 @@ export class ZeroMd extends HTMLElement {
       //    https://stackoverflow.com/questions/7376238/javascript-regex-look-behind-alternative
     ]
     isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption = poetryBoldStart !== '__'
-
     const backTickPoetries = /```poetry(?::( .+))?(?:\n|\r\n)([\s\S]*?)\n```/gim
     const processPoetry = rules => (match, info, content) => {
       // const titles = info.split(/\s+/)
