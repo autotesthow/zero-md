@@ -18,7 +18,7 @@ const build = {
   },
   plugins: [
     replace({
-      'process.env.ENV': JSON.stringify(process.env.ENV),
+      'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT),
     }),
     replace({ $VERSION: pkg.version, delimiters: ['', ''] }), resolve(), terser()
   ],
@@ -34,7 +34,7 @@ const buildLegacy = {
   },
   plugins: [
     replace({
-      'process.env.ENV': JSON.stringify(process.env.ENV),
+      'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT),
     }),
     replace({ $VERSION: pkg.version, delimiters: ['', ''] }),
     resolve(),
@@ -53,7 +53,7 @@ const dev = {
   },
   plugins: [
     replace({
-      'process.env.ENV': JSON.stringify(process.env.ENV),
+      'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT),
     }),
     resolve(),
     !production &&
