@@ -6,11 +6,11 @@
   "type": "module",
   "exports": "./src/index.js",
   "scripts": {
-    "dev": "set DEV_ENV=true && rollup -c -w ",
+    "dev": "set ENV=dev&& rollup -c -w ",
     "format": "prettier --write .",
     "lint": "eslint .",
     "test": "npm run dev",
-    "build": "rollup -c",
+    "build": "set ENV=prod&& rollup -c",
     "prepublishOnly": "npm run format && npm run lint && npm run build",
     "docs:build": "zero-md-docs && sscli -b https://zerodevx.github.io/zero-md/ -r docs -i 'v1/**' --slash"
   },
