@@ -498,7 +498,7 @@ export class ZeroMd extends HTMLElement {
     let md = (await src()) || script()
 
     /* PROCESS MD */
-
+    process.env.DEV_ENV ? console.log('development') : console.log('production')
     const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)]
     if (importsMatch.length) {
       await Promise.all(

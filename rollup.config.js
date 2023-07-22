@@ -44,6 +44,9 @@ const dev = {
     file: 'test/build/bundle.js',
   },
   plugins: [
+    replace({
+      'process.env.DEV_ENV': JSON.stringify(process.env.DEV_ENV),
+    }),
     resolve(),
     !production &&
       serve({
