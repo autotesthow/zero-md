@@ -16,7 +16,12 @@ const build = {
     format: 'es',
     file: 'dist/zero-md.min.js',
   },
-  plugins: [replace({ $VERSION: pkg.version, delimiters: ['', ''] }), resolve(), terser()],
+  plugins: [
+    replace({
+      'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT),
+    }),
+    replace({ $VERSION: pkg.version, delimiters: ['', ''] }), resolve(), terser()
+  ],
 }
 
 const buildLegacy = {
@@ -28,6 +33,9 @@ const buildLegacy = {
     file: 'dist/zero-md.legacy.min.js',
   },
   plugins: [
+    replace({
+      'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT),
+    }),
     replace({ $VERSION: pkg.version, delimiters: ['', ''] }),
     resolve(),
     babel({ babelHelpers: 'bundled' }),
@@ -44,6 +52,9 @@ const dev = {
     file: 'test/build/bundle.js',
   },
   plugins: [
+    replace({
+      'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT),
+    }),
     resolve(),
     !production &&
       serve({
