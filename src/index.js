@@ -634,7 +634,6 @@ export class ZeroMd extends HTMLElement {
     })
 
     this.debug && console.log('===md\n' + md)
-
     if (shouldBeCodalized) {
       const codalizable =
         /<((not-)?(?:js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
