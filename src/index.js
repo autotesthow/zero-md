@@ -680,11 +680,29 @@ export class ZeroMd extends HTMLElement {
       }
     }
 
-    this.debug && console.log('===md after localized\n' + md)
+    function decodeHTMLEntities(text) {
+      const parser = new DOMParser();
+      const decodedString = parser.parseFromString(`<!doctype html><body>${text}`, 'text/html').body.textContent;
+      return decodedString;
+    }
 
+    this.debug && console.log('===md after localized\n' + md)
     const tocStartLevelOption = /<!--TOC>(\d)-->/i
     const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0]
     renderer.heading = (text, level) => {
+      text = text.replace(/<code>|<\/code>/gim, '`')
+      text = decodeHTMLEntities(text)
+      
+      const codeBlocks =  /<span class="inline-content(.*?)" id="(.+)">([\s\S]*?)<\/span>/gim
+      let headerId
+      let isActive
+      [...md.matchAll(codeBlocks)].forEach(([_, blockActive, blockId, blockContent]) => {
+        if (blockContent.includes(text)) {
+          headerId = blockId
+          blockActive ? isActive = true : isActive = false
+        } 
+      })
+
       const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/im) || [null, text]
       const pureWithoutTags = pure.replace(/<\/?\w+>/g, '')
       const anchorIdsToLowerCase = this.config.anchorIdsToLowerCase
@@ -697,7 +715,10 @@ export class ZeroMd extends HTMLElement {
         const indentInsideToc = `style="margin-left: ${
           pixelsNumber * (level - 1 - tocStartLevel)
         }px"`
-        tocLinks.push(`<div ${indentInsideToc}><a href="#${id}">${pureWithoutTags}</a></div>`)
+        tocLinks.push(`<div ${indentInsideToc}>` +
+        `${headerId 
+          ? `<span class="inline-content${isActive ? " active" : ""}" id="${headerId}"><a href="#${id}">${pureWithoutTags}</a></span></div>`
+          : `<a href="#${id}">${pureWithoutTags}</a></div>`}`)
       }
 
       return `<h${level}>${encodeURI(id) === id ? '' : `<span id="${encodeURI(id)}"></span>`}
@@ -887,7 +908,7 @@ export class ZeroMd extends HTMLElement {
       html = html.replace(/•••/gim, '**')
     }
 
-    const tocMarker = /\[toc\]/i
+    const tocMarker = /\[toc\](?:<!--TOC>(\d)-->)?/i
     const toc = `<div class="toc">${tocLinks.join('')}</div>`
     html = html.replace(tocMarker, toc)
 
