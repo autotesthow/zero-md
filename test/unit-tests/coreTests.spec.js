@@ -23,8 +23,9 @@ export default function() {
   const tick = () => new Promise((resolve) => requestAnimationFrame(resolve))
 
   describe('constructor()', () => {
-    // TODO: make it pass
-    it.skip('should not load marked if marked already loaded', async () => {
+    //ISSUE: this test passed if run only this describe.
+    //Also if this test is skipped, next test fails: "should not load prism if prism already loaded"
+    it('should not load marked if marked already loaded', async () => {
       window.marked = true
       const fixture = add(`<zero-md manual-render></zero-md>`)
       await fixture.waitForReady()
@@ -43,85 +44,85 @@ export default function() {
           nodes[a].remove()
         }
       }
-      const f = add(`<zero-md manual-render></zero-md>`)
-      await f.loadScript(f.config.markedUrl)
-      await f.waitForReady()
+      const zero = add(`<zero-md manual-render></zero-md>`)
+      await zero.loadScript(zero.config.markedUrl)
+      await zero.waitForReady()
       nodes = document.head.querySelectorAll('script')
       for (let a = 0; a < nodes.length; a++) {
         assert(!nodes[a].src.includes('prism'))
       }
-      f.remove()
+      zero.remove()
     })
 
     it('should merge ZeroMdConfig opts into config', async () => {
-      const f = add(`<zero-md manual-render></zero-md>`)
-      await f.waitForReady()
-      assert(f.config.foo === 'bar')
-      f.remove()
+      const zero = add(`<zero-md manual-render></zero-md>`)
+      await zero.waitForReady()
+      expect(zero.config.foo).to.equal('bar')
+      zero.remove()
     })
   })
 
   describe('getters and setters', () => {
-    let f
+    let zero
     before(() => {
-      f = add(`<zero-md src="dummy.md" manual-render></zero-md>`)
+      zero = add(`<zero-md src="dummy.md" manual-render></zero-md>`)
     })
-    after(() => f.remove())
+    after(() => zero.remove())
 
     it('src reflects', () => {
-      assert(f.src === 'dummy.md')
-      f.src = 'dummy2.md'
-      assert(f.getAttribute('src') === 'dummy2.md')
+      expect(zero.src).to.equal('dummy.md')
+      zero.src = 'dummy2.md'
+      expect(zero.getAttribute('src')).to.equal('dummy2.md')
     })
 
     it('boolean equates to true in class prop', () => {
-      assert(f.manualRender === true)
+      assert(zero.manualRender === true)
     })
 
     it('boolean reflects', () => {
-      f.manualRender = false
-      assert(!f.hasAttribute('manual-render'))
+      zero.manualRender = false
+      assert(!zero.hasAttribute('manual-render'))
     })
   })
 
   describe('buildStyles()', () => {
-    let f
-    afterEach(() => f.remove())
+    let zero
+    afterEach(() => zero.remove())
 
     it('uses default styles if no template declared', () => {
-      f = add(`<zero-md manual-render></zero-md>`)
-      const s = f.makeNode(f.buildStyles()).outerHTML
+      zero = add(`<zero-md manual-render></zero-md>`)
+      const s = zero.makeNode(zero.buildStyles()).outerHTML
       assert(s.includes('/github-markdown.min.css'))
     })
 
     it('uses template styles', () => {
-      f = add(
+      zero = add(
         `<zero-md manual-render><template><link rel="stylesheet" href="example.css"></template></zero-md>`
       )
-      const s = f.makeNode(f.buildStyles()).outerHTML
+      const s = zero.makeNode(zero.buildStyles()).outerHTML
       assert(!s.includes('/github-markdown.min.css'))
       assert(s.includes('example.css'))
     })
 
     it('prepends correctly', () => {
-      f = add(
+      zero = add(
         `<zero-md manual-render><template data-merge="prepend"><style>p{color:red;}</style></template></zero-md>`
       )
-      const s = f.makeNode(f.buildStyles()).outerHTML
+      const s = zero.makeNode(zero.buildStyles()).outerHTML
       assert(s.indexOf('p{color:red;}') < s.indexOf('markdown.min'))
     })
 
     it('appends correctly', () => {
-      f = add(
+      zero = add(
         `<zero-md manual-render><template data-merge="append"><style>p{color:red;}</style></template></zero-md>`
       )
-      const s = f.makeNode(f.buildStyles()).outerHTML
+      const s = zero.makeNode(zero.buildStyles()).outerHTML
       assert(s.indexOf('p{color:red;}') > s.indexOf('markdown.min'))
     })
 
     it('allows passing an empty template to override default template', () => {
-      f = add(`<zero-md manual-render><template></template></zero-md>`)
-      const s = f.makeNode(f.buildStyles())
+      zero = add(`<zero-md manual-render><template></template></zero-md>`)
+      const s = zero.makeNode(zero.buildStyles())
       assert(s.querySelectorAll('link').length === 0)
     })
   })
@@ -135,14 +136,14 @@ export default function() {
 
     it('stamps html body into shadow dom', () => {
       zero.stampBody('<div class="test">hello</div>')
-      assert(zero.shadowRoot.querySelector('.test').innerHTML === 'hello')
+      expect(zero.shadowRoot.querySelector('.test').innerHTML).to.equal('hello')
     })
 
     it('stamps html body into light dom if no-shadow set', () => {
       zero.remove()
       zero = add(`<zero-md manual-render no-shadow></zero-md>`)
       zero.stampBody('<div class="test">hello</div>')
-      assert(zero.querySelector('.test').innerHTML === 'hello')
+      expect(zero.querySelector('.test').innerHTML).to.equal('hello')
     })
   })
 
@@ -179,131 +180,131 @@ export default function() {
   })
 
   describe('render()', () => {
-    let f
-    afterEach(() => f.remove())
+    let zero
+    afterEach(() => zero.remove())
 
     it('auto re-renders when src change', (done) => {
-      f = add(`<zero-md src="fixture.md"></zero-md>`)
-      f.addEventListener('zero-md-rendered', () => {
-        if (f.src === 'fixture.md') {
-          expect(f.shadowRoot.querySelector('h1').innerText).to.equal('markdown-fixture')
-          f.src = 'fixtures/with-relative-img-link.md'
-        } else if (f.src === 'fixtures/with-relative-img-link.md') {
-          expect(f.shadowRoot.querySelector('h1').innerText).to.equal('relative-link-test')
+      zero = add(`<zero-md src="fixture.md"></zero-md>`)
+      zero.addEventListener('zero-md-rendered', () => {
+        if (zero.src === 'fixture.md') {
+          expect(zero.shadowRoot.querySelector('h1').innerText).to.equal('markdown-fixture')
+          zero.src = 'fixtures/with-relative-img-link.md'
+        } else if (zero.src === 'fixtures/with-relative-img-link.md') {
+          expect(zero.shadowRoot.querySelector('h1').innerText).to.equal('relative-link-test')
           done()
         }
       })
     })
 
     it('prevents FOUC by ensuring styles are stamped and resolved first, before stamping md', async () => {
-      f = add(`<zero-md manual-render>
+      zero = add(`<zero-md manual-render>
         <template>
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.css">
         </template>
         <script type="text/markdown"># fixture</script></zero-md>`)
-      const job = f.render()
+      const job = zero.render()
       await tick()
-      assert(f.shadowRoot.querySelector('link'))
-      assert(!f.shadowRoot.querySelector('h1'))
+      assert(zero.shadowRoot.querySelector('link'))
+      assert(!zero.shadowRoot.querySelector('h1'))
       await job
-      assert(f.shadowRoot.querySelector('h1'))
+      assert(zero.shadowRoot.querySelector('h1'))
     })
 
     it('renders markdown-body with optional classes', async () => {
-      f = add(`<zero-md manual-render><script type="text/markdown"># test</script></zero-md>`)
-      await f.render({ classes: 'test-class' })
-      assert(f.shadowRoot.querySelector('.markdown-body').classList.contains('test-class'))
-      await f.render({ classes: ['test2', 'test3'] })
-      assert(f.shadowRoot.querySelector('.markdown-body').classList.contains('test3'))
+      zero = add(`<zero-md manual-render><script type="text/markdown"># test</script></zero-md>`)
+      await zero.render({ classes: 'test-class' })
+      assert(zero.shadowRoot.querySelector('.markdown-body').classList.contains('test-class'))
+      await zero.render({ classes: ['test2', 'test3'] })
+      assert(zero.shadowRoot.querySelector('.markdown-body').classList.contains('test3'))
     })
 
     it('renders partially if body changes but styles do not', async () => {
-      f = add(
+      zero = add(
         `<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`
       )
-      await f.render()
+      await zero.render()
       let detail = {}
-      f.addEventListener('zero-md-rendered', (e) => {
+      zero.addEventListener('zero-md-rendered', (e) => {
         detail = e.detail
       })
-      f.querySelector('script').innerText = '# test2'
-      await f.render()
+      zero.querySelector('script').innerText = '# test2'
+      await zero.render()
       await tick()
       assert(detail.stamped && detail.stamped.body === true)
       assert(detail.stamped && !detail.stamped.styles)
-      const h1 = f.shadowRoot.querySelector('h1')
-      assert(window.getComputedStyle(h1).getPropertyValue('color') === 'rgb(255, 0, 0)')
+      const h1 = zero.shadowRoot.querySelector('h1')
+      expect(window.getComputedStyle(h1).getPropertyValue('color')).to.equal('rgb(255, 0, 0)')
     })
 
     it('renders partially if styles change but body does not', async () => {
-      f = add(
+      zero = add(
         `<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`
       )
-      await f.render()
+      await zero.render()
       let detail = {}
-      f.addEventListener('zero-md-rendered', (e) => {
+      zero.addEventListener('zero-md-rendered', (e) => {
         detail = e.detail
       })
-      const tpl = f.querySelector('template')
+      const tpl = zero.querySelector('template')
       tpl.content.firstElementChild.innerText = 'h1{color:blue}'
-      await f.render()
+      await zero.render()
       await tick()
       assert(detail.stamped && detail.stamped.styles === true)
       assert(detail.stamped && !detail.stamped.body)
-      const h1 = f.shadowRoot.querySelector('h1')
-      assert(window.getComputedStyle(h1).getPropertyValue('color') === 'rgb(0, 0, 255)')
+      const h1 = zero.shadowRoot.querySelector('h1')
+      expect(window.getComputedStyle(h1).getPropertyValue('color')).to.equal('rgb(0, 0, 255)')
     })
   })
 
   describe('hash-link scrolls', () => {
-    let f
+    let zero
     afterEach(() => {
       location.hash = ''
-      f.remove()
+      zero.remove()
     })
 
     // TODO: make it pass
     it.skip('scrolls to element if location.hash set on first render', async () => {
       location.hash = 'tamen-et-veri'
-      f = add(
+      zero = add(
         `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md"></zero-md></div>`
       )
 
       await sleep(500)
 
-      assert(f.scrollTop > 0)
+      assert(zero.scrollTop > 0)
     })
 
     // TODO: make it pass
     it.skip('hijacks same-doc hash links and scrolls id into view', async () => {
-      f = add(
+      zero = add(
         `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" manual-render></zero-md></div>`
       )
-      const el = f.querySelector('zero-md')
+      const el = zero.querySelector('zero-md')
       await el.render()
       const a = el.shadowRoot.querySelector('a[href="#tamen-et-veri"]')
       a.click()
       await sleep(50)
-      assert(f.scrollTop > 0)
-      assert(location.hash === '#tamen-et-veri')
+      assert(zero.scrollTop > 0)
+      expect(location.hash).to.equal('#tamen-et-veri')
     })
   })
 
   describe('Mutation Observer tests', () => {
-    let f
-    afterEach(() => f.remove())
+    let zero
+    afterEach(() => zero.remove())
 
     // TODO: make it pass
     it.skip('auto re-renders content when inline markdown script changes', (done) => {
       let isInitialRender = true
-      f = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
-      f.addEventListener('zero-md-rendered', () => {
+      zero = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
+      zero.addEventListener('zero-md-rendered', () => {
         if (isInitialRender) {
-          assert(f.shadowRoot.querySelector('h1').innerHTML === 'markdown-fixture')
+          expect(zero.shadowRoot.querySelector('h1').innerHTML).to.equal('markdown-fixture')
           isInitialRender = false
-          f.querySelector('script').innerHTML = '# updated markdown-fixture'
+          zero.querySelector('script').innerHTML = '# updated markdown-fixture'
         } else {
-          assert(f.shadowRoot.querySelector('h1').innerHTML === 'updated markdown-fixture')
+          expect(zero.shadowRoot.querySelector('h1').innerHTML).to.equal('updated markdown-fixture')
           done()
         }
       })
@@ -311,21 +312,21 @@ export default function() {
 
     it('auto re-renders styles when styles template changes', (done) => {
       let isInitialRender = true
-      f = add(`<zero-md>
+      zero = add(`<zero-md>
         <template>
           <style>h1 { color: rgb(255, 0, 0); }</style>
         </template>
         <script type="text/markdown"># fixture</script></zero-md>`)
-      f.addEventListener('zero-md-rendered', () => {
-        const h1 = f.shadowRoot.querySelector('h1')
+      zero.addEventListener('zero-md-rendered', () => {
+        const h1 = zero.shadowRoot.querySelector('h1')
         const computedStyle = window.getComputedStyle(h1)
         if (isInitialRender) {
-          assert(computedStyle.color === 'rgb(255, 0, 0)')
+          expect(computedStyle.color).to.equal('rgb(255, 0, 0)')
           isInitialRender = false
-          f.querySelector('template').content.firstElementChild.innerHTML =
+          zero.querySelector('template').content.firstElementChild.innerHTML =
             'h1 { color: rgb(0, 255, 0); }'
-        } else {
-          assert(computedStyle.color === 'rgb(0, 255, 0)')
+        } else { 
+          expect(computedStyle.color).to.equal('rgb(0, 255, 0)')
           done()
         }
       })
@@ -348,7 +349,7 @@ export default function() {
       await tick()
       node.remove()
       window.removeEventListener('zero-md-ready', handler)
-      assert(count === 2)
+      expect(count).to.equal(2)
       console.log('Complete')
     })
   })
