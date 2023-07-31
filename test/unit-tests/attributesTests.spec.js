@@ -20,7 +20,7 @@ export default function() {
     zero = add(`<zero-md manual-render></zero-md>`)
   })
   afterEach(() => {
-    zero.remove()
+   zero.remove()
   })
 
   const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
@@ -41,6 +41,7 @@ export default function() {
       await zero.render()
    
       assert(zeroBody$('localized').innerText === 'Hello')
+
     })
 
     it('should load lang from ZeroMdConfig', async () => {
@@ -50,6 +51,7 @@ export default function() {
       await zero.render()
    
       assert(zeroBody$('p').innerText === 'Привіт')
+
     })
 
     it('should load lang from attributes', async () => {
@@ -71,6 +73,7 @@ export default function() {
     })
 
     it('valuе from attributes should override value from ZeroMdConfig', async () => {
+
       zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
 
       zero.config.lang = 'ru'
@@ -78,6 +81,7 @@ export default function() {
       await zero.render() 
    
       assert(zeroBody$('localized').innerText === 'Привіт')
+
     })
   })
 
@@ -89,6 +93,7 @@ export default function() {
       await zero.render()
    
       assert(zeroBody$('.inline-content.active').innerText === 'JAVA')
+
     })
 
     it('should load code from ZeroMdConfig', async () => {
@@ -98,6 +103,7 @@ export default function() {
       await zero.render()
    
       assert(zeroBody$('.inline-content.active').innerText === 'PY')
+
     })
 
     it('should load code from attributes', async () => {
@@ -107,6 +113,7 @@ export default function() {
       await zero.render()
    
       assert(zeroBody$('.inline-content.active').innerText === 'CS')
+
     })
 
     it('valuе from ZeroMdConfig should override value from <codalized main="..."/>', async () => {
@@ -117,6 +124,7 @@ export default function() {
       await zero.render()
    
       assert(zeroBody$('.inline-content.active').innerText === 'PY')
+
     })
 
     it('valuе from attributes should override value from ZeroMdConfig', async () => {
@@ -128,12 +136,14 @@ export default function() {
       await zero.render()
    
       assert(zeroBody$('.inline-content.active').innerText === 'CS')
+
     })
   })
 
   describe('Localization and codalization with codegroups testing', () => {
 
     it('should set lang and code from codalized аnd localized tag if other options wasn\'t set' +
+
     ' AND switch appropriate tab and language', async () => {
       zeroAppendScriptMD('<localized main="uk"/>\n' +
       '<codalized main="java"/>\n' +
@@ -152,6 +162,7 @@ export default function() {
       '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
       '```\n' +
       '::::::::::::\n' 
+
       )
 
       await zero.render()
@@ -162,6 +173,7 @@ export default function() {
     })
 
     it('values from ZeroMdConfig should override values from  codalized аnd localized' +
+
     ' AND switch appropriate tab and language', async () => {
       zeroAppendScriptMD('<localized main="uk"/>\n' +
       '<codalized main="java"/>\n' +
@@ -180,6 +192,7 @@ export default function() {
       '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
       '```\n' +
       '::::::::::::\n' 
+
       )
 
       zero.config.lang = 'ru'
@@ -189,6 +202,7 @@ export default function() {
       assert(zeroBody$('.inline-content.active').innerText === 'TS CONTENT Привет')
       assert(zeroBody$('.tab-button.active').innerText === 'ts')
       assert(zeroBody$('.tab-content.active').innerText.split('\n')[0] === 'Привет')
+
     })
 
     it('values from attributes should override values from ZeroMdConfig' +
@@ -214,6 +228,7 @@ export default function() {
       '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
       '```\n' +
       '::::::::::::\n' 
+
       )
 
       zero.config.lang = 'ru'
@@ -342,6 +357,7 @@ export default function() {
       assert(zeroBody$('.inline-content.active').innerText === 'CS CONTENT Привіт')
       assert(zeroBody$('.tab-button.active').innerText === 'cs')
       assert(zeroBody$('.tab-content.active').innerText.split('\n')[0] === 'Привіт')
+
     })
   })
 }
