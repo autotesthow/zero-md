@@ -621,9 +621,24 @@ export class ZeroMd extends HTMLElement {
         md = md.replace(new RegExp(from, 'gm'), to)
       }
     })
+
+    
+    // console.log('md', md)
     const translationPerLangOption =
       /<!--(?:-*)((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
-    ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
+    const fromArray = []
+    let count = 0
+    ;[...md.matchAll(translationPerLangOption)].forEach(([match, perLang, __, from, to]) => {
+      console.log('match', match)
+      fromArray.push(from)
+      if (count === 0) {
+        ;[...md.matchAll(translationPerLangOption)].forEach(([match, perLang, __, from, to]) => {
+          const newMatch = match.replace(new RegExp(from, 'gm'), 'doNotTranslate')
+          md = md.replace(new RegExp(match, 'gm'), newMatch)
+        })
+      }
+    count++
+
       if (perLang.split('-').length > 1) {
         perLang = perLang.split('-')
       }
@@ -635,8 +650,21 @@ export class ZeroMd extends HTMLElement {
       ) {
         md = md.replace(new RegExp(from, 'gm'), to)
       }
+
     })
 
+    let indexAdjustment = 0;
+
+      md.replace(/doNotTranslate/g, (match) => {
+        const replacement = fromArray.shift();
+        const startIndex = md.indexOf(match, indexAdjustment);
+        md = md.substring(0, startIndex) + replacement + md.substring(startIndex + match.length);
+        indexAdjustment += replacement.length - match.length;
+      });
+
+
+
+    console.log('md', md)
     this.debug && console.log('===md\n' + md)
 
     if (shouldBeCodalized) {
