@@ -619,9 +619,33 @@ export class ZeroMd extends HTMLElement {
     this.debug && console.log('=================\n')
     this.debug && console.log('===md after general translations\n' + md)
 
+    function replaceBackTemporaryValuesWithValuesFromVariablesArray(variablesToTranslateArray) {
+      let indexAdjustment = 0;
+      md.replace(/doNotTranslate/g, (match) => {
+        const replacement = variablesToTranslateArray.shift();
+        const startIndex = md.indexOf(match, indexAdjustment);
+        md = md.substring(0, startIndex) + replacement + md.substring(startIndex + match.length);
+        indexAdjustment += replacement.length - match.length;
+      });
+    }
+
+    function escapeRegExp(string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
     const translationPerCodeOption =
       /<!--(?:-*)((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
-    ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
+    const codeVariablesToTranslateArray = []
+    ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to], index) => {
+      codeVariablesToTranslateArray.push(from)
+      if (index === 0) {
+        ;[...md.matchAll(translationPerCodeOption)].forEach(([match, _, __, from]) => {
+          const temporarySubstitution = match.replace(new RegExp(from, 'gm'), 'doNotTranslate')
+          const escapedMatch  = escapeRegExp(match)
+          md = md.replace(new RegExp(escapedMatch , 'gm'), temporarySubstitution)
+        })
+      }
+
       if (perCode.split('-').length > 1) {
         perCode = perCode.split('-')
       }
@@ -634,9 +658,21 @@ export class ZeroMd extends HTMLElement {
         md = md.replace(new RegExp(from, 'gm'), to)
       }
     })
+    replaceBackTemporaryValuesWithValuesFromVariablesArray(codeVariablesToTranslateArray)
+    
     const translationPerLangOption =
       /<!--(?:-*)((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
-    ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
+    const langVariablesToTranslateArray = []
+    ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to], index) => {
+      langVariablesToTranslateArray.push(from)
+      if (index === 0) {
+        ;[...md.matchAll(translationPerLangOption)].forEach(([match, _, __, from]) => {
+          const temporarySubstitution = match.replace(new RegExp(from, 'gm'), 'doNotTranslate')
+          const escapedMatch  = escapeRegExp(match)
+          md = md.replace(new RegExp(escapedMatch , 'gm'), temporarySubstitution)
+        })
+      }
+
       if (perLang.split('-').length > 1) {
         perLang = perLang.split('-')
       }
@@ -649,6 +685,7 @@ export class ZeroMd extends HTMLElement {
         md = md.replace(new RegExp(from, 'gm'), to)
       }
     })
+    replaceBackTemporaryValuesWithValuesFromVariablesArray(langVariablesToTranslateArray)
 
     this.debug && console.log('===md\n' + md)
 
