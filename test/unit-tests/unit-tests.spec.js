@@ -220,6 +220,12 @@ export default function() {
         selector: 'p span.active',
         shouldBe: 'pytest'
       },
+      'inline codalization with "python" tag': {
+        given: 'Test Runner – <js>jest</js><python>pytest</python>.',
+        whenCode: 'py',
+        selector: 'p span.active',
+        shouldBe: 'pytest'
+      },
       'inline codalization inverted via not- (js from <js>...<not-js>...)': {
         given: 'Test Runner – <js>jest</js><not-js>pytest</not-js>',
         whenCode: 'js',
@@ -313,7 +319,7 @@ Hello
         selector: 'p',
         shouldBe: 'Привіт'
       },
-      'of multiline codalizations with nested localizations (tags on different lines)': {
+      'of multiline codalizations with nested localizations (tags on different lines), changed "py" tag to "python" tag': {
         given: `
 <js-ts>
 <ru-uk>
@@ -323,14 +329,14 @@ Hello
 Test Runner Jest
 </en>
 </js-ts>
-<py>
+<python>
 <ru-uk>
 Тест ранер Pytest
 </ru-uk>
 <en>
 Test Runner Pytest
 </en>
-</py>`,
+</python>`,
         whenLang: 'uk',
         whenCode: 'py',
         selector: '.active p',
@@ -364,7 +370,7 @@ Test Runner {{TR}}
           selector: '.active p',
           shouldBe: 'Тест ранер Pytest'
         },
-      'of multiline codalizations with nested localizations with LANG-translations (tags on different lines)':
+      'of multiline codalizations with nested localizations with LANG-translations (tags on different lines), changed "py" tag to "python" tag':
         {
           given: `
 <!--ru~{{Test}}~Тест~-->
@@ -379,14 +385,14 @@ Test Runner {{TR}}
 {{Test}} Runner Jest
 </en>
 </js-ts>
-<py>
+<python>
 <ru-uk>
 {{Test}} ранер Pytest
 </ru-uk>
 <en>
 {{Test}} Runner Pytest
 </en>
-</py>`,
+</python>`,
           whenLang: 'uk',
           whenCode: 'py',
           selector: '.active p',
@@ -404,6 +410,23 @@ Test Runner {{TR}}
 
       it(`render: ${scenario}`, async () => {
         zeroAppendScriptMD('<localized main="en"/>\n' + '<codalized main="ts"/>\n\n' + given)
+        if (lang) {
+          zero.lang = lang
+        }
+        if (code) {
+          zero.code = code
+        }
+
+        await zero.render()
+
+        // console.log(`=========\n${scenario}\n\nfrom\n---------\n`, given)
+        // console.log('---------\nto:\n---------\n', zeroBody$(selector).innerHTML)
+        expect(zeroBody$(selector).innerHTML).to.equal(localized)
+        expect(zeroBody$$(selector).length).to.equal(1)
+      })
+
+      it(`refactored localized/codalized tag, render: ${scenario}`, async () => {
+        zeroAppendScriptMD('<!--localized(main="en")-->\n' + '<!--codalized(main="py")-->\n\n' + given)
         if (lang) {
           zero.lang = lang
         }

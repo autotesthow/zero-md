@@ -113,6 +113,10 @@ export class ZeroMd extends HTMLElement {
       hostCss:
         ':host{display:block;position:relative;contain:content;}:host([hidden]){display:none;}' +
         `
+        .markdown-body a {
+          color: #00b7ce !important;
+        }
+        
         .codeGroup {
           width: auto;
           margin: auto;
@@ -578,14 +582,21 @@ export class ZeroMd extends HTMLElement {
       )
     }}
 
-    const codalizedOption =
-      /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
-    const [shouldBeCodalized, defaultCodeFromMd] = [...md.matchAll(codalizedOption)].at(-1) || []
+    const codalizedOption = new RegExp(
+      '<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
+      '|' +
+      '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
+      'gim'
+    )
+    const [shouldBeCodalized, $1, $2] = [...md.matchAll(codalizedOption)].at(-1) || []
+    const defaultCodeFromMd = $1 || $2
+    this.debug && console.log('===shouldBeCodalized===\n' + shouldBeCodalized)
     this.debug && console.log('===defaultCodeFromMd===\n' + defaultCodeFromMd)
 
-    const localizedOption = /<localized(?: main="(uk|ru|en)")?\/>/gim
-    const [shouldBeLocalized, defaultLangFromMd] = [...md.matchAll(localizedOption)].at(-1) || []
-
+    const localizedOption = /(?:<localized(?: main="(uk|ru|en)")?\/>)|(?:<!--localized(?:\s)*?\(main="(uk|ru|en)"\)-->)/gim
+    const [shouldBeLocalized, $group1, $group2] = [...md.matchAll(localizedOption)].at(-1) || []
+    const defaultLangFromMd = $group1 || $group2
+    
     this.debug && console.log('===translation===\n')
     const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gm
     const translate = ([_match, _delimiter, from, to]) => {
@@ -643,9 +654,10 @@ export class ZeroMd extends HTMLElement {
 
     if (shouldBeCodalized) {
       const codalizable =
-        /<((not-)?(?:js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
+        /<((not-)?(?:js|ts|py|python|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-python|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
       const codalize = (match, tag, inverted, content) => {
-        const candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
+        let candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
+        candidates =  candidates.map((item) => item === 'python' ? 'py' : item)
 
         return `<span class="inline-content${
           inverted
