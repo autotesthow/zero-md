@@ -78,6 +78,40 @@ export default function() {
       assert(el.classList.contains('token'))
     })
 
+    it('language translation variables should not translate itself', async () => {
+      zeroAppendScriptMD(
+        '\n' +
+          '\n<!--uk~{{VAR}}~TRANSLATION~-->' +
+          '\n' +
+          '\n{{VAR}}' +
+          '\n'
+      )
+
+      zero.lang = 'uk'
+      await zero.render()
+
+      const variableDefinition= zeroBody().childNodes[0]
+      const actualString = `<!--${variableDefinition.nodeValue}-->`;
+      expect(actualString).to.equal(`<!--uk~{{VAR}}~TRANSLATION~-->`);
+    })
+
+    it('code translation variables should not translate itself', async () => {
+      zeroAppendScriptMD(
+        '\n' +
+          '\n<!--java~{{VAR}}~TRANSLATION~-->' +
+          '\n' +
+          '\n{{VAR}}' +
+          '\n'
+      )
+
+      zero.code = 'java'
+      await zero.render()
+
+      const variableDefinition = zeroBody().childNodes[0]
+      const actualString = `<!--${variableDefinition.nodeValue}-->`;
+      expect(actualString).to.equal(`<!--java~{{VAR}}~TRANSLATION~-->`);
+    })
+
     it('language-detects unhinted code blocks as NOTHING o_O', async () => {
       zeroAppendScriptMD(
         '\n' +
