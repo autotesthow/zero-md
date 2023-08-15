@@ -660,6 +660,8 @@ export class ZeroMd extends HTMLElement {
       /(?<!<!--.*)<((not-)?(?:js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>(?!.*-->)/gim
 
       const codalize = (match, tag, inverted, content) => {
+        console.log('match', match)
+        
         let candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
         candidates =  candidates.map((item) => item === 'python' ? 'py' : item)
 
@@ -705,44 +707,50 @@ export class ZeroMd extends HTMLElement {
       return decodedString;
     }
 
+    console.log('===md before localized\n' + md)
     this.debug && console.log('===md after localized\n' + md)
     const tocStartLevelOption = /<!--TOC>(\d)-->/i
     const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0]
     renderer.heading = (text, level) => {
+      console.log('text', text)
       text = text.replace(/<code>|<\/code>/gim, '`')
-      text = decodeHTMLEntities(text)
-      
-      const codeBlocks =  /<span class="inline-content(.*?)" id="(.+)">([\s\S]*?)<\/span>/gim
+      const codeBlocks =  /<span class="inline-content(.*?)" id="(.+?)">([\s\S]*?)<\/span>/gim
       let headerId
       let isActive
-      [...md.matchAll(codeBlocks)].forEach(([_, blockActive, blockId, blockContent]) => {
-        if (blockContent.includes(text)) {
+      console.log('headers', [...md.matchAll(codeBlocks)])
+      ;[...md.matchAll(codeBlocks)].forEach(([_, blockActive, blockId, blockContent]) => {
+        if (blockContent.includes(decodeHTMLEntities(text))) {
           headerId = blockId
           blockActive ? isActive = true : isActive = false
         } 
+       
       })
 
       const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/im) || [null, text]
-      const pureWithoutTags = pure.replace(/<\/?\w+>/g, '')
+      const pureWithoutTags = pure.replace(/<\/?(?!span|\/span)(.*?)>/gi, '');
+      const dynamicIdDependOnLangAndCode = pureWithoutTags.replace(/<span(.*?)>(.+?)<\/span>/g, 
+        (match, spanParams, spanContent) => spanParams.includes('active') ? spanContent : '')
       const anchorIdsToLowerCase = this.config.anchorIdsToLowerCase
       const id =
         userId ||
-        (anchorIdsToLowerCase ? IDfy(pureWithoutTags) : IDfy(pureWithoutTags, { lowerCase: false }))
+        (anchorIdsToLowerCase ? IDfy(dynamicIdDependOnLangAndCode) : IDfy(dynamicIdDependOnLangAndCode, { lowerCase: false }))
       const pixelsNumber = this.config.indentInsideTocByPixels
-
       if (level > tocStartLevel) {
         const indentInsideToc = `style="margin-left: ${
           pixelsNumber * (level - 1 - tocStartLevel)
         }px"`
         tocLinks.push(`<div ${indentInsideToc}>` +
-        `${headerId 
-          ? `<span class="inline-content${isActive ? " active" : ""}" id="${headerId}"><a href="#${id}">${pureWithoutTags}</a></span></div>`
+        `${headerId
+          ? `<span class="inline-content${isActive ? " active" : ""}" id="${headerId}"><a href="#${id}">${pureWithoutTags}</a></span></div>` 
           : `<a href="#${id}">${pureWithoutTags}</a></div>`}`)
       }
 
       return `<h${level}>${encodeURI(id) === id ? '' : `<span id="${encodeURI(id)}"></span>`}
-          <a id="${id}" class="anchor" aria-hidden="true" href="#${id}"></a>${pure}</h${level}>`
+      <a id="${id}" class="anchor" aria-hidden="true" href="#${id}"></a>${pure}</h${level}>`
     }
+
+    // console.log('All headers', [...md.matchAll(/^#+ (.+)/gim)])
+
 
     const imgBase = /]\(\.\.?\/resources/gim // todo: move ../resources to config
     md = md.replace(imgBase, '](' + this.config.imgBaseNew)
