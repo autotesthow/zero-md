@@ -230,6 +230,7 @@ export class ZeroMd extends HTMLElement {
       this.constructor.ready = Promise.all([
         !!window.marked || this.loadScript(this.config.markedUrl),
         !!window.Prism || this.loadScript(this.config.prismUrl),
+        this.loadScriptButtonsChangeAttributeObserver(),
       ])
     }
     this.clicked = this.clicked.bind(this)
@@ -329,6 +330,15 @@ export class ZeroMd extends HTMLElement {
         return this.onload(document.head.appendChild(el))
       }),
     )
+  }
+
+  loadScriptButtonsChangeAttributeObserver() {
+    const script = document.createElement('script');
+    script.text = 'document.addEventListener("visibilitychange", () => {\n' +
+      'location.reload()\n' +
+    '});';
+    
+    document.head.appendChild(script);
   }
 
   // Scroll to selected element
