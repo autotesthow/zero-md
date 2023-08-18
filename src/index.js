@@ -575,7 +575,7 @@ export class ZeroMd extends HTMLElement {
         }),
       )
     }
-
+ 
     const codalizedOption = new RegExp(
       '<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
       '|' +
@@ -710,6 +710,19 @@ export class ZeroMd extends HTMLElement {
       return `<h${level}>${encodeURI(id) === id ? '' : `<span id="${encodeURI(id)}"></span>`}
           <a id="${id}" class="anchor" aria-hidden="true" href="#${id}"></a>${pure}</h${level}>`
     }
+
+    //expandable section
+    const expandableSectionRegex = /(\+{3,})([\s\S]*?)\.{3,}([\s\S]*?)\1/gi
+    console.log([...md.matchAll(expandableSectionRegex)])
+
+    const processExpandableSection = (match, _, header, content) => {
+
+      return `<div>${header}</div>
+              <div>${content}</div>`
+    }
+
+    md = md.replace(expandableSectionRegex, processExpandableSection)
+
 
     const imgBase = /]\(\.\.?\/resources/gim // todo: move ../resources to config
     md = md.replace(imgBase, '](' + this.config.imgBaseNew)
