@@ -578,19 +578,20 @@ export class ZeroMd extends HTMLElement {
 
     const codalizedOption = new RegExp(
       '<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
-      '|' +
-      '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
-      'gim'
+        '|' +
+        '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
+      'gim',
     )
     const [shouldBeCodalized, $1, $2] = [...md.matchAll(codalizedOption)].at(-1) || []
     const defaultCodeFromMd = $1 || $2
     this.debug && console.log('===shouldBeCodalized===\n' + shouldBeCodalized)
     this.debug && console.log('===defaultCodeFromMd===\n' + defaultCodeFromMd)
 
-    const localizedOption = /(?:<localized(?: main="(uk|ru|en)")?\/>)|(?:<!--localized(?:\s)*?\(main="(uk|ru|en)"\)-->)/gim
+    const localizedOption =
+      /(?:<localized(?: main="(uk|ru|en)")?\/>)|(?:<!--localized(?:\s)*?\(main="(uk|ru|en)"\)-->)/gim
     const [shouldBeLocalized, $group1, $group2] = [...md.matchAll(localizedOption)].at(-1) || []
     const defaultLangFromMd = $group1 || $group2
-    
+
     this.debug && console.log('===translation===\n')
     const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gm
     const translate = ([_match, _delimiter, from, to]) => {
@@ -651,7 +652,7 @@ export class ZeroMd extends HTMLElement {
         /<((not-)?(?:js|ts|py|python|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-python|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
       const codalize = (match, tag, inverted, content) => {
         let candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
-        candidates =  candidates.map((item) => item === 'python' ? 'py' : item)
+        candidates = candidates.map(item => (item === 'python' ? 'py' : item))
 
         return `<span class="inline-content${
           inverted
@@ -1100,7 +1101,7 @@ export class ZeroMd extends HTMLElement {
           .querySelector('zero-md')
           .getAttribute('code')
 
-          const urlParams = new URLSearchParams(window.location.search)
+        const urlParams = new URLSearchParams(window.location.search)
         if (!urlParams.get('code')) {
           if (shouldBeCodalized && !codeValueFromAttributesSetByButtons) {
             setActiveTabInAllCodeGroups(this.code || defaultCodeFromMd)
