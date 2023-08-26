@@ -729,11 +729,15 @@ export class ZeroMd extends HTMLElement {
     md = md.replace(articleTypeExtension, `-$1.md$2`)
 
     // todo: fix to skip links that start with http
-    const mdExtensions = /\.md\)/gim
-    md = md.replace(mdExtensions, `-md${window.location.search})`)
 
-    const mdExtensionsWithId = /\.md#/gim
-    md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
+      //This comment was created for solving this task on the board [https://kanbanflow.com/t/6j2hhxp2].
+      //It was not deleted because it wasn't clear whether it could affect other functionality zero MD.
+      
+      // const mdExtensions = /\.md\)/gim
+      // md = md.replace(mdExtensions, `-md${window.location.search})`)
+
+      // const mdExtensionsWithId = /\.md#/gim
+      // md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
 
     const poetryBoldOption = /<!--(.+?)poetryBold(.+?)-->/gi
     const [, poetryBoldStart, poetryBoldEnd] = [...md.matchAll(poetryBoldOption)].at(-1) || [
