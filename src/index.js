@@ -448,6 +448,7 @@ export class ZeroMd extends HTMLElement {
     let tocLinks = []
 
     /* DEFINE HOW TO GET MD */
+
     async function fetchDataFromGitlab(fileUrl) {
       const id = this.config.gitlab.projectId
       const branch = this.config.gitlab.branch
@@ -567,8 +568,7 @@ export class ZeroMd extends HTMLElement {
                 return
               }
             }
-
-            // TODO: refactor for DRY (remove duplicated absolute url building logic)
+            
             response = await fetchDataFromGitlab(importURL)
           } else {
             response = await fetch(importURL)
