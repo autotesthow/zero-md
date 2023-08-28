@@ -21,7 +21,7 @@ export default function() {
   describe('functionality TOC', () => {
     let zero
     beforeEach(() => {
-      zero = add(`<zero-md manukl-render></zero-md>`)
+      zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()
@@ -118,7 +118,7 @@ export default function() {
       expect(zeroBody$(`a[href="#first-item"]`).innerText).to.equals('Header 1 JS any text')
     })
 
-    it.skip('first element in codalized tags rendered correctly in TOC including any text behind the tag at the end in UK in langukge', async () => {
+    it.skip('first element in codalized tags rendered correctly in TOC including any text behind the tag at the end in UK in language', async () => {
       zeroAppendScriptMD(`
 <codalized main="py"/>
 <localized main="uk"/>
@@ -132,7 +132,7 @@ export default function() {
       expect(zeroBody$(`a[href="#first-item"]`).innerText).to.equals('Заголовок 1 PY будь-який текст')
     })
 
-    it.skip('middle element in codalized tags rendered correctly in TOC including any text behind the tag at the end in UK in langukge', async () => {
+    it.skip('middle element in codalized tags rendered correctly in TOC including any text behind the tag at the end in UK in language', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
 <localized main="uk"/>
@@ -146,7 +146,7 @@ export default function() {
       expect(zeroBody$(`a[href="#first-item"]`).innerText).to.equals('Заголовок 1 JAVA будь-який текст')
     })
 
-    it.skip('last element in codalized tags rendered correctly in TOC including any text behind the tag at the end in UK in langukge', async () => {
+    it.skip('last element in codalized tags rendered correctly in TOC including any text behind the tag at the end in UK in language', async () => {
       zeroAppendScriptMD(`
 <codalized main="js"/>
 <localized main="uk"/>
@@ -160,7 +160,7 @@ export default function() {
       expect(zeroBody$(`a[href="#first-item"]`).innerText).to.equals('Заголовок 1 JS будь-який текст')
     })
 
-    it.skip('first element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in langukge', async () => {
+    it.skip('first element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in language', async () => {
       zeroAppendScriptMD(`
 <codalized main="py"/>
 <localized main="uk"/>
@@ -174,7 +174,7 @@ export default function() {
       expect(zeroBody$(`a[href="#first-item"]`).innerText).to.equals('Заголовок 1 PY любой текст')
     })
 
-    it.skip('middle element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in langukge', async () => {
+    it.skip('middle element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in language', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
 <localized main="uk"/>
@@ -188,7 +188,7 @@ export default function() {
       expect(zeroBody$(`a[href="#first-item"]`).innerText).to.equals('Заголовок 1 JAVA любой текст')
     })
 
-    it.skip('last element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in langukge', async () => {
+    it.skip('last element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in language', async () => {
       zeroAppendScriptMD(`
 <codalized main="js"/>
 <localized main="uk"/>
@@ -223,7 +223,7 @@ export default function() {
   describe('general translations', () => {
     let zero
     beforeEach(() => {
-      zero = add(`<zero-md manukl-render></zero-md>`)
+      zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()
@@ -346,39 +346,96 @@ export default function() {
         expect(zeroBody$(`p`).style.color).to.equals('red')
         expect(zeroBody$(`p`).innerText).to.equals(text)
       })
+    }) 
+  })
+
+  describe('Indented translation definition to align translations for easier refactoring', () => {
+    let zero
+    beforeEach(() => {
+      zero = add(`<zero-md manual-render></zero-md>`)
     })
-
+    afterEach(() => {
+      // zero.remove()
+    })
     
-//     it('<!--~{{NAME}}~any params~--> work with "en", "java"', async () => {
-//       zeroAppendScriptMD(`
-// <localized main="en"/>
-// <codalized main="java"/>
+    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
+    const zeroBody = () => zero$('.markdown-body')
+    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
+    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
 
-// <!--~{{RED}}~style="color:red;"~-->
+    const zeroAppendScriptMD = (text) => {
+      const script = document.createElement('script')
+      script.setAttribute('type', 'text/markdown')
+      script.text = text
+      zero.appendChild(script)
+    }
 
-// <p {{RED}}><en>Header <py>PY</py><java>JAVA</java><js-ts>JS</js-ts><cs>CS</cs> any text</en></p>
-// `)
+    let scenarios = {
+      '"en", "py"': {
+        dashes: '--',
+        whenLang: 'en',
+        whenCode: 'py',
+        shouldBe: 'Header browser.config.base_url PY any text',
+      },
+      '"uk", "java"': {
+        dashes: '---',
+        whenLang: 'uk',
+        whenCode: 'java',
+        shouldBe: 'Заголовок Configuration.baseUrl JAVA будь який текст',
+      },
+      '"ru", "js"': {
+        dashes: '---------',
+        whenLang: 'ru',
+        whenCode: 'js',
+        shouldBe: 'Заглавие browser.config.baseUrl JS любой текст',
+      },
+      '"en", "ts"': {
+        dashes: '-------------',
+        whenLang: 'en',
+        whenCode: 'ts',
+        shouldBe: 'Header browser.config.baseUrl TS any text',
+      },
+      '"uk", "cs"': {
+        dashes: '----------------',
+        whenLang: 'uk',
+        whenCode: 'cs',
+        shouldBe: 'Заголовок Configuration.BaseUrl CS будь який текст',
+      },
+    }
 
-//       await zero.render()
-      
-//       expect(zeroBody$(`p`).style.color).to.equals('red')
-//       expect(zeroBody$(`p`).innerText).to.equals('Header JAVA any text')
-//     })
-
-//     it('<!--~{{NAME}}~any params~--> work with "en", "java"', async () => {
-//       zeroAppendScriptMD(`
-// <localized main="en"/>
-// <codalized main="java"/>
-
-// <!--~{{RED}}~style="color:red;"~-->
-
-// <p {{RED}}><en>Header <py>PY</py><java>JAVA</java><js-ts>JS</js-ts><cs>CS</cs> any text</en></p>
-// `)
-
-//       await zero.render()
-      
-//       expect(zeroBody$(`p`).style.color).to.equals('red')
-//       expect(zeroBody$(`p`).innerText).to.equals('Header JAVA any text')
-//     })
+    Object.entries(scenarios).forEach((args) => {
+      const [
+        scenario,
+        { only, dashes, whenLang: lang, whenCode: code, shouldBe: text }
+      ] = args
+      if (only !== undefined && !only) {
+        return
+      }
+      it(`${dashes} work with  ${scenario}`, async () => {
+        zeroAppendScriptMD(
+        '<localized main="uk"/>\n'+
+        '<codalized main="js"/>\n'+    
+        `<!${dashes}js-ts~{{browser\.config\.baseUrl}}~browser.config.baseUrl~-->\n`+
+        `<!${dashes}py~{{browser\.config\.baseUrl}}~browser.config.base_url~-->\n`+
+        `<!${dashes}java~{{browser\.config\.baseUrl}}~Configuration.baseUrl~-->\n`+
+        `<!${dashes}cs~{{browser\.config\.baseUrl}}~Configuration.BaseUrl~-->\n`+
+        '\n' +
+        '<en>Header <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>\n'+
+        '<ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> any text</en>\n'+
+        '\n' +
+        '<uk>Заголовок <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>\n'+
+        '<ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> будь який текст</uk>\n'+
+        '\n' +
+        '<ru>Заглавие <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>\n'+
+        '<ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> любой текст</ru>\n'
+        )
+        zero.lang = lang
+        zero.code = code
+        
+        await zero.render()
+  
+        expect(zeroBody$(`p`).innerText).to.equals(text)
+      })
+    }) 
   })
 }
