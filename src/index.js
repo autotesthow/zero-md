@@ -449,6 +449,19 @@ export class ZeroMd extends HTMLElement {
 
     /* DEFINE HOW TO GET MD */
 
+    async function fetchDataFromGitlab(fileUrl) {
+      const id = this.config.gitlab.projectId
+      const branch = this.config.gitlab.branch
+      const absolutePath = encodeURIComponent(fileUrl.trim())
+      gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
+
+      return fetch(gitlabAbsoluteUrl, {
+        headers: {
+          'PRIVATE-TOKEN': this.config.gitlab.token,
+        },
+      })
+    }
+
     let isReadingFromGitlabConfigured = this.config.gitlab !== {}
     let gitlabAbsoluteUrl = ''
     const src = async () => {
@@ -457,18 +470,7 @@ export class ZeroMd extends HTMLElement {
       }
       const resp =
         isReadingFromGitlabConfigured && this.path
-          ? await (async () => {
-              const id = this.config.gitlab.projectId
-              const branch = this.config.gitlab.branch
-              const absolutePath = encodeURIComponent(this.path.trim())
-              gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
-
-              return fetch(gitlabAbsoluteUrl, {
-                headers: {
-                  'PRIVATE-TOKEN': this.config.gitlab.token,
-                },
-              })
-            })()
+          ? await fetchDataFromGitlab(this.path)
           : await (async () => {
               const url = this.src.trim()
               gitlabAbsoluteUrl = url.startsWith('http') ? url : this.config.baseUrl + url
@@ -503,7 +505,21 @@ export class ZeroMd extends HTMLElement {
 
     /* PROCESS MD */
 
-    const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)]
+    const importRegex = /<!--import\(([\s\S]*?)\)-->/gim
+    const importsMatch = [...md.matchAll(importRegex)]
+
+    if (process.env.ENVIRONMENT == 'dev') {
+      if (importsMatch.length) {
+        importsMatch.forEach(async([_, importURL]) => {
+          const response = await fetch(importURL)
+
+          if (response.ok) {
+            const importedContent = await response.text()
+            md = md.replace(importRegex, importedContent)
+          }
+        })
+      }
+    } else {
     if (importsMatch.length) {
       await Promise.all(
         importsMatch.map(async ([match, importURL]) => {
@@ -552,18 +568,8 @@ export class ZeroMd extends HTMLElement {
                 return
               }
             }
-
-            // TODO: refactor for DRY (remove duplicated absolute url building logic)
-            const id = this.config.gitlab.projectId
-            const branch = this.config.gitlab.branch
-            const absolutePath = encodeURIComponent(importURL.trim())
-            gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
-
-            response = await fetch(gitlabAbsoluteUrl, {
-              headers: {
-                'PRIVATE-TOKEN': this.config.gitlab.token,
-              },
-            })
+            
+            response = await fetchDataFromGitlab(importURL)
           } else {
             response = await fetch(importURL)
           }
@@ -574,7 +580,7 @@ export class ZeroMd extends HTMLElement {
           }
         }),
       )
-    }
+    }}
 
     const codalizedOption = new RegExp(
       '<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
