@@ -355,7 +355,7 @@ export default function() {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      // zero.remove()
+      zero.remove()
     })
     
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
@@ -438,4 +438,88 @@ export default function() {
       })
     }) 
   })
+
+  describe('long breaks /^====+/ should not work inside code blocks', () => {
+    let zero
+    beforeEach(() => {
+      zero = add(`<zero-md manual-render></zero-md>`)
+    })
+    afterEach(() => {
+      zero.remove()
+    })
+    
+    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
+    const zeroBody = () => zero$('.markdown-body')
+    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
+    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
+
+    const zeroAppendScriptMD = (text) => {
+      const script = document.createElement('script')
+      script.setAttribute('type', 'text/markdown')
+      script.text = text
+      zero.appendChild(script)
+    }
+
+    const longBreaksNumber = 20
+    const shortBreaksNumber = 2
+  
+    // TODO: cant find element
+    it.skip('Should have no longBreak ====+ inside code blocks', async () => {
+      zeroAppendScriptMD(
+'```js\n' +
+'/*\n' +
+'====\n' +
+'*/\n' +
+'```\n')
+
+      await zero.render()
+      expect(zeroBody$(`code.code-js`).innerText).to.equals('/*\n====\n*/')
+    })
+
+    it('Should have no longBreak ====+ inside code blocks', async () => {
+      zeroAppendScriptMD(
+'::::::::::manual\n' +
+'```poetry: js"js (poetry)"\n' +
+'/*\n' +
+'====\n' +
+'*/\n' +
+'```\n' +
+'::::::::::\n')
+
+      await zero.render()
+      expect(zeroBody$(`code.code-js`).innerText).to.equals('/*\n====\n*/')
+    })
+
+    it('Should have longBreak instead of ====+', async () => {
+      zeroAppendScriptMD(
+'\n' +
+'====\n' +
+'\n' +
+'There should be long break above starting from the header.')
+
+      await zero.render()
+
+      expect(zeroBody().getElementsByTagName('br').length).to.equals(longBreaksNumber)
+    })
+
+    it('Should have longBreak instead of ====+ from variable', async () => {
+      zeroAppendScriptMD(
+'<localized main="en"/>\n' +
+'<!--en-uk-ru~{{SOLUTION}}~,,,,,,,,,,,,\n' +
+'**⇩SOLUTION⇩**\n' +
+'============~-->\n' +
+'\n' +
+'You will see answer to the main question in the universe after long break below...\n' +
+'\n' +
+'{{SOLUTION}}\n' +
+'\n' +
+'42')
+
+      await zero.render()
+
+      expect(zeroBody().getElementsByTagName('br').length).to.equals(shortBreaksNumber + longBreaksNumber)
+    })
+    
+  })
+
 }
