@@ -507,17 +507,20 @@ export class ZeroMd extends HTMLElement {
 
     const importRegex = /<!--import\(([\s\S]*?)\)-->/gim
     const importsMatch = [...md.matchAll(importRegex)]
-
-    if (process.env.ENVIRONMENT == 'dev') {
+    console.log('env', process.env.ENVIRONMENT)
+    if (process.env.ENVIRONMENT === 'dev') {
       if (importsMatch.length) {
-        importsMatch.forEach(async([_, importURL]) => {
-          const response = await fetch(importURL)
+        await Promise.all(
+          importsMatch.map(async([match, importURL]) => {
+            const response = await fetch(importURL)
 
-          if (response.ok) {
-            const importedContent = await response.text()
-            md = md.replace(importRegex, importedContent)
-          }
-        })
+            if (response.ok) {
+              const importedContent = await response.text()
+              md = md.replace(match, importedContent)
+            }
+            console.log(md)
+          })
+        )
       }
     } else {
     if (importsMatch.length) {
