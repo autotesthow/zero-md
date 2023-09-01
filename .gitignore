@@ -8,6 +8,7 @@ test/*.local.*
 test/*-local.*
 test/localFiles/*
 *.zip
+dist/
 
 ### macOS ###
 # General

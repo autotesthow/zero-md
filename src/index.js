@@ -113,6 +113,10 @@ export class ZeroMd extends HTMLElement {
       hostCss:
         ':host{display:block;position:relative;contain:content;}:host([hidden]){display:none;}' +
         `
+        .markdown-body a {
+          color: #00b7ce !important;
+        }
+        
         .codeGroup {
           width: auto;
           margin: auto;
@@ -444,6 +448,7 @@ export class ZeroMd extends HTMLElement {
     let tocLinks = []
 
     /* DEFINE HOW TO GET MD */
+
     async function fetchDataFromGitlab(fileUrl) {
       const id = this.config.gitlab.projectId
       const branch = this.config.gitlab.branch
@@ -563,8 +568,7 @@ export class ZeroMd extends HTMLElement {
                 return
               }
             }
-
-            // TODO: refactor for DRY (remove duplicated absolute url building logic)
+            
             response = await fetchDataFromGitlab(importURL)
           } else {
             response = await fetch(importURL)
@@ -578,14 +582,21 @@ export class ZeroMd extends HTMLElement {
       )
     }}
 
-    const codalizedOption =
-      /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
-    const [shouldBeCodalized, defaultCodeFromMd] = [...md.matchAll(codalizedOption)].at(-1) || []
+    const codalizedOption = new RegExp(
+      '<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
+        '|' +
+        '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
+      'gim',
+    )
+    const [shouldBeCodalized, $1, $2] = [...md.matchAll(codalizedOption)].at(-1) || []
+    const defaultCodeFromMd = $1 || $2
     this.debug && console.log('===shouldBeCodalized===\n' + shouldBeCodalized)
     this.debug && console.log('===defaultCodeFromMd===\n' + defaultCodeFromMd)
 
-    const localizedOption = /<localized(?: main="(uk|ru|en)")?\/>/gim
-    const [shouldBeLocalized, defaultLangFromMd] = [...md.matchAll(localizedOption)].at(-1) || []
+    const localizedOption =
+      /(?:<localized(?: main="(uk|ru|en)")?\/>)|(?:<!--localized(?:\s)*?\(main="(uk|ru|en)"\)-->)/gim
+    const [shouldBeLocalized, $group1, $group2] = [...md.matchAll(localizedOption)].at(-1) || []
+    const defaultLangFromMd = $group1 || $group2
 
     this.debug && console.log('===translation===\n')
     const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gm
@@ -640,13 +651,15 @@ export class ZeroMd extends HTMLElement {
       }
     })
 
-    this.debug && console.log('===md after all translations\n' + md)
+    this.debug && console.log('===md\n' + md)
 
     if (shouldBeCodalized) {
       const codalizable =
-        /<((not-)?(?:js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
+        /<((not-)?(?:js|ts|py|python|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-python|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
       const codalize = (match, tag, inverted, content) => {
-        const candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
+        let candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
+        candidates = candidates.map(item => (item === 'python' ? 'py' : item))
+
         return `<span class="inline-content${
           inverted
             ? candidates.includes(this.code || defaultCodeFromMd)
@@ -661,6 +674,7 @@ export class ZeroMd extends HTMLElement {
         md = md.replace(codalizable, codalize)
       }
     }
+
     this.debug && console.log('===md after codalized\n' + md)
 
     if (shouldBeLocalized) {
@@ -679,6 +693,7 @@ export class ZeroMd extends HTMLElement {
         md = md.replace(localizable, localize)
       }
     }
+
     this.debug && console.log('===md after localized\n' + md)
 
     const tocStartLevelOption = /<!--TOC>(\d)-->/i
@@ -720,11 +735,15 @@ export class ZeroMd extends HTMLElement {
     md = md.replace(articleTypeExtension, `-$1.md$2`)
 
     // todo: fix to skip links that start with http
-    const mdExtensions = /\.md\)/gim
-    md = md.replace(mdExtensions, `-md${window.location.search})`)
 
-    const mdExtensionsWithId = /\.md#/gim
-    md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
+      //This comment was created for solving this task on the board [https://kanbanflow.com/t/6j2hhxp2].
+      //It was not deleted because it wasn't clear whether it could affect other functionality zero MD.
+      
+      // const mdExtensions = /\.md\)/gim
+      // md = md.replace(mdExtensions, `-md${window.location.search})`)
+
+      // const mdExtensionsWithId = /\.md#/gim
+      // md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
 
     const poetryBoldOption = /<!--(.+?)poetryBold(.+?)-->/gi
     const [, poetryBoldStart, poetryBoldEnd] = [...md.matchAll(poetryBoldOption)].at(-1) || [
@@ -769,10 +788,10 @@ export class ZeroMd extends HTMLElement {
           `(?:${tabNameStart}(.+?)${tabNameEnd})?`,
         'g',
       )
+
       const maybeCodeOrCustomNameOrBothPairs = [
         ...(info?.trim().matchAll(maybeCodeOrCustomNameOrBoth) ?? []),
       ].map(matched => ({ maybeCode: matched[1], maybeCustomName: matched[2] }))
-
       let res = content
 
       // TODO: encode all html elements definition tokens in poetry content with &lt;, &gt;, and &quot;
@@ -942,7 +961,7 @@ export class ZeroMd extends HTMLElement {
                     code || customName
                       ? ' data-id="' + IDfy(customName ? code + '_' + customName : code) + '"'
                       : ''
-                  }">${customName ?? code ?? '__'}</button>`
+                  }>${customName ?? code ?? '__'}</button>`
 
                   processedCodes.push(code)
 
@@ -1064,33 +1083,50 @@ export class ZeroMd extends HTMLElement {
       /* PROCESS CODE GROUP - START */
       const tabsWrappers = node.querySelectorAll('.codeGroup')
       tabsWrappers.forEach(tabsWrapper => {
-        if (tabsWrapper.querySelectorAll('.tab-content.active').length === 0) {
-          // hide everything if no active content found
-          tabsWrapper.style.display = 'none'
+        function hideCodeGroupWithNoActiveTab() {
+          node.querySelectorAll('.codeGroup').forEach(codeGroup => {
+            const activeTab = codeGroup.querySelector('.tab-button.active')
+            codeGroup.style.display = activeTab ? 'block' : 'none'
+          })
         }
+
+        function setActiveTabInAllCodeGroups(activeValue) {
+          node.querySelectorAll('.codeGroup .tab-button').forEach(tabButton => {
+            tabButton.dataset.id === activeValue
+              ? tabButton.classList.add('active')
+              : tabButton.classList.remove('active')
+          })
+          node.querySelectorAll(`.tab-content,.inline-content`).forEach(content => {
+            content.id === activeValue
+              ? content.classList.add('active')
+              : content.classList.remove('active')
+          })
+        }
+
+        const codalizedOption =
+          /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
+        const [shouldBeCodalized, defaultCodeFromMd] =
+          [...md.matchAll(codalizedOption)].at(-1) || []
+        const codeValueFromAttributesSetByButtons = document
+          .querySelector('zero-md')
+          .getAttribute('code')
+
+        const urlParams = new URLSearchParams(window.location.search)
+        if (!urlParams.get('code')) {
+          if (shouldBeCodalized && !codeValueFromAttributesSetByButtons) {
+            setActiveTabInAllCodeGroups(this.code || defaultCodeFromMd)
+          }
+        }
+
         tabsWrapper.onclick = e => {
           const element = e.target
           const newActiveContentId = element.dataset.id
           const isElementANonActiveTabButton =
             !!newActiveContentId && !element.classList.contains('active')
-
           if (isElementANonActiveTabButton) {
             if (this.config.groupCodeGroups) {
-              node.querySelectorAll('.codeGroup .tab-button').forEach(tabButton => {
-                if (tabButton.dataset.id === newActiveContentId) {
-                  tabButton.classList.add('active')
-                } else {
-                  tabButton.classList.remove('active')
-                }
-              })
-
-              node.querySelectorAll(`.tab-content,.inline-content`).forEach(content => {
-                if (content.id.split('-').includes(newActiveContentId)) {
-                  content.classList.add('active')
-                } else {
-                  content.classList.remove('active')
-                }
-              })
+              setActiveTabInAllCodeGroups(newActiveContentId)
+              hideCodeGroupWithNoActiveTab()
             } else {
               const buttonsWrapper = element.parentElement
               buttonsWrapper.querySelector('.tab-button.active').classList.remove('active')
@@ -1105,9 +1141,10 @@ export class ZeroMd extends HTMLElement {
             }
           }
         }
+
+        hideCodeGroupWithNoActiveTab()
       })
       /* PROCESS CODE GROUP - END */
-
       stamped.body = true
       await this.highlight(node)
     }
