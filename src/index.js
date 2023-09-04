@@ -459,6 +459,19 @@ export class ZeroMd extends HTMLElement {
 
     /* DEFINE HOW TO GET MD */
 
+    async function fetchDataFromGitlab(fileUrl) {
+      const id = this.config.gitlab.projectId
+      const branch = this.config.gitlab.branch
+      const absolutePath = encodeURIComponent(fileUrl.trim())
+      gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
+
+      return fetch(gitlabAbsoluteUrl, {
+        headers: {
+          'PRIVATE-TOKEN': this.config.gitlab.token,
+        },
+      })
+    }
+
     let isReadingFromGitlabConfigured = this.config.gitlab !== {}
     let gitlabAbsoluteUrl = ''
     const src = async () => {
@@ -467,18 +480,7 @@ export class ZeroMd extends HTMLElement {
       }
       const resp =
         isReadingFromGitlabConfigured && this.path
-          ? await (async () => {
-              const id = this.config.gitlab.projectId
-              const branch = this.config.gitlab.branch
-              const absolutePath = encodeURIComponent(this.path.trim())
-              gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
-
-              return fetch(gitlabAbsoluteUrl, {
-                headers: {
-                  'PRIVATE-TOKEN': this.config.gitlab.token,
-                },
-              })
-            })()
+          ? await fetchDataFromGitlab(this.path)
           : await (async () => {
               const url = this.src.trim()
               gitlabAbsoluteUrl = url.startsWith('http') ? url : this.config.baseUrl + url
@@ -512,7 +514,24 @@ export class ZeroMd extends HTMLElement {
     let md = (await src()) || script()
 
     /* PROCESS MD */
-    const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)]
+
+    const importRegex = /<!--import\(([\s\S]*?)\)-->/gim
+    const importsMatch = [...md.matchAll(importRegex)]
+
+    if (process.env.ENVIRONMENT === 'dev') {
+      if (importsMatch.length) {
+        await Promise.all(
+          importsMatch.map(async([match, importURL]) => {
+            const response = await fetch(importURL)
+
+            if (response.ok) {
+              const importedContent = await response.text()
+              md = md.replace(match, importedContent)
+            }
+          })
+        )
+      }
+    } else {
     if (importsMatch.length) {
       await Promise.all(
         importsMatch.map(async ([match, importURL]) => {
@@ -561,18 +580,8 @@ export class ZeroMd extends HTMLElement {
                 return
               }
             }
-
-            // TODO: refactor for DRY (remove duplicated absolute url building logic)
-            const id = this.config.gitlab.projectId
-            const branch = this.config.gitlab.branch
-            const absolutePath = encodeURIComponent(importURL.trim())
-            gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
-
-            response = await fetch(gitlabAbsoluteUrl, {
-              headers: {
-                'PRIVATE-TOKEN': this.config.gitlab.token,
-              },
-            })
+            
+            response = await fetchDataFromGitlab(importURL)
           } else {
             response = await fetch(importURL)
           }
@@ -583,23 +592,24 @@ export class ZeroMd extends HTMLElement {
           }
         }),
       )
-    }
+    }}
 
     const codalizedOption = new RegExp(
       '<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
-      '|' +
-      '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
-      'gim'
+        '|' +
+        '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
+      'gim',
     )
     const [shouldBeCodalized, $1, $2] = [...md.matchAll(codalizedOption)].at(-1) || []
     const defaultCodeFromMd = $1 || $2
     this.debug && console.log('===shouldBeCodalized===\n' + shouldBeCodalized)
     this.debug && console.log('===defaultCodeFromMd===\n' + defaultCodeFromMd)
 
-    const localizedOption = /(?:<localized(?: main="(uk|ru|en)")?\/>)|(?:<!--localized(?:\s)*?\(main="(uk|ru|en)"\)-->)/gim
+    const localizedOption =
+      /(?:<localized(?: main="(uk|ru|en)")?\/>)|(?:<!--localized(?:\s)*?\(main="(uk|ru|en)"\)-->)/gim
     const [shouldBeLocalized, $group1, $group2] = [...md.matchAll(localizedOption)].at(-1) || []
     const defaultLangFromMd = $group1 || $group2
-    
+
     this.debug && console.log('===translation===\n')
     const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gm
     const translate = ([_match, _delimiter, from, to]) => {
@@ -664,7 +674,7 @@ export class ZeroMd extends HTMLElement {
 
       const codalize = (match, tag, inverted, content) => {
         let candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
-        candidates =  candidates.map((item) => item === 'python' ? 'py' : item)
+        candidates = candidates.map(item => (item === 'python' ? 'py' : item))
 
         return `<span class="inline-content${
           inverted
@@ -741,11 +751,15 @@ export class ZeroMd extends HTMLElement {
     md = md.replace(articleTypeExtension, `-$1.md$2`)
 
     // todo: fix to skip links that start with http
-    const mdExtensions = /\.md\)/gim
-    md = md.replace(mdExtensions, `-md${window.location.search})`)
 
-    const mdExtensionsWithId = /\.md#/gim
-    md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
+      //This comment was created for solving this task on the board [https://kanbanflow.com/t/6j2hhxp2].
+      //It was not deleted because it wasn't clear whether it could affect other functionality zero MD.
+      
+      // const mdExtensions = /\.md\)/gim
+      // md = md.replace(mdExtensions, `-md${window.location.search})`)
+
+      // const mdExtensionsWithId = /\.md#/gim
+      // md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
 
     const poetryBoldOption = /<!--(.+?)poetryBold(.+?)-->/gi
     const [, poetryBoldStart, poetryBoldEnd] = [...md.matchAll(poetryBoldOption)].at(-1) || [
@@ -1113,7 +1127,7 @@ export class ZeroMd extends HTMLElement {
           .querySelector('zero-md')
           .getAttribute('code')
 
-          const urlParams = new URLSearchParams(window.location.search)
+        const urlParams = new URLSearchParams(window.location.search)
         if (!urlParams.get('code')) {
           if (shouldBeCodalized && !codeValueFromAttributesSetByButtons) {
             setActiveTabInAllCodeGroups(this.code || defaultCodeFromMd)
