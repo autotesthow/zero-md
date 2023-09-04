@@ -16,8 +16,7 @@ export default function() {
     return document.body.appendChild(template.content.firstElementChild)
   }
 
-  const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t))
-
+  // TODO: remove ".skip" when task : https://kanbanflow.com/t/H43XL3Vs will be done
   describe('functionality TOC', () => {
     let zero
     beforeEach(() => {
@@ -38,7 +37,6 @@ export default function() {
       script.text = text
       zero.appendChild(script)
     }
-
 
     it('first element in codalized tags rendered correctly in TOC', async () => {
       zeroAppendScriptMD(`
