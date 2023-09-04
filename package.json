@@ -6,11 +6,11 @@
   "type": "module",
   "exports": "./src/index.js",
   "scripts": {
-    "dev": "set ENVIRONMENT=dev&& rollup -c -w ",
+    "dev": "cross-env ENVIRONMENT=dev rollup -c -w ",
     "format": "prettier --write .",
     "lint": "eslint .",
     "test": "npm run dev",
-    "build": "set ENVIRONMENT=prod&& rollup -c",
+    "build": "cross-env ENVIRONMENT=prod rollup -c",
     "prepublishOnly": "npm run format && npm run lint && npm run build",
     "docs:build": "zero-md-docs && sscli -b https://zerodevx.github.io/zero-md/ -r docs -i 'v1/**' --slash"
   },
@@ -23,6 +23,7 @@
     "@rollup/plugin-replace": "^4.0.0",
     "@vue/web-component-wrapper": "^1.3.0",
     "chai": "^4.3.6",
+    "cross-env": "^7.0.3",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
     "mocha": "^10.0.0",
