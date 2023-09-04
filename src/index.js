@@ -507,8 +507,7 @@ export class ZeroMd extends HTMLElement {
 
     const importRegex = /<!--import\(([\s\S]*?)\)-->/gim
     const importsMatch = [...md.matchAll(importRegex)]
-    console.log('env', process.env.ENVIRONMENT)
-    console.log('test')
+
     if (process.env.ENVIRONMENT === 'dev') {
       if (importsMatch.length) {
         await Promise.all(
@@ -519,7 +518,6 @@ export class ZeroMd extends HTMLElement {
               const importedContent = await response.text()
               md = md.replace(match, importedContent)
             }
-            console.log(md)
           })
         )
       }
