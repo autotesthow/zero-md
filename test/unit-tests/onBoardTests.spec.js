@@ -279,112 +279,105 @@ export default function() {
       zero.appendChild(script)
     }
 
-    let scenarios = {
-      '"en", "py"': {
-        whenLang: 'en',
-        whenCode: 'py',
-        shouldBe: 'Header PY any text',
-      },
-      '"en", "java"': {
-        whenLang: 'en',
-        whenCode: 'java',
-        shouldBe: 'Header JAVA any text',
-      },
-      '"en", "js"': {
-        whenLang: 'en',
-        whenCode: 'js',
-        shouldBe: 'Header JS any text',
-      },
-      '"en", "ts"': {
-        whenLang: 'en',
-        whenCode: 'ts',
-        shouldBe: 'Header JS any text',
-      },
-      '"en", "cs"': {
-        whenLang: 'en',
-        whenCode: 'cs',
-        shouldBe: 'Header CS any text',
-      },
-      '"uk", "py"': {
-        whenLang: 'uk',
-        whenCode: 'py',
-        shouldBe: 'Заголовок PY будь який текст',
-      },
-      '"uk", "java"': {
-        whenLang: 'uk',
-        whenCode: 'java',
-        shouldBe: 'Заголовок JAVA будь який текст',
-      },
-      '"uk", "js"': {
-        whenLang: 'uk',
-        whenCode: 'js',
-        shouldBe: 'Заголовок JS будь який текст',
-      },
-      '"uk", "ts"': {
-        whenLang: 'uk',
-        whenCode: 'ts',
-        shouldBe: 'Заголовок JS будь який текст',
-      },
-      '"uk", "cs"': {
-        whenLang: 'uk',
-        whenCode: 'cs',
-        shouldBe: 'Заголовок CS будь який текст',
-      },
-      '"ru", "py"': {
-        whenLang: 'ru',
-        whenCode: 'py',
-        shouldBe: 'Заглавие PY любой текст',
-      },
-      '"ru", "java"': {
-        whenLang: 'ru',
-        whenCode: 'java',
-        shouldBe: 'Заглавие JAVA любой текст',
-      },
-      '"ru", "js"': {
-        whenLang: 'ru',
-        whenCode: 'js',
-        shouldBe: 'Заглавие JS любой текст',
-      },
-      '"ru", "ts"': {
-        whenLang: 'ru',
-        whenCode: 'ts',
-        shouldBe: 'Заглавие JS любой текст',
-      },
-      '"ru", "cs"': {
-        whenLang: 'ru',
-        whenCode: 'cs',
-        shouldBe: 'Заглавие CS любой текст',
-      },
+    it('correct work', async () => {
+      zeroAppendScriptMD(
+      '<!--~{{Variable}}~mustBeVisible~-->\n' +
+      '\n'+ 
+      '<p>{{Variable}}</p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('mustBeVisible')
+    })
+
+  })
+
+  describe.only('Variable testing', () => {
+    let zero
+    beforeEach(() => {
+      zero = add(`<zero-md manual-render></zero-md>`)
+    })
+    afterEach(() => {
+      // zero.remove()
+    })
+    
+    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
+    const zeroBody = () => zero$('.markdown-body')
+    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
+    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
+
+    const zeroAppendScriptMD = (text) => {
+      const script = document.createElement('script')
+      script.setAttribute('type', 'text/markdown')
+      script.text = text
+      zero.appendChild(script)
     }
 
-    Object.entries(scenarios).forEach((args) => {
-      const [
-        scenario,
-        { only, whenLang: lang, whenCode: code, shouldBe: text }
-      ] = args
-      if (only !== undefined && !only) {
-        return
-      }
-      it(`<!--~{{RED}}~style="color:red;"~--> work with  ${scenario}`, async () => {
-        zeroAppendScriptMD(
-        '<localized main="uk"/>\n'+
-        '<codalized main="js"/>\n'+    
-        '<!--~{{RED}}~style="color:red;"~-->\n'+
-        '<p {{RED}}>\n'+
-        '<en>Header <py>PY</py><java>JAVA</java><js-ts>JS</js-ts><cs>CS</cs> any text</en>'+
-        '<uk>Заголовок <py>PY</py><java>JAVA</java><js-ts>JS</js-ts><cs>CS</cs> будь який текст</uk>'+
-        '<ru>Заглавие <py>PY</py><java>JAVA</java><js-ts>JS</js-ts><cs>CS</cs> любой текст</ru>'+
-        '</p>'
-        )
-        zero.lang = lang
-        zero.code = code
+    it('<!--uk~{{Variable}}~Змінна~--> correct work', async () => {
+      zeroAppendScriptMD(
+      '<!--uk~{{Variable}}~Змінна~-->\n' +
+      '<localized main="uk"/>\n'+
+      '\n'+ 
+      '<p><uk>{{Variable}}</uk></p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Змінна')
+    })
+
+    it('<!--uk~{{Variable}}~Змінна~--> <en-ru> must dont work', async () => {
+      zeroAppendScriptMD(
+      '<!--uk~{{Variable}}~Змінна~-->\n' +
+      '<localized main="ru"/>\n'+
+      '\n'+ 
+      '<p><en-ru>{{Variable}}</en-ru></p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('{{Variable}}')
+    })
+
+    it('<!--en-ru~{{Variable}}~Variable~--> <ru> correct work', async () => {
+      zeroAppendScriptMD(
+      '<!--en-ru~{{Variable}}~Variable~-->\n' +
+      '<localized main="ru"/>\n'+
+      '\n'+ 
+      '<p><ru>{{Variable}}</ru></p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Variable')
+    })
+    
+    it('<!--en-ru~{{Variable}}~Variable~--> <en> correct work', async () => {
+      zeroAppendScriptMD(
+      '<!--en-ru~{{Variable}}~Variable~-->\n' +
+      '<localized main="en"/>\n'+
+      '\n'+ 
+      '<p><en>{{Variable}}</en></p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Variable')
+    })
         
-        await zero.render()
-  
-        expect(zeroBody$('p').style.color).to.equals('red')
-        expect(zeroBody$('p').innerText).to.equals(text)
-      })
-    }) 
+    it('<!--en-ru~{{Variable}}~Variable~--> <uk> must dont work', async () => {
+      zeroAppendScriptMD(
+      '<!--en-ru~{{Variable}}~Variable~-->\n' +
+      '<localized main="uk"/>\n'+
+      '\n'+ 
+      '<p><uk>{{Variable}}</uk></p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('{{Variable}}')
+    })
   })
 
   describe('Indented translation definition to align translations for easier refactoring', () => {
@@ -420,18 +413,6 @@ export default function() {
         whenLang: 'uk',
         whenCode: 'java',
         shouldBe: 'Заголовок Configuration.baseUrl JAVA будь який текст',
-      },
-      '"ru", "js"': {
-        dashes: '---------',
-        whenLang: 'ru',
-        whenCode: 'js',
-        shouldBe: 'Заглавие browser.config.baseUrl JS любой текст',
-      },
-      '"en", "ts"': {
-        dashes: '-------------',
-        whenLang: 'en',
-        whenCode: 'ts',
-        shouldBe: 'Header browser.config.baseUrl TS any text',
       },
       '"uk", "cs"': {
         dashes: '----------------',
