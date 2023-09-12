@@ -293,13 +293,13 @@ export default function() {
 
   })
 
-  describe.only('Variable testing', () => {
+  describe('Variable testing', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      // zero.remove()
+      zero.remove()
     })
     
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
@@ -372,6 +372,32 @@ export default function() {
       '<localized main="uk"/>\n'+
       '\n'+ 
       '<p><uk>{{Variable}}</uk></p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('{{Variable}}')
+    })
+        
+    it('<!--js-ts~{{Variable}}~Variable~--> <js-ts> correct work', async () => {
+      zeroAppendScriptMD(
+      '<!--js~{{Variable}}~Variable~-->\n' +
+      '<codalized main="js"/>\n'+
+      '\n'+ 
+      '<p><js-ts>{{Variable}}</js-ts></p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Variable')
+    })
+            
+    it('<!--js-ts~{{Variable}}~Variable~--> <uk> must dont work', async () => {
+      zeroAppendScriptMD(
+      '<!--js~{{Variable}}~Variable~-->\n' +
+      '<codalized main="py"/>\n'+
+      '\n'+ 
+      '<p><java-py-cs>{{Variable}}</java-py-cs></p>'
       )
      
       await zero.render()
