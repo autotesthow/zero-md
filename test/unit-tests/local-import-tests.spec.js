@@ -15,7 +15,8 @@ export default function() {
     template.innerHTML = html
     return document.body.appendChild(template.content.firstElementChild)
   }
-  describe.skip('example', () => {
+  
+    describe('Local import testing', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)
@@ -64,7 +65,7 @@ export default function() {
       if (only !== undefined && !only) {
         return
       }
-    it(`<!--import()--> work with  ${scenario}`, async () => {
+      it(`<!--import()--> work with  ${scenario}`, async () => {
         zeroAppendScriptMD(
 '<!--import(./variables-for-local-import-tests.md)-->\n'+
 `<localized main="${lang}"/>\n`+
@@ -72,25 +73,39 @@ export default function() {
 '<p>\n'+  
 `<uk-en-ru><py-js-ts-java-cs>${whatWeUse}</py-js-ts-java-cs></uk-en-ru>\n` + 
 '<p>')
-          
+        
         await zero.render()
-
+  
         expect(zeroBody$('p').innerText).to.equals(text)
       })
     })
+    
+          it(`<!--import()--> work with "{{YOUTUBE()}}", "uk", "java"`, async () => {
+            zeroAppendScriptMD(
+'<!--import(./variables-for-local-import-tests.md)-->\n'+
+'<localized main="uk"/>\n'+
+'<codalized main="java"/>\n' +
+'<p>\n'+  
+`<uk-en-ru><py-js-ts-java-cs>{{YOUTUBE(https://youtu.be/I1SBGzclwE0)}}</py-js-ts-java-cs></uk-en-ru>\n` + 
+'<p>')
+        
+        await zero.render()
+  
+        expect(zeroBody$('iframe').src).to.equals('https://www.youtube.com/embed/I1SBGzclwE0')
+          })
           
-    it(`<!--import()--> work with "{{LOOM()}}", "en", "js"`, async () => {
-      zeroAppendScriptMD(
+          it(`<!--import()--> work with "{{LOOM()}}", "en", "js"`, async () => {
+            zeroAppendScriptMD(
 '<!--import(./variables-for-local-import-tests.md)-->\n'+
 '<localized main="en"/>\n'+
 '<codalized main="js"/>\n' +
 '<p>\n'+  
 `<uk-en-ru><py-js-ts-java-cs>{{LOOM(https://www.loom.com/share/75f1210f206f49348541008c0cf2ad1d)}}</py-js-ts-java-cs></uk-en-ru>\n` + 
 '<p>')
-          
-      await zero.render()
-
-      expect(zeroBody$('iframe').src).to.equals('https://www.loom.com/embed/75f1210f206f49348541008c0cf2ad1d')
-    })
+        
+        await zero.render()
+  
+        expect(zeroBody$('iframe').src).to.equals('https://www.loom.com/embed/75f1210f206f49348541008c0cf2ad1d')
+      })
   })
 }
