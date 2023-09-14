@@ -51,7 +51,7 @@ export default function() {
 
   })
 
-  describe('Variable testing', () => {
+  describe('One-lang translation', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)
@@ -72,7 +72,7 @@ export default function() {
       zero.appendChild(script)
     }
 
-    it('<!--uk~{{Variable}}~Змінна~--> correct work', async () => {
+    it('correct work', async () => {
       zeroAppendScriptMD(
       '<!--uk~{{Variable}}~Змінна~-->\n' +
       '<localized main="uk"/>\n'+
@@ -85,7 +85,7 @@ export default function() {
       expect(zeroBody$('p').innerText).to.equals('Змінна')
     })
 
-    it('<!--uk~{{Variable}}~Змінна~--> <en-ru> must dont work', async () => {
+    it('incorrect lang must dont work with other langs', async () => {
       zeroAppendScriptMD(
       '<!--uk~{{Variable}}~Змінна~-->\n' +
       '<localized main="ru"/>\n'+
@@ -97,21 +97,78 @@ export default function() {
 
       expect(zeroBody$('p').innerText).to.equals('{{Variable}}')
     })
+  })
 
-    it('<!--en-ru~{{Variable}}~Variable~--> <ru> correct work', async () => {
+  describe('One-code translation', () => {
+    let zero
+    beforeEach(() => {
+      zero = add(`<zero-md manual-render></zero-md>`)
+    })
+    afterEach(() => {
+      zero.remove()
+    })
+    
+    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
+    const zeroBody = () => zero$('.markdown-body')
+    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
+    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
+
+    const zeroAppendScriptMD = (text) => {
+      const script = document.createElement('script')
+      script.setAttribute('type', 'text/markdown')
+      script.text = text
+      zero.appendChild(script)
+    }
+
+    it('correct work', async () => {
       zeroAppendScriptMD(
-      '<!--en-ru~{{Variable}}~Variable~-->\n' +
-      '<localized main="ru"/>\n'+
+      '<!--java~{{Variable}}~Java~-->\n'+
+      '<codalized main="java"/>\n'+
       '\n'+ 
-      '<p><ru>{{Variable}}</ru></p>'
+      '<p><java>{{Variable}}</java></p>'
       )
      
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Variable')
+      expect(zeroBody$('p').innerText).to.equals('Java')
+    })
+
+    it('incorrect code must dont work with other codes', async () => {
+      zeroAppendScriptMD(
+      '<!--java~{{Variable}}~Java~-->\n'+
+      '<codalized main="js"/>\n'+
+      '\n'+ 
+      '<p><js-ts-py-cs>{{Variable}}</js-ts-py-cs></p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('{{Variable}}')
+    })
+  })
+
+  describe('Multi-lang translation', () => {
+    let zero
+    beforeEach(() => {
+      zero = add(`<zero-md manual-render></zero-md>`)
+    })
+    afterEach(() => {
+      zero.remove()
     })
     
-    it('<!--en-ru~{{Variable}}~Variable~--> <en> correct work', async () => {
+    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
+    const zeroBody = () => zero$('.markdown-body')
+    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
+    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
+
+    const zeroAppendScriptMD = (text) => {
+      const script = document.createElement('script')
+      script.setAttribute('type', 'text/markdown')
+      script.text = text
+      zero.appendChild(script)
+    }
+    
+    it('correct work with first lang', async () => {
       zeroAppendScriptMD(
       '<!--en-ru~{{Variable}}~Variable~-->\n' +
       '<localized main="en"/>\n'+
@@ -123,8 +180,21 @@ export default function() {
 
       expect(zeroBody$('p').innerText).to.equals('Variable')
     })
+
+    it('correct work with last lang', async () => {
+      zeroAppendScriptMD(
+      '<!--en-ru~{{Variable}}~Variable~-->\n' +
+      '<localized main="ru"/>\n'+
+      '\n'+ 
+      '<p><ru>{{Variable}}</ru></p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Variable')
+    })
         
-    it('<!--en-ru~{{Variable}}~Variable~--> <uk> must dont work', async () => {
+    it('dont work with other lang', async () => {
       zeroAppendScriptMD(
       '<!--en-ru~{{Variable}}~Variable~-->\n' +
       '<localized main="uk"/>\n'+
@@ -136,13 +206,48 @@ export default function() {
 
       expect(zeroBody$('p').innerText).to.equals('{{Variable}}')
     })
+  })
+
+  describe('Multi-code translation', () => {
+    let zero
+    beforeEach(() => {
+      zero = add(`<zero-md manual-render></zero-md>`)
+    })
+    afterEach(() => {
+      zero.remove()
+    })
+    
+    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
+    const zeroBody = () => zero$('.markdown-body')
+    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
+    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
+
+    const zeroAppendScriptMD = (text) => {
+      const script = document.createElement('script')
+      script.setAttribute('type', 'text/markdown')
+      script.text = text
+      zero.appendChild(script)
+    }
         
-    it('<!--js-ts~{{Variable}}~Variable~--> <js-ts> correct work', async () => {
+    it('correct work with first code', async () => {
       zeroAppendScriptMD(
-      '<!--js~{{Variable}}~Variable~-->\n' +
+      '<!--js-ts~{{Variable}}~Variable~-->\n' +
       '<codalized main="js"/>\n'+
       '\n'+ 
-      '<p><js-ts>{{Variable}}</js-ts></p>'
+      '<p><js>{{Variable}}</js></p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Variable')
+    })
+           
+    it('correct work with last code', async () => {
+      zeroAppendScriptMD(
+      '<!--js-ts~{{Variable}}~Variable~-->\n' +
+      '<codalized main="ts"/>\n'+
+      '\n'+ 
+      '<p><ts>{{Variable}}</ts></p>'
       )
      
       await zero.render()
@@ -150,9 +255,9 @@ export default function() {
       expect(zeroBody$('p').innerText).to.equals('Variable')
     })
             
-    it('<!--js-ts~{{Variable}}~Variable~--> <uk> must dont work', async () => {
+    it('dont work with other code', async () => {
       zeroAppendScriptMD(
-      '<!--js~{{Variable}}~Variable~-->\n' +
+      '<!--js-ts~{{Variable}}~Variable~-->\n' +
       '<codalized main="py"/>\n'+
       '\n'+ 
       '<p><java-py-cs>{{Variable}}</java-py-cs></p>'
