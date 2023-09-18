@@ -15,13 +15,13 @@ export default function() {
     template.innerHTML = html
     return document.body.appendChild(template.content.firstElementChild)
   }
-  describe('TOC rendering testing', () => {
+  describe.only('TOC rendering ', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      zero.remove()
+      // zero.remove()
     })
     
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
@@ -35,6 +35,126 @@ export default function() {
       script.text = text
       zero.appendChild(script)
     }
+
+    it('# correctly', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>-->
+      
+# 1 title {#first-item}`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div').style.marginLeft).to.equals('0px')
+      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
+    })
+
+    it('## correctly', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>-->
+      
+## 1 title {#first-item}`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div').style.marginLeft).to.equals('40px')
+      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
+    })
+    
+    it('### correctly', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>-->
+      
+### 1 title {#first-item}`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div').style.marginLeft).to.equals('80px')
+      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
+    })
+
+    it('#### correctly', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>-->
+      
+#### 1 title {#first-item}`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div').style.marginLeft).to.equals('120px')
+      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
+    })
+    
+    it('complex work', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>-->
+      
+# 1 title {#first-item}
+## 2 title {#second-item}
+### 3 title {#third-item}
+#### 4 title {#fourth-item}`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
+      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
+      expect(zeroBody$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
+      expect(zeroBody$('a[href="#second-item"]').innerText).to.equals('2 title')
+      expect(zeroBody$('.toc div:nth-child(3)').style.marginLeft).to.equals('80px')
+      expect(zeroBody$('a[href="#third-item"]').innerText).to.equals('3 title')
+      expect(zeroBody$('.toc div:nth-child(4)').style.marginLeft).to.equals('120px')
+      expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
+    })
+  
+    it('complex work 1', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>1-->
+
+# 1 title {#first-item}
+## 2 title {#second-item}
+### 3 title {#third-item}
+#### 4 title {#fourth-item}`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
+      expect(zeroBody$('a[href="#second-item"]').innerText).to.equals('2 title')
+      expect(zeroBody$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
+      expect(zeroBody$('a[href="#third-item"]').innerText).to.equals('3 title')
+      expect(zeroBody$('.toc div:nth-child(3)').style.marginLeft).to.equals('80px')
+      expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
+    })
+  
+    it('complex work 2', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>2-->
+      
+# 1 title {#first-item}
+## 2 title {#second-item}
+### 3 title {#third-item}
+#### 4 title {#fourth-item}`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
+      expect(zeroBody$('a[href="#third-item"]').innerText).to.equals('3 title')
+      expect(zeroBody$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
+      expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
+    })
+
+    it('complex work 3', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>3-->
+      
+# 1 title {#first-item}
+## 2 title {#second-item}
+### 3 title {#third-item}
+#### 4 title {#fourth-item}`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
+      expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
+    })
 
     it('first element in localized tags rendered correctly in TOC', async () => {
       zeroAppendScriptMD(`
