@@ -15,13 +15,14 @@ export default function() {
     template.innerHTML = html
     return document.body.appendChild(template.content.firstElementChild)
   }
-  describe.only('TOC rendering ', () => {
+
+  describe('TOC rendering simple scenarios', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      // zero.remove()
+      zero.remove()
     })
     
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
@@ -84,7 +85,7 @@ export default function() {
       expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
     })
     
-    it('complex work', async () => {
+    it('by filter with level 0', async () => {
       zeroAppendScriptMD(`
 [TOC]<!--TOC>-->
       
@@ -105,7 +106,7 @@ export default function() {
       expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
     })
   
-    it('complex work 1', async () => {
+    it('by filter with level 1', async () => {
       zeroAppendScriptMD(`
 [TOC]<!--TOC>1-->
 
@@ -124,7 +125,7 @@ export default function() {
       expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
     })
   
-    it('complex work 2', async () => {
+    it('by filter with level 2', async () => {
       zeroAppendScriptMD(`
 [TOC]<!--TOC>2-->
       
@@ -141,7 +142,7 @@ export default function() {
       expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
     })
 
-    it('complex work 3', async () => {
+    it('by filter with level 3', async () => {
       zeroAppendScriptMD(`
 [TOC]<!--TOC>3-->
       
@@ -155,6 +156,69 @@ export default function() {
       expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
       expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
     })
+    
+    it('# correctly without anchor', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>-->
+      
+# 1 title`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div').style.marginLeft).to.equals('0px')
+      expect(zeroBody$('a[href="#1-title"]').innerText).to.equals('1 title')
+    })
+
+    it('# correctly without anchor with trouble naming', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>1-->
+      
+## 1        .   $%^*  title`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div').style.marginLeft).to.equals('0px')
+      expect(zeroBody$('a[href="#1-title"]').innerText).to.equals('1 . $%^* title')
+    })
+      
+    it('by filter with level 2 without anchor', async () => {
+      zeroAppendScriptMD(`
+[TOC]<!--TOC>2-->
+      
+# 1 title
+## 2 title 
+### 3 title
+#### 4 title`)
+
+      await zero.render()
+
+      expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
+      expect(zeroBody$('a[href="#3-title"]').innerText).to.equals('3 title')
+      expect(zeroBody$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
+      expect(zeroBody$('a[href="#4-title"]').innerText).to.equals('4 title')
+    })
+  })
+
+  describe('TOC rendering with localized/codalized', () => {
+    let zero
+    beforeEach(() => {
+      zero = add(`<zero-md manual-render></zero-md>`)
+    })
+    afterEach(() => {
+      zero.remove()
+    })
+    
+    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
+    const zeroBody = () => zero$('.markdown-body')
+    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
+    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
+
+    const zeroAppendScriptMD = (text) => {
+      const script = document.createElement('script')
+      script.setAttribute('type', 'text/markdown')
+      script.text = text
+      zero.appendChild(script)
+    }
 
     it('first element in localized tags rendered correctly in TOC', async () => {
       zeroAppendScriptMD(`
