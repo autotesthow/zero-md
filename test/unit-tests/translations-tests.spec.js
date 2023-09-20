@@ -49,6 +49,19 @@ export default function() {
       expect(zeroBody$('p').innerText).to.equals('mustBeVisible')
     })
 
+    it('correct work case sensitive', async () => {
+      zeroAppendScriptMD(
+      '<!--~{{Variable}}~mustBeNoVisible~-->\n' +
+      '<!--~{{variable}}~mustBeVisible~-->\n' +
+      '\n'+ 
+      '<p>{{variable}}</p>'
+      )
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('mustBeVisible')
+    })
+
   })
 
   describe('One-lang translation', () => {
