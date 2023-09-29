@@ -7,15 +7,15 @@ import attributeTests from './attributes-tests.spec.js'
 import tocTests from './toc-tests.spec.js'
 import translationsTests from './translations-tests.spec.js'
 import localImportTests from './local-import-tests.spec.js'
-import onBoardTests from './on-board-tests.spec.js'
+import localizationsTests from './localizations-tests.spec.js'
 
 coreTests()
 unitTests()
+localizationsTests()
 customTabNamesTests()
 attributeTests()
 tocTests()
 translationsTests()
 localImportTests()
-onBoardTests()
 
 mocha.run()
