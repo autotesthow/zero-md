@@ -297,7 +297,7 @@ export default function() {
 
         await zero.render()
 
-        expect(zeroBody$(`.`).innerText).to.equals('Header 1 JS')
+        expect(zeroBody$(`a[href="#first-item"]`).innerText).to.equals('Header 1 JS')
       })
 
       it('first element in codalized tags rendered correctly in TOC including any text behind the tag at the end', async () => {
@@ -384,7 +384,7 @@ export default function() {
       it('first element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in language', async () => {
         zeroAppendScriptMD(`
 <codalized main="py"/>
-<localized main="uk"/>
+<localized main="ru"/>
 
 [TOC]<!--TOC>2-->
       
@@ -398,7 +398,7 @@ export default function() {
       it('middle element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in language', async () => {
         zeroAppendScriptMD(`
 <codalized main="java"/>
-<localized main="uk"/>
+<localized main="ru"/>
 
 [TOC]<!--TOC>2-->
       
@@ -412,7 +412,7 @@ export default function() {
       it('last element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in language', async () => {
         zeroAppendScriptMD(`
 <codalized main="js"/>
-<localized main="uk"/>
+<localized main="ru"/>
 
 [TOC]<!--TOC>2-->
       
