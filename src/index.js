@@ -694,18 +694,22 @@ export class ZeroMd extends HTMLElement {
     const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0]
     renderer.heading = (text, level) => {
       const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/im) || [null, text]
-      const pureWithoutTags = pure.replace(/<\/?\w+>/g, '')
+      const pureWithoutTagsExceptSpan = pure.replace(/<\/?((?!span)\w+)>/g, '')
       const anchorIdsToLowerCase = this.config.anchorIdsToLowerCase
       const id =
         userId ||
-        (anchorIdsToLowerCase ? IDfy(pureWithoutTags) : IDfy(pureWithoutTags, { lowerCase: false }))
+        (anchorIdsToLowerCase
+          ? IDfy(pureWithoutTagsExceptSpan)
+          : IDfy(pureWithoutTagsExceptSpan, { lowerCase: false }))
       const pixelsNumber = this.config.indentInsideTocByPixels
 
       if (level > tocStartLevel) {
         const indentInsideToc = `style="margin-left: ${
           pixelsNumber * (level - 1 - tocStartLevel)
         }px"`
-        tocLinks.push(`<div ${indentInsideToc}><a href="#${id}">${pureWithoutTags}</a></div>`)
+        tocLinks.push(
+          `<div ${indentInsideToc}><a href="#${id}">${pureWithoutTagsExceptSpan}</a></div>`,
+        )
       }
 
       return `<h${level}>${encodeURI(id) === id ? '' : `<span id="${encodeURI(id)}"></span>`}

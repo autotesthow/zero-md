@@ -26,8 +26,10 @@ export default function () {
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
     const zeroBody$ = (selector) => zeroBody().querySelector(selector)
+    // eslint-disable-next-line no-unused-vars
     const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
 
+    // eslint-disable-next-line no-unused-vars
     const zeroAppendScriptMD = (text) => {
       const script = document.createElement('script')
       script.setAttribute('type', 'text/markdown')
