@@ -1,3 +1,5 @@
+<codalized main="js"/>
+
 # markdown-fixture
 
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
@@ -23,6 +25,28 @@ Option to configure base url: `{{browser.config.baseUrl}}`
 Father's {{CHILD}} is a good boy.
 
 {{PARENT_AND_CHILD}}.
+
+## Clojure support
+
+```clojure
+;; simple clojure block
+```
+
+Clojure in code group:
+
+::::::::::manual
+```clojure
+(defn foo1 [x]
+  (println x))
+```
+```poetry: clojure"clojure fn"
+(defn foo2 [x]
+  (println x))
+```
+```poetry: clj"clojure lambda"
+#(println %)
+```
+::::::::::
 
 ## Should have no longBreak ====+ inside code blocks
 

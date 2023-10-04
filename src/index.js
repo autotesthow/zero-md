@@ -585,9 +585,9 @@ export class ZeroMd extends HTMLElement {
     }}
 
     const codalizedOption = new RegExp(
-      '<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
+      '<codalized(?: main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
         '|' +
-        '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
+        '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
       'gim',
     )
     const [shouldBeCodalized, $1, $2] = [...md.matchAll(codalizedOption)].at(-1) || []
@@ -623,7 +623,7 @@ export class ZeroMd extends HTMLElement {
     this.debug && console.log('===md after general translations\n' + md)
 
     const translationPerCodeOption =
-      /<!--(?:-*)((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
+      /<!--(?:-*)((?:js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
     ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
       if (perCode.split('-').length > 1) {
         perCode = perCode.split('-')
@@ -657,7 +657,7 @@ export class ZeroMd extends HTMLElement {
 
     if (shouldBeCodalized) {
       const codalizable =
-        /<((not-)?(?:js|ts|py|python|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-python|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
+        /<((not-)?(?:js|ts|py|python|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-python|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
       const codalize = (match, tag, inverted, content) => {
         let candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
         candidates = candidates.map(item => (item === 'python' ? 'py' : item))
@@ -702,18 +702,22 @@ export class ZeroMd extends HTMLElement {
     const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0]
     renderer.heading = (text, level) => {
       const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/im) || [null, text]
-      const pureWithoutTags = pure.replace(/<\/?\w+>/g, '')
+      const pureWithoutTagsExceptSpan = pure.replace(/<\/?((?!span)\w+)>/g, '')
       const anchorIdsToLowerCase = this.config.anchorIdsToLowerCase
       const id =
         userId ||
-        (anchorIdsToLowerCase ? IDfy(pureWithoutTags) : IDfy(pureWithoutTags, { lowerCase: false }))
+        (anchorIdsToLowerCase
+          ? IDfy(pureWithoutTagsExceptSpan)
+          : IDfy(pureWithoutTagsExceptSpan, { lowerCase: false }))
       const pixelsNumber = this.config.indentInsideTocByPixels
 
       if (level > tocStartLevel) {
         const indentInsideToc = `style="margin-left: ${
           pixelsNumber * (level - 1 - tocStartLevel)
         }px"`
-        tocLinks.push(`<div ${indentInsideToc}><a href="#${id}">${pureWithoutTags}</a></div>`)
+        tocLinks.push(
+          `<div ${indentInsideToc}><a href="#${id}">${pureWithoutTagsExceptSpan}</a></div>`,
+        )
       }
 
       return `<h${level}>${encodeURI(id) === id ? '' : `<span id="${encodeURI(id)}"></span>`}
@@ -783,10 +787,10 @@ export class ZeroMd extends HTMLElement {
     const processPoetry = rules => (match, info, content) => {
       // const titles = info.split(/\s+/)
       // const maybeCodeOrCustomNameOrBoth =
-      // /(?:^|\s+)(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?(?:"(.+?)")?"/g
+      // /(?:^|\s+)(js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?(?:"(.+?)")?"/g
       const maybeCodeOrCustomNameOrBoth = new RegExp(
         '(?:^|\\s+)' +
-          '(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
+          '(js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
           `(?:${tabNameStart}(.+?)${tabNameEnd})?`,
         'g',
       )
@@ -860,7 +864,7 @@ export class ZeroMd extends HTMLElement {
       const customNameAndMaybeCode = [
         ...info.matchAll(
           new RegExp(
-            '(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
+            '(js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
               tabNameStart +
               '(.+?)' +
               tabNameEnd,
@@ -1106,7 +1110,7 @@ export class ZeroMd extends HTMLElement {
         }
 
         const codalizedOption =
-          /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
+          /<codalized(?: main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
         const [shouldBeCodalized, defaultCodeFromMd] =
           [...md.matchAll(codalizedOption)].at(-1) || []
         const codeValueFromAttributesSetByButtons = document
