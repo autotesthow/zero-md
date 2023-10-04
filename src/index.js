@@ -698,14 +698,18 @@ export class ZeroMd extends HTMLElement {
       const anchorIdsToLowerCase = this.config.anchorIdsToLowerCase
       const id =
         userId ||
-        (anchorIdsToLowerCase ? IDfy(pureWithoutTagsExceptSpan) : IDfy(pureWithoutTagsExceptSpan, { lowerCase: false }))
+        (anchorIdsToLowerCase
+          ? IDfy(pureWithoutTagsExceptSpan)
+          : IDfy(pureWithoutTagsExceptSpan, { lowerCase: false }))
       const pixelsNumber = this.config.indentInsideTocByPixels
 
       if (level > tocStartLevel) {
         const indentInsideToc = `style="margin-left: ${
           pixelsNumber * (level - 1 - tocStartLevel)
         }px"`
-        tocLinks.push(`<div ${indentInsideToc}><a href="#${id}">${pureWithoutTagsExceptSpan}</a></div>`)
+        tocLinks.push(
+          `<div ${indentInsideToc}><a href="#${id}">${pureWithoutTagsExceptSpan}</a></div>`,
+        )
       }
 
       return `<h${level}>${encodeURI(id) === id ? '' : `<span id="${encodeURI(id)}"></span>`}
