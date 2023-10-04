@@ -577,9 +577,9 @@ export class ZeroMd extends HTMLElement {
     }
 
     const codalizedOption = new RegExp(
-      '<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
+      '<codalized(?: main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
         '|' +
-        '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
+        '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
       'gim',
     )
     const [shouldBeCodalized, $1, $2] = [...md.matchAll(codalizedOption)].at(-1) || []
@@ -615,7 +615,7 @@ export class ZeroMd extends HTMLElement {
     this.debug && console.log('===md after general translations\n' + md)
 
     const translationPerCodeOption =
-      /<!--(?:-*)((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
+      /<!--(?:-*)((?:js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
     ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
       if (perCode.split('-').length > 1) {
         perCode = perCode.split('-')
@@ -649,7 +649,7 @@ export class ZeroMd extends HTMLElement {
 
     if (shouldBeCodalized) {
       const codalizable =
-        /<((not-)?(?:js|ts|py|python|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-python|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
+        /<((not-)?(?:js|ts|py|python|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-python|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
       const codalize = (match, tag, inverted, content) => {
         let candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
         candidates = candidates.map(item => (item === 'python' ? 'py' : item))
@@ -771,10 +771,10 @@ export class ZeroMd extends HTMLElement {
     const processPoetry = rules => (match, info, content) => {
       // const titles = info.split(/\s+/)
       // const maybeCodeOrCustomNameOrBoth =
-      // /(?:^|\s+)(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?(?:"(.+?)")?"/g
+      // /(?:^|\s+)(js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?(?:"(.+?)")?"/g
       const maybeCodeOrCustomNameOrBoth = new RegExp(
         '(?:^|\\s+)' +
-          '(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
+          '(js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
           `(?:${tabNameStart}(.+?)${tabNameEnd})?`,
         'g',
       )
@@ -848,7 +848,7 @@ export class ZeroMd extends HTMLElement {
       const customNameAndMaybeCode = [
         ...info.matchAll(
           new RegExp(
-            '(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
+            '(js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
               tabNameStart +
               '(.+?)' +
               tabNameEnd,
@@ -1094,7 +1094,7 @@ export class ZeroMd extends HTMLElement {
         }
 
         const codalizedOption =
-          /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
+          /<codalized(?: main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
         const [shouldBeCodalized, defaultCodeFromMd] =
           [...md.matchAll(codalizedOption)].at(-1) || []
         const codeValueFromAttributesSetByButtons = document
