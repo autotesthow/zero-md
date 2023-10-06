@@ -449,6 +449,19 @@ export class ZeroMd extends HTMLElement {
 
     /* DEFINE HOW TO GET MD */
 
+    async function fetchDataFromGitlab(fileUrl) {
+      const id = this.config.gitlab.projectId
+      const branch = this.config.gitlab.branch
+      const absolutePath = encodeURIComponent(fileUrl.trim())
+      gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
+
+      return fetch(gitlabAbsoluteUrl, {
+        headers: {
+          'PRIVATE-TOKEN': this.config.gitlab.token,
+        },
+      })
+    }
+
     let isReadingFromGitlabConfigured = this.config.gitlab !== {}
     let gitlabAbsoluteUrl = ''
     const src = async () => {
@@ -457,18 +470,7 @@ export class ZeroMd extends HTMLElement {
       }
       const resp =
         isReadingFromGitlabConfigured && this.path
-          ? await (async () => {
-              const id = this.config.gitlab.projectId
-              const branch = this.config.gitlab.branch
-              const absolutePath = encodeURIComponent(this.path.trim())
-              gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
-
-              return fetch(gitlabAbsoluteUrl, {
-                headers: {
-                  'PRIVATE-TOKEN': this.config.gitlab.token,
-                },
-              })
-            })()
+          ? await fetchDataFromGitlab(this.path)
           : await (async () => {
               const url = this.src.trim()
               gitlabAbsoluteUrl = url.startsWith('http') ? url : this.config.baseUrl + url
@@ -503,77 +505,84 @@ export class ZeroMd extends HTMLElement {
 
     /* PROCESS MD */
 
-    const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)]
-    if (importsMatch.length) {
-      await Promise.all(
-        importsMatch.map(async ([match, importURL]) => {
-          const currentZeroMdPath =
-            isReadingFromGitlabConfigured && this.path ? this.path : this.src
-          const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
+    const importRegex = /<!--import\(([\s\S]*?)\)-->/gim
+    const importsMatch = [...md.matchAll(importRegex)]
 
-          let response
-          const isUrlRelative = !importURL.startsWith('http')
-          if (isUrlRelative) {
-            const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
+    if (process.env.ENVIRONMENT === 'dev') {
+      if (importsMatch.length) {
+        await Promise.all(
+          importsMatch.map(async ([match, importURL]) => {
+            const response = await fetch(importURL)
 
-            if (
-              (importedFileNestingMatch &&
-                importedFileNestingMatch.length === 1 &&
-                importedFileNestingMatch[0] === '.') ||
-              importedFileNestingMatch === null
-            ) {
-              const thisPathLastElement = this.path.split('/').pop()
-              const filePathtoReplace = importedFileNestingMatch
-                ? importURL.split('./')[1]
-                : importURL.split('./')[0]
-
-              importURL = this.path.replace(thisPathLastElement, filePathtoReplace)
+            if (response.ok) {
+              const importedContent = await response.text()
+              md = md.replace(match, importedContent)
             }
+          }),
+        )
+      }
+    } else {
+      if (importsMatch.length) {
+        await Promise.all(
+          importsMatch.map(async ([match, importURL]) => {
+            const currentZeroMdPath =
+              isReadingFromGitlabConfigured && this.path ? this.path : this.src
+            const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
 
-            if (
-              importedFileNestingMatch &&
-              !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
-            ) {
-              const importedFileNestingDepth = importedFileNestingMatch.filter(
-                item => item === '..',
-              ).length
+            let response
+            const isUrlRelative = !importURL.startsWith('http')
+            if (isUrlRelative) {
+              const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
 
-              if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
-                const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
-                const importedFileFolderIndex =
-                  currentZeroMdFileNestingDepth - importedFileNestingDepth
-                importURL = currentZeroMdPath
-                  .split('/')
-                  .slice(0, importedFileFolderIndex)
-                  .concat(importURLPurePath)
-                  .join('/')
-              } else {
-                console.error('Provided relative path to the file does not exist')
-                return
+              if (
+                (importedFileNestingMatch &&
+                  importedFileNestingMatch.length === 1 &&
+                  importedFileNestingMatch[0] === '.') ||
+                importedFileNestingMatch === null
+              ) {
+                const thisPathLastElement = this.path.split('/').pop()
+                const filePathtoReplace = importedFileNestingMatch
+                  ? importURL.split('./')[1]
+                  : importURL.split('./')[0]
+
+                importURL = this.path.replace(thisPathLastElement, filePathtoReplace)
               }
+
+              if (
+                importedFileNestingMatch &&
+                !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
+              ) {
+                const importedFileNestingDepth = importedFileNestingMatch.filter(
+                  item => item === '..',
+                ).length
+
+                if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
+                  const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
+                  const importedFileFolderIndex =
+                    currentZeroMdFileNestingDepth - importedFileNestingDepth
+                  importURL = currentZeroMdPath
+                    .split('/')
+                    .slice(0, importedFileFolderIndex)
+                    .concat(importURLPurePath)
+                    .join('/')
+                } else {
+                  console.error('Provided relative path to the file does not exist')
+                  return
+                }
+              }
+
+              response = await fetchDataFromGitlab(importURL)
+            } else {
+              response = await fetch(importURL)
             }
 
-            // TODO: refactor for DRY (remove duplicated absolute url building logic)
-            const id = this.config.gitlab.projectId
-            const branch = this.config.gitlab.branch
-            const absolutePath = encodeURIComponent(importURL.trim())
-            gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
-
-            response = await fetch(gitlabAbsoluteUrl, {
-              headers: {
-                'PRIVATE-TOKEN': this.config.gitlab.token,
-              },
-            })
-          } else {
-            response = await fetch(importURL)
-          }
-
-          if (response.ok) {
-            const importedContent = await response.text()
-            md = md.replace(match, importedContent)
-          }
-        }),
-      )
+            if (response.ok) {
+              const importedContent = await response.text()
+              md = md.replace(match, importedContent)
+            }
+          }),
+        )
+      }
     }
 
     const codalizedOption = new RegExp(
