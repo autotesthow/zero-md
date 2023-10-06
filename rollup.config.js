@@ -20,7 +20,9 @@ const build = {
     replace({
       'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT),
     }),
-    replace({ $VERSION: pkg.version, delimiters: ['', ''] }), resolve(), terser()
+    replace({ $VERSION: pkg.version, delimiters: ['', ''] }),
+    resolve(),
+    terser(),
   ],
 }
 

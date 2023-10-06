@@ -511,78 +511,79 @@ export class ZeroMd extends HTMLElement {
     if (process.env.ENVIRONMENT === 'dev') {
       if (importsMatch.length) {
         await Promise.all(
-          importsMatch.map(async([match, importURL]) => {
+          importsMatch.map(async ([match, importURL]) => {
             const response = await fetch(importURL)
 
             if (response.ok) {
               const importedContent = await response.text()
               md = md.replace(match, importedContent)
             }
-          })
+          }),
         )
       }
     } else {
-    if (importsMatch.length) {
-      await Promise.all(
-        importsMatch.map(async ([match, importURL]) => {
-          const currentZeroMdPath =
-            isReadingFromGitlabConfigured && this.path ? this.path : this.src
-          const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
+      if (importsMatch.length) {
+        await Promise.all(
+          importsMatch.map(async ([match, importURL]) => {
+            const currentZeroMdPath =
+              isReadingFromGitlabConfigured && this.path ? this.path : this.src
+            const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
 
-          let response
-          const isUrlRelative = !importURL.startsWith('http')
-          if (isUrlRelative) {
-            const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
+            let response
+            const isUrlRelative = !importURL.startsWith('http')
+            if (isUrlRelative) {
+              const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
 
-            if (
-              (importedFileNestingMatch &&
-                importedFileNestingMatch.length === 1 &&
-                importedFileNestingMatch[0] === '.') ||
-              importedFileNestingMatch === null
-            ) {
-              const thisPathLastElement = this.path.split('/').pop()
-              const filePathtoReplace = importedFileNestingMatch
-                ? importURL.split('./')[1]
-                : importURL.split('./')[0]
+              if (
+                (importedFileNestingMatch &&
+                  importedFileNestingMatch.length === 1 &&
+                  importedFileNestingMatch[0] === '.') ||
+                importedFileNestingMatch === null
+              ) {
+                const thisPathLastElement = this.path.split('/').pop()
+                const filePathtoReplace = importedFileNestingMatch
+                  ? importURL.split('./')[1]
+                  : importURL.split('./')[0]
 
-              importURL = this.path.replace(thisPathLastElement, filePathtoReplace)
-            }
-
-            if (
-              importedFileNestingMatch &&
-              !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
-            ) {
-              const importedFileNestingDepth = importedFileNestingMatch.filter(
-                item => item === '..',
-              ).length
-
-              if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
-                const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
-                const importedFileFolderIndex =
-                  currentZeroMdFileNestingDepth - importedFileNestingDepth
-                importURL = currentZeroMdPath
-                  .split('/')
-                  .slice(0, importedFileFolderIndex)
-                  .concat(importURLPurePath)
-                  .join('/')
-              } else {
-                console.error('Provided relative path to the file does not exist')
-                return
+                importURL = this.path.replace(thisPathLastElement, filePathtoReplace)
               }
-            }
-            
-            response = await fetchDataFromGitlab(importURL)
-          } else {
-            response = await fetch(importURL)
-          }
 
-          if (response.ok) {
-            const importedContent = await response.text()
-            md = md.replace(match, importedContent)
-          }
-        }),
-      )
-    }}
+              if (
+                importedFileNestingMatch &&
+                !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
+              ) {
+                const importedFileNestingDepth = importedFileNestingMatch.filter(
+                  item => item === '..',
+                ).length
+
+                if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
+                  const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
+                  const importedFileFolderIndex =
+                    currentZeroMdFileNestingDepth - importedFileNestingDepth
+                  importURL = currentZeroMdPath
+                    .split('/')
+                    .slice(0, importedFileFolderIndex)
+                    .concat(importURLPurePath)
+                    .join('/')
+                } else {
+                  console.error('Provided relative path to the file does not exist')
+                  return
+                }
+              }
+
+              response = await fetchDataFromGitlab(importURL)
+            } else {
+              response = await fetch(importURL)
+            }
+
+            if (response.ok) {
+              const importedContent = await response.text()
+              md = md.replace(match, importedContent)
+            }
+          }),
+        )
+      }
+    }
 
     const codalizedOption = new RegExp(
       '<codalized(?: main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
