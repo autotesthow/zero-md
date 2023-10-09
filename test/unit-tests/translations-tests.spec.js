@@ -7,7 +7,6 @@ export default function() {
   })
 
   chai.config.truncateThreshold = 0
-  const assert = chai.assert
   const expect = chai.expect
 
   const add = (html) => {
@@ -28,7 +27,6 @@ export default function() {
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
     const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
 
     const zeroAppendScriptMD = (text) => {
       const script = document.createElement('script')
@@ -76,7 +74,6 @@ export default function() {
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
     const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
 
     const zeroAppendScriptMD = (text) => {
       const script = document.createElement('script')
@@ -124,7 +121,6 @@ export default function() {
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
     const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
 
     const zeroAppendScriptMD = (text) => {
       const script = document.createElement('script')
@@ -172,8 +168,7 @@ export default function() {
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
     const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
-
+   
     const zeroAppendScriptMD = (text) => {
       const script = document.createElement('script')
       script.setAttribute('type', 'text/markdown')
@@ -233,7 +228,6 @@ export default function() {
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
     const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
 
     const zeroAppendScriptMD = (text) => {
       const script = document.createElement('script')
@@ -294,7 +288,6 @@ export default function() {
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
     const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
 
     const zeroAppendScriptMD = (text) => {
       const script = document.createElement('script')
@@ -336,10 +329,10 @@ export default function() {
         zeroAppendScriptMD(
         '<localized main="uk"/>\n'+
         '<codalized main="js"/>\n'+    
-        `<!${dashes}js-ts~{{browser\.config\.baseUrl}}~browser.config.baseUrl~-->\n`+
-        `<!${dashes}py~{{browser\.config\.baseUrl}}~browser.config.base_url~-->\n`+
-        `<!${dashes}java~{{browser\.config\.baseUrl}}~Configuration.baseUrl~-->\n`+
-        `<!${dashes}cs~{{browser\.config\.baseUrl}}~Configuration.BaseUrl~-->\n`+
+        `<!${dashes}js-ts~{{browser.config.baseUrl}}~browser.config.baseUrl~-->\n`+
+        `<!${dashes}py~{{browser.config.baseUrl}}~browser.config.base_url~-->\n`+
+        `<!${dashes}java~{{browser.config.baseUrl}}~Configuration.baseUrl~-->\n`+
+        `<!${dashes}cs~{{browser.config.baseUrl}}~Configuration.BaseUrl~-->\n`+
         '\n' +
         '<en>Header <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>\n'+
         '<ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> any text</en>\n'+
@@ -372,7 +365,6 @@ export default function() {
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
     const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
 
     const zeroAppendScriptMD = (text) => {
       const script = document.createElement('script')

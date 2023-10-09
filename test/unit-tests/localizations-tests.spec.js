@@ -7,7 +7,6 @@ export default function() {
   })
 
   chai.config.truncateThreshold = 0
-  const assert = chai.assert
   const expect = chai.expect
 
   const add = (html) => {
@@ -15,8 +14,6 @@ export default function() {
     template.innerHTML = html
     return document.body.appendChild(template.content.firstElementChild)
   }
-
-  const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t))
 
   describe('localized', () => {
     let zero

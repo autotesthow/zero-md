@@ -7,7 +7,6 @@ export default function() {
   })
 
   chai.config.truncateThreshold = 0
-  const assert = chai.assert
   const expect = chai.expect
 
   const add = (html) => {
