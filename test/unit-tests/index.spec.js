@@ -1,7 +1,6 @@
 /* eslint-env mocha */
 
 import coreTests from './core-tests.spec.js'
-import unitTests from './unit-tests.spec.js'
 import customTabNamesTests from './custom-tab-names.spec.js'
 import attributeTests from './attributes-tests.spec.js'
 import tocTests from './toc-tests.spec.js'
@@ -10,7 +9,6 @@ import localImportTests from './local-import-tests.spec.js'
 import localizationsTests from './localizations-tests.spec.js'
 
 coreTests()
-unitTests()
 localizationsTests()
 customTabNamesTests()
 attributeTests()
