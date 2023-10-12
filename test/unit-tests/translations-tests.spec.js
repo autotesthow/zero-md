@@ -317,12 +317,19 @@ export default function() {
       },
     }
 
+    let isOnly = false
+    Object.entries(scenarios).forEach((args) => {
+      if (args[1].only) {
+        isOnly = true
+      }
+    })
+
     Object.entries(scenarios).forEach((args) => {
       const [
         scenario,
         { only, dashes, whenLang: lang, whenCode: code, shouldBe: text }
       ] = args
-      if (only !== undefined && !only) {
+      if (!only && isOnly) {
         return
       }
       it(`${dashes} work with  ${scenario}`, async () => {

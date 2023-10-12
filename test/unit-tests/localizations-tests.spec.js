@@ -312,12 +312,20 @@ Test Runner {{TR}}
           shouldBe: 'Тест ранер Pytest'
         }
     }
+
+    let isOnly = false
+    Object.entries(scenarios).forEach((args) => {
+      if (args[1].only) {
+        isOnly = true
+      }
+    })
+
     Object.entries(scenarios).forEach((args) => {
       const [
         scenario,
         { only, given, whenLang: lang, whenCode: code, selector, shouldBe: localized }
       ] = args
-      if (only !== undefined && !only) {
+      if (!only && isOnly) {
         return
       }
 
