@@ -330,7 +330,13 @@ Test Runner {{TR}}
       }
 
       it(`render: ${scenario}`, async () => {
-        zeroAppendScriptMD('<localized main="en"/>\n' + '<codalized main="ts"/>\n\n' + given)
+        zeroAppendScriptMD(`
+<localized main="en"/>
+<codalized main="ts"/>
+
+
+${given}`)
+
         if (lang) {
           zero.lang = lang
         }

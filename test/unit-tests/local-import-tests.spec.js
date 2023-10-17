@@ -21,7 +21,7 @@ export default function() {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      // zero.remove()
+      zero.remove()
     })
     
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
@@ -72,13 +72,14 @@ export default function() {
         return
       }
       it(`<!--import()--> work with  ${scenario}`, async () => {
-        zeroAppendScriptMD(
-'<!--import(./variables-for-local-import-tests.md)-->\n'+
-`<localized main="${lang}"/>\n`+
-`<codalized main="${code}"/>\n` +
-'<p>\n'+  
-`<uk-en-ru><py-js-ts-java-cs>${whatWeUse}</py-js-ts-java-cs></uk-en-ru>\n` + 
-'<p>')
+        zeroAppendScriptMD(`
+<!--import(./variables-for-local-import-tests.md)-->
+<localized main="${lang}"/>
+<codalized main="${code}"/>
+
+<p> 
+<uk-en-ru><py-js-ts-java-cs>${whatWeUse}</py-js-ts-java-cs></uk-en-ru>
+<p>`)
         
         await zero.render()
   
@@ -87,14 +88,15 @@ export default function() {
     })
     
     it.skip(`<!--import()--> work in variables`, async () => {
-      zeroAppendScriptMD(
-'<!--import(./variables-for-local-import-tests.md)-->\n'+
-`<localized main="en"/>\n`+
-`<codalized main="js"/>\n` +
-'<!----js~{{var}}~({{lang}}) good job~-->\n'+
-'<p>\n'+  
-`<uk-en-ru><py-js-ts-java-cs>{{var}}</py-js-ts-java-cs></uk-en-ru>\n` + 
-'<p>')
+      zeroAppendScriptMD(`
+<!--import(./variables-for-local-import-tests.md)-->
+<localized main="en"/>
+<codalized main="js"/>
+<!----js~{{var}}~({{lang}}) good job~-->
+
+<p> 
+<uk-en-ru><py-js-ts-java-cs>{{var}}</py-js-ts-java-cs></uk-en-ru>
+<p>`)
         
       await zero.render()
 
@@ -102,13 +104,14 @@ export default function() {
     })
 
     it(`<!--import()--> work with "{{YOUTUBE()}}", "uk", "java"`, async () => {
-      zeroAppendScriptMD(
-'<!--import(./variables-for-local-import-tests.md)-->\n'+
-'<localized main="uk"/>\n'+
-'<codalized main="java"/>\n' +
-'<p>\n'+  
-`<uk-en-ru><py-js-ts-java-cs>{{YOUTUBE(https://youtu.be/I1SBGzclwE0)}}</py-js-ts-java-cs></uk-en-ru>\n` + 
-'<p>')
+      zeroAppendScriptMD(`
+<!--import(./variables-for-local-import-tests.md)-->
+<localized main="uk"/>
+<codalized main="java"/>
+
+<p>  
+<uk-en-ru><py-js-ts-java-cs>{{YOUTUBE(https://youtu.be/I1SBGzclwE0)}}</py-js-ts-java-cs></uk-en-ru>
+<p>`)
         
       await zero.render()
 
@@ -116,13 +119,14 @@ export default function() {
     })
           
     it(`<!--import()--> work with "{{LOOM()}}", "en", "js"`, async () => {
-      zeroAppendScriptMD(
-'<!--import(./variables-for-local-import-tests.md)-->\n'+
-'<localized main="en"/>\n'+
-'<codalized main="js"/>\n' +
-'<p>\n'+  
-`<uk-en-ru><py-js-ts-java-cs>{{LOOM(https://www.loom.com/share/75f1210f206f49348541008c0cf2ad1d)}}</py-js-ts-java-cs></uk-en-ru>\n` + 
-'<p>')
+      zeroAppendScriptMD(`
+<!--import(./variables-for-local-import-tests.md)-->
+<localized main="en"/>
+<codalized main="js"/>
+
+<p>
+<uk-en-ru><py-js-ts-java-cs>{{LOOM(https://www.loom.com/share/75f1210f206f49348541008c0cf2ad1d)}}</py-js-ts-java-cs></uk-en-ru>
+<p>`)
         
       await zero.render()
 

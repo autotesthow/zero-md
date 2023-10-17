@@ -36,11 +36,10 @@ export default function() {
     }
 
     it('correct work', async () => {
-      zeroAppendScriptMD(
-      '<!--~{{Variable}}~mustBeVisible~-->\n' +
-      '\n'+ 
-      '<p>{{Variable}}</p>'
-      )
+      zeroAppendScriptMD(`
+<!--~{{Variable}}~mustBeVisible~-->
+
+<p>{{Variable}}</p>`)
      
       await zero.render()
 
@@ -48,12 +47,11 @@ export default function() {
     })
 
     it('correct work case sensitive', async () => {
-      zeroAppendScriptMD(
-      '<!--~{{Variable}}~mustBeNoVisible~-->\n' +
-      '<!--~{{variable}}~mustBeVisible~-->\n' +
-      '\n'+ 
-      '<p>{{variable}}</p>'
-      )
+      zeroAppendScriptMD(`      
+<!--~{{Variable}}~mustBeNoVisible~-->
+<!--~{{variable}}~mustBeVisible~-->
+ 
+<p>{{variable}}</p>`)
      
       await zero.render()
 
@@ -83,12 +81,11 @@ export default function() {
     }
 
     it('correct work', async () => {
-      zeroAppendScriptMD(
-      '<!--uk~{{Variable}}~Змінна~-->\n' +
-      '<localized main="uk"/>\n'+
-      '\n'+ 
-      '<p><uk>{{Variable}}</uk></p>'
-      )
+      zeroAppendScriptMD(`
+<!--uk~{{Variable}}~Змінна~-->
+<localized main="uk"/>
+ 
+<p><uk>{{Variable}}</uk></p>`)
      
       await zero.render()
 
@@ -96,12 +93,11 @@ export default function() {
     })
 
     it('incorrect lang must dont work with other langs', async () => {
-      zeroAppendScriptMD(
-      '<!--uk~{{Variable}}~Змінна~-->\n' +
-      '<localized main="ru"/>\n'+
-      '\n'+ 
-      '<p><en-ru>{{Variable}}</en-ru></p>'
-      )
+      zeroAppendScriptMD(`
+<!--uk~{{Variable}}~Змінна~-->
+<localized main="ru"/>
+ 
+<p><en-ru>{{Variable}}</en-ru></p>`)
      
       await zero.render()
 
@@ -130,12 +126,11 @@ export default function() {
     }
 
     it('correct work', async () => {
-      zeroAppendScriptMD(
-      '<!--java~{{Variable}}~Java~-->\n'+
-      '<codalized main="java"/>\n'+
-      '\n'+ 
-      '<p><java>{{Variable}}</java></p>'
-      )
+      zeroAppendScriptMD(`
+<!--java~{{Variable}}~Java~-->
+<codalized main="java"/>
+
+<p><java>{{Variable}}</java></p>`)
      
       await zero.render()
 
@@ -143,12 +138,11 @@ export default function() {
     })
 
     it('incorrect code must dont work with other codes', async () => {
-      zeroAppendScriptMD(
-      '<!--java~{{Variable}}~Java~-->\n'+
-      '<codalized main="js"/>\n'+
-      '\n'+ 
-      '<p><js-ts-py-cs>{{Variable}}</js-ts-py-cs></p>'
-      )
+      zeroAppendScriptMD(`
+<!--java~{{Variable}}~Java~-->
+<codalized main="js"/>
+
+<p><js-ts-py-cs>{{Variable}}</js-ts-py-cs></p>`)
      
       await zero.render()
 
@@ -177,12 +171,11 @@ export default function() {
     }
     
     it('correct work with first lang', async () => {
-      zeroAppendScriptMD(
-      '<!--en-ru~{{Variable}}~Variable~-->\n' +
-      '<localized main="en"/>\n'+
-      '\n'+ 
-      '<p><en>{{Variable}}</en></p>'
-      )
+      zeroAppendScriptMD(`
+<!--en-ru~{{Variable}}~Variable~-->
+<localized main="en"/>
+
+<p><en>{{Variable}}</en></p>`)
      
       await zero.render()
 
@@ -190,12 +183,11 @@ export default function() {
     })
 
     it('correct work with last lang', async () => {
-      zeroAppendScriptMD(
-      '<!--en-ru~{{Variable}}~Variable~-->\n' +
-      '<localized main="ru"/>\n'+
-      '\n'+ 
-      '<p><ru>{{Variable}}</ru></p>'
-      )
+      zeroAppendScriptMD(`
+<!--en-ru~{{Variable}}~Variable~-->
+<localized main="ru"/>
+ 
+<p><ru>{{Variable}}</ru></p>`)
      
       await zero.render()
 
@@ -203,12 +195,11 @@ export default function() {
     })
         
     it('dont work with other lang', async () => {
-      zeroAppendScriptMD(
-      '<!--en-ru~{{Variable}}~Variable~-->\n' +
-      '<localized main="uk"/>\n'+
-      '\n'+ 
-      '<p><uk>{{Variable}}</uk></p>'
-      )
+      zeroAppendScriptMD(`
+<!--en-ru~{{Variable}}~Variable~-->
+<localized main="uk"/>
+
+<p><uk>{{Variable}}</uk></p>`)
      
       await zero.render()
 
@@ -237,12 +228,11 @@ export default function() {
     }
         
     it('correct work with first code', async () => {
-      zeroAppendScriptMD(
-      '<!--js-ts~{{Variable}}~Variable~-->\n' +
-      '<codalized main="js"/>\n'+
-      '\n'+ 
-      '<p><js>{{Variable}}</js></p>'
-      )
+      zeroAppendScriptMD(`
+<!--js-ts~{{Variable}}~Variable~-->
+<codalized main="js"/>
+ 
+<p><js>{{Variable}}</js></p>`)
      
       await zero.render()
 
@@ -250,12 +240,11 @@ export default function() {
     })
            
     it('correct work with last code', async () => {
-      zeroAppendScriptMD(
-      '<!--js-ts~{{Variable}}~Variable~-->\n' +
-      '<codalized main="ts"/>\n'+
-      '\n'+ 
-      '<p><ts>{{Variable}}</ts></p>'
-      )
+      zeroAppendScriptMD(`
+<!--js-ts~{{Variable}}~Variable~-->
+<codalized main="ts"/>
+
+<p><ts>{{Variable}}</ts></p>`)
      
       await zero.render()
 
@@ -263,12 +252,11 @@ export default function() {
     })
             
     it('dont work with other code', async () => {
-      zeroAppendScriptMD(
-      '<!--js-ts~{{Variable}}~Variable~-->\n' +
-      '<codalized main="py"/>\n'+
-      '\n'+ 
-      '<p><java-py-cs>{{Variable}}</java-py-cs></p>'
-      )
+      zeroAppendScriptMD(`
+<!--js-ts~{{Variable}}~Variable~-->
+<codalized main="py"/>
+
+<p><java-py-cs>{{Variable}}</java-py-cs></p>`)
      
       await zero.render()
 
@@ -333,23 +321,22 @@ export default function() {
         return
       }
       it(`${dashes} work with  ${scenario}`, async () => {
-        zeroAppendScriptMD(
-        '<localized main="uk"/>\n'+
-        '<codalized main="js"/>\n'+    
-        `<!${dashes}js-ts~{{browser.config.baseUrl}}~browser.config.baseUrl~-->\n`+
-        `<!${dashes}py~{{browser.config.baseUrl}}~browser.config.base_url~-->\n`+
-        `<!${dashes}java~{{browser.config.baseUrl}}~Configuration.baseUrl~-->\n`+
-        `<!${dashes}cs~{{browser.config.baseUrl}}~Configuration.BaseUrl~-->\n`+
-        '\n' +
-        '<en>Header <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>\n'+
-        '<ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> any text</en>\n'+
-        '\n' +
-        '<uk>Заголовок <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>\n'+
-        '<ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> будь який текст</uk>\n'+
-        '\n' +
-        '<ru>Заглавие <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>\n'+
-        '<ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> любой текст</ru>\n'
-        )
+        zeroAppendScriptMD(`
+<localized main="uk"/>
+<codalized main="js"/>   
+<!${dashes}js-ts~{{browser.config.baseUrl}}~browser.config.baseUrl~-->
+<!${dashes}py~{{browser.config.baseUrl}}~browser.config.base_url~-->
+<!${dashes}java~{{browser.config.baseUrl}}~Configuration.baseUrl~-->
+<!${dashes}cs~{{browser.config.baseUrl}}~Configuration.BaseUrl~-->
+
+<en>Header <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>
+<ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> any text</en>
+
+<uk>Заголовок <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>
+<ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> будь який текст</uk>
+
+<ru>Заглавие <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>
+<ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> любой текст</ru>`)
         zero.lang = lang
         zero.code = code
         
@@ -411,11 +398,11 @@ export default function() {
     })
 
     it('Should have longBreak instead of ====+', async () => {
-      zeroAppendScriptMD(
-'\n' +
-'====\n' +
-'\n' +
-'There should be long break above starting from the header.')
+      zeroAppendScriptMD(`
+
+====
+
+There should be long break above starting from the header.`)
 
       await zero.render()
 
@@ -423,17 +410,17 @@ export default function() {
     })
 
     it('Should have longBreak instead of ====+ from variable', async () => {
-      zeroAppendScriptMD(
-'<localized main="en"/>\n' +
-'<!--en-uk-ru~{{SOLUTION}}~,,,,,,,,,,,,\n' +
-'**⇩SOLUTION⇩**\n' +
-'============~-->\n' +
-'\n' +
-'You will see answer to the main question in the universe after long break below...\n' +
-'\n' +
-'{{SOLUTION}}\n' +
-'\n' +
-'42')
+      zeroAppendScriptMD(`
+<localized main="en"/>
+<!--en-uk-ru~{{SOLUTION}}~,,,,,,,,,,,,
+**⇩SOLUTION⇩**
+============~-->
+
+You will see answer to the main question in the universe after long break below...
+
+{{SOLUTION}}
+
+42`)
 
       await zero.render()
 
