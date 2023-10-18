@@ -96,32 +96,38 @@ export default function() {
     })
 
     it('uses template styles', () => {
-      zero = add(
-        `<zero-md manual-render><template><link rel="stylesheet" href="example.css"></template></zero-md>`
-      )
+      zero = add(`
+<zero-md manual-render>
+<template><link rel="stylesheet" href="example.css"></template>
+</zero-md>`)
       const s = zero.makeNode(zero.buildStyles()).outerHTML
       assert(!s.includes('/github-markdown.min.css'))
       assert(s.includes('example.css'))
     })
 
     it('prepends correctly', () => {
-      zero = add(
-        `<zero-md manual-render><template data-merge="prepend"><style>p{color:red;}</style></template></zero-md>`
-      )
+      zero = add(`
+<zero-md manual-render>
+<template data-merge="prepend"><style>p{color:red;}</style></template>
+</zero-md>`)
       const s = zero.makeNode(zero.buildStyles()).outerHTML
       assert(s.indexOf('p{color:red;}') < s.indexOf('markdown.min'))
     })
 
     it('appends correctly', () => {
-      zero = add(
-        `<zero-md manual-render><template data-merge="append"><style>p{color:red;}</style></template></zero-md>`
-      )
+      zero = add(`
+<zero-md manual-render>
+<template data-merge="append"><style>p{color:red;}</style></template>
+</zero-md>`)
       const s = zero.makeNode(zero.buildStyles()).outerHTML
       assert(s.indexOf('p{color:red;}') > s.indexOf('markdown.min'))
     })
 
     it('allows passing an empty template to override default template', () => {
-      zero = add(`<zero-md manual-render><template></template></zero-md>`)
+      zero = add(`
+<zero-md manual-render>
+<template></template>
+</zero-md>`)
       const s = zero.makeNode(zero.buildStyles())
       assert(s.querySelectorAll('link').length === 0)
     })
@@ -197,11 +203,13 @@ export default function() {
     })
 
     it('prevents FOUC by ensuring styles are stamped and resolved first, before stamping md', async () => {
-      zero = add(`<zero-md manual-render>
-        <template>
-          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.css">
-        </template>
-        <script type="text/markdown"># fixture</script></zero-md>`)
+      zero = add(`
+<zero-md manual-render>
+  <template>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.css">
+  </template>
+  <script type="text/markdown"># fixture</script>
+</zero-md>`)
       const job = zero.render()
       await tick()
       assert(zero.shadowRoot.querySelector('link'))
@@ -211,7 +219,10 @@ export default function() {
     })
 
     it('renders markdown-body with optional classes', async () => {
-      zero = add(`<zero-md manual-render><script type="text/markdown"># test</script></zero-md>`)
+      zero = add(`
+<zero-md manual-render>
+<script type="text/markdown"># test</script>
+</zero-md>`)
       await zero.render({ classes: 'test-class' })
       assert(zero.shadowRoot.querySelector('.markdown-body').classList.contains('test-class'))
       await zero.render({ classes: ['test2', 'test3'] })
@@ -219,9 +230,10 @@ export default function() {
     })
 
     it('renders partially if body changes but styles do not', async () => {
-      zero = add(
-        `<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`
-      )
+      zero = add(`
+<zero-md manual-render>
+<template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script>
+</zero-md>`)
       await zero.render()
       let detail = {}
       zero.addEventListener('zero-md-rendered', (e) => {
@@ -237,9 +249,10 @@ export default function() {
     })
 
     it('renders partially if styles change but body does not', async () => {
-      zero = add(
-        `<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`
-      )
+      zero = add(`
+<zero-md manual-render>
+<template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script>
+</zero-md>`)
       await zero.render()
       let detail = {}
       zero.addEventListener('zero-md-rendered', (e) => {
@@ -266,9 +279,10 @@ export default function() {
     // TODO: make it pass
     it.skip('scrolls to element if location.hash set on first render', async () => {
       location.hash = 'tamen-et-veri'
-      zero = add(
-        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md"></zero-md></div>`
-      )
+      zero = add(`
+<div style="height:200px;overflow:hidden;">
+<zero-md src="fixture.md"></zero-md>
+</div>`)
 
       await sleep(500)
 
@@ -277,9 +291,10 @@ export default function() {
 
     // TODO: make it pass
     it.skip('hijacks same-doc hash links and scrolls id into view', async () => {
-      zero = add(
-        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" manual-render></zero-md></div>`
-      )
+      zero = add(`
+<div style="height:200px;overflow:hidden;">
+<zero-md src="fixture.md" manual-render></zero-md>
+</div>`)
       const el = zero.querySelector('zero-md')
       await el.render()
       const a = el.shadowRoot.querySelector('a[href="#tamen-et-veri"]')
@@ -297,7 +312,10 @@ export default function() {
     // TODO: make it pass
     it.skip('auto re-renders content when inline markdown script changes', (done) => {
       let isInitialRender = true
-      zero = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
+      zero = add(`
+<zero-md>
+<script type="text/markdown"># markdown-fixture</script>
+</zero-md>`)
       zero.addEventListener('zero-md-rendered', () => {
         if (isInitialRender) {
           expect(zero.shadowRoot.querySelector('h1').innerHTML).to.equal('markdown-fixture')
@@ -312,11 +330,13 @@ export default function() {
 
     it('auto re-renders styles when styles template changes', (done) => {
       let isInitialRender = true
-      zero = add(`<zero-md>
-        <template>
-          <style>h1 { color: rgb(255, 0, 0); }</style>
-        </template>
-        <script type="text/markdown"># fixture</script></zero-md>`)
+      zero = add(`
+<zero-md>
+  <template>
+    <style>h1 { color: rgb(255, 0, 0); }</style>
+  </template>
+  <script type="text/markdown"># fixture</script>
+</zero-md>`)
       zero.addEventListener('zero-md-rendered', () => {
         const h1 = zero.shadowRoot.querySelector('h1')
         const computedStyle = window.getComputedStyle(h1)
@@ -395,17 +415,17 @@ export default function() {
 
     it('highlights java code too', async () => {
       zero.src = 'fixture.md'
-      zeroAppendScriptMD(
-        '\n' +
-          '\n```java' +
-          '\npublic class HelloWorld {' +
-          '\n  public static void main(String[] args) {' +
-          '\n    System.out.println("Hello, World!");' +
-          '\n  }' +
-          '\n}' +
-          '\n```' +
-          '\n'
-      )
+      zeroAppendScriptMD(`
+
+ \`\`\`java
+  public class HelloWorld {
+   public static void main(String[] args) {
+      System.out.println("Hello, World!");
+    }
+  }
+  \`\`\`
+  
+  `)
 
       await zero.render()
       await sleep(200) // freaking ugly but blame prism
@@ -415,17 +435,24 @@ export default function() {
     })
 
     it('language-detects unhinted code blocks as NOTHING o_O', async () => {
-      zeroAppendScriptMD(
-        '\n' +
-          '\n```' +
-          '\npublic class HelloWorld {' +
-          '\n  public static void main(String[] args) {' +
-          '\n    System.out.println("Hello, World!");' +
-          '\n  }' +
-          '\n}' +
-          '\n```' +
-          '\n'
-      )
+      zeroAppendScriptMD(`
+
+\`\`\`
+public class HelloWorld {
+  public static void main(String[] args) 
+    System.out.println("Hello, World!");
+  }
+  }
+  \`\`\`
+  
+  
+  \`\`\`
+  public class HelloWorld {
+  public static void main(String[] args) {' +
+  System.out.println("Hello, World!");' +
+    }
+  }
+  \`\`\``)
 
       await zero.render()
 

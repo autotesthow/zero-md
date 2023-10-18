@@ -38,7 +38,10 @@ export default function() {
 
   describe('Localization testing', () => {
     it('should load lang from <localized main="..."/ inside MD>', async () => {
-      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
       
       await zero.render()
    
@@ -46,7 +49,10 @@ export default function() {
     })
 
     it('should load lang from ZeroMdConfig', async () => {
-      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
 
       zero.config.lang = 'uk'
       await zero.render()
@@ -55,7 +61,10 @@ export default function() {
     })
 
     it('should load lang from attributes', async () => {
-      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
 
       zero.setAttribute('lang', 'ru')
       await zero.render()
@@ -64,7 +73,10 @@ export default function() {
     })
 
     it('value from ZeroMdConfig should override value from <localized main="..."/>', async () => {
-      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
 
       zero.config.lang = 'ru'
       await zero.render()
@@ -73,7 +85,10 @@ export default function() {
     })
 
     it('value from attributes should override value from ZeroMdConfig', async () => {
-      zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
 
       zero.config.lang = 'ru'
       zero.setAttribute('lang', 'uk')
@@ -87,7 +102,10 @@ export default function() {
         window.history.replaceState(null, null, baseUrl);
       })
       it('should load lang from URLSearchParams>', async () => {
-        zeroAppendScriptMD('<localized main="uk"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+        zeroAppendScriptMD(`
+<localized main="uk"/>
+
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
         
         const newQueryString = '?lang=en';
         window.history.pushState(null, null, baseUrl + newQueryString)
@@ -97,7 +115,10 @@ export default function() {
       })
   
       it('lang value from URLSearchParams should override value from attributes', async () => {
-        zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+        zeroAppendScriptMD(`
+<localized main="en"/>
+
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
   
         zero.setAttribute('lang', 'ru')
         const newQueryString = '?lang=uk';
@@ -108,7 +129,10 @@ export default function() {
       })
   
       it('should choose the most preferred lang option', async () => {
-        zeroAppendScriptMD('<localized main="en"/><uk>Привіт</uk><ru>Привет</ru><en>Hello</en>')
+        zeroAppendScriptMD(`
+<localized main="en"/>
+
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
   
         zero.config.lang = 'uk'
         zero.setAttribute('lang', 'ru')
@@ -123,8 +147,10 @@ export default function() {
 
   describe('Codalization testing', () => {
     it('should load code from <codalized main="..."/ inside MD>', async () => {
-      zeroAppendScriptMD('<codalized main="java"/>' +
-      '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+      zeroAppendScriptMD(`
+<codalized main="java"/>
+
+<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
       
       await zero.render()
    
@@ -132,7 +158,10 @@ export default function() {
     })
 
     it('should load code from ZeroMdConfig', async () => {
-      zeroAppendScriptMD('<codalized main="java"/><js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+      zeroAppendScriptMD(`
+<codalized main="java"/>
+
+<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
 
       zero.config.code = 'py'
       await zero.render()
@@ -141,7 +170,10 @@ export default function() {
     })
 
     it('should load code from attributes', async () => {
-      zeroAppendScriptMD('<codalized main="java"/><js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+      zeroAppendScriptMD(`
+<codalized main="java"/>
+
+<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
 
       zero.setAttribute('code', 'cs')
       await zero.render()
@@ -150,8 +182,10 @@ export default function() {
     })
 
     it('valuе from ZeroMdConfig should override value from <codalized main="..."/>', async () => {
-      zeroAppendScriptMD('<codalized main="java"/>' +
-      '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+      zeroAppendScriptMD(`
+<codalized main="java"/>
+
+<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
 
       zero.config.code = 'py'
       await zero.render()
@@ -160,8 +194,10 @@ export default function() {
     })
 
     it('valuе from attributes should override value from ZeroMdConfig', async () => {
-      zeroAppendScriptMD('<codalized main="java"/>' +
-      '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+      zeroAppendScriptMD(`
+<codalized main="java"/>
+
+<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
      
       zero.config.code = 'py'
       zero.setAttribute('code', 'cs')
@@ -176,7 +212,10 @@ export default function() {
       })
   
       it('should load code from URLSearchParams', async () => {
-        zeroAppendScriptMD('<codalized main="java"/><js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+        zeroAppendScriptMD(`
+<codalized main="java"/>
+
+<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
   
         const newQueryString = '?code=ts';
         window.history.pushState(null, null, baseUrl + newQueryString)
@@ -186,8 +225,10 @@ export default function() {
       })
   
       it('code value from URLSearchParams should override value from attributes', async () => {
-        zeroAppendScriptMD('<codalized main="java"/>' +
-        '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+        zeroAppendScriptMD(`
+<codalized main="java"/>
+
+<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
         
         zero.setAttribute('code', 'cs')
         const newQueryString = '?code=ts';
@@ -198,8 +239,10 @@ export default function() {
       })
   
       it('should choose the most preferred code option', async () => {
-        zeroAppendScriptMD('<codalized main="java"/>' +
-        '<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>')
+        zeroAppendScriptMD(`
+<codalized main="java"/>
+
+<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
   
         zero.config.code = 'ts'
         zero.setAttribute('code', 'cs')
@@ -215,24 +258,25 @@ export default function() {
   describe('Localization and codalization with codegroups testing', () => {
     it('should set lang and code from codalized and localized tag if other options wasn\'t set' +
     ' AND switch appropriate tab and language', async () => {
-      zeroAppendScriptMD('<localized main="uk"/>\n' +
-      '<codalized main="java"/>\n' +
-      '<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>\n' +
-      '<ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>\n' +
-      '<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>\n' +
-      '\n' +
-      '::::::::::::\n' +
-      '```js\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```ts\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```java\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '::::::::::::\n'
-      )
+      zeroAppendScriptMD(`
+<localized main="uk"/>
+<codalized main="java"/>
+
+<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>
+<ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>
+<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>
+
+::::::::::::
+\`\`\`js
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`ts
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`java
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+::::::::::::`)
 
       await zero.render()
 
@@ -243,24 +287,25 @@ export default function() {
 
     it('values from ZeroMdConfig should override values from  codalized and localized' +
     ' AND switch appropriate tab and language', async () => {
-      zeroAppendScriptMD('<localized main="uk"/>\n' +
-      '<codalized main="java"/>\n' +
-      '<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>\n' +
-      '<ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>\n' +
-      '<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>\n' +
-      '\n' +
-      '::::::::::::\n' +
-      '```js\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```ts\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```java\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '::::::::::::\n'
-      )
+      zeroAppendScriptMD(`
+<localized main="uk"/>
+<codalized main="java"/>
+
+<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>
+<ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>
+<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>
+
+::::::::::::
+\`\`\`js
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`ts
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`java
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+::::::::::::`)
 
       zero.config.lang = 'ru'
       zero.config.code = 'ts'
@@ -273,28 +318,29 @@ export default function() {
 
     it('values from attributes should override values from ZeroMdConfig' +
     ' AND switch appropriate tab and language', async () => {
-      zeroAppendScriptMD('<localized main="uk"/>\n' +
-      '<codalized main="java"/>\n' +
-      '<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>\n' +
-      '<ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>\n' +
-      '<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>\n' +
-      '<py>PYTHON CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></py>\n' +
-      '\n' +
-      '::::::::::::\n' +
-      '```js\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```ts\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```java\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '```py\n' +
-      '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-      '```\n' +
-      '::::::::::::\n'
-      )
+      zeroAppendScriptMD(`
+<localized main="uk"/>
+<codalized main="java"/>
+
+<js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>
+<ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>
+<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>
+<py>PYTHON CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></py>
+
+::::::::::::
+\`\`\`js
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`ts
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`java
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`py
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+::::::::::::`)
 
       zero.config.lang = 'ru'
       zero.config.code = 'ts'
@@ -314,30 +360,31 @@ export default function() {
   
       it('values from URLSearchParams should be the highest priority' +
       ' AND switch appropriate tab and language', async () => {
-        zeroAppendScriptMD('<localized main="uk"/>\n' +
-        '<codalized main="java"/>\n' +
-        '<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>\n' +
-        '<py>PYTHON CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></py>\n' +
-        '<cs>CS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></cs>\n' +
-        '\n' +
-        '::::::::::::\n' +
-        '```js\n' +
-        '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-        '```\n' +
-        '```ts\n' +
-        '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-        '```\n' +
-        '```java\n' +
-        '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-        '```\n' +
-        '```py\n' +
-        '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-        '```\n' +
-        '```cs\n' +
-        '<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>\n' +
-        '```\n' +
-        '::::::::::::\n'
-        )
+        zeroAppendScriptMD(`
+<localized main="uk"/>
+<codalized main="java"/>
+
+<java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>
+<py>PYTHON CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></py>
+<cs>CS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></cs>
+
+::::::::::::
+\`\`\`js
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`ts
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`java
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`py
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+\`\`\`cs
+<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
+\`\`\`
+::::::::::::`)
 
         zero.config.lang = 'ru'
         zero.config.code = 'ts'

@@ -39,7 +39,7 @@ export default function() {
 
     it('does not render lang without localized option', async () => {
       zeroAppendScriptMD(`
-
+      
 <ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
 
       await zero.render()
@@ -353,7 +353,11 @@ ${given}`)
       })
 
       it(`refactored localized/codalized tag, render: ${scenario}`, async () => {
-        zeroAppendScriptMD('<!--localized(main="en")-->\n' + '<!--codalized(main="py")-->\n\n' + given)
+        zeroAppendScriptMD(`
+<!--localized(main="en")--> 
+<!--codalized(main="py")-->
+
+${given}`)
         if (lang) {
           zero.lang = lang
         }

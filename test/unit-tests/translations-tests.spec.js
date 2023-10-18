@@ -372,26 +372,26 @@ export default function() {
   
     // TODO: cant find element
     it.skip('Should have no longBreak ====+ inside code blocks', async () => {
-      zeroAppendScriptMD(
-'```js\n' +
-'/*\n' +
-'====\n' +
-'*/\n' +
-'```\n')
+      zeroAppendScriptMD(`
+\`\`\`js
+/*
+====
+*/
+\`\`\``)
 
       await zero.render()
       expect(zeroBody$('code.code-js').innerText).to.equals('/*\n====\n*/')
     })
 
     it('Should have no longBreak ====+ inside code blocks', async () => {
-      zeroAppendScriptMD(
-'::::::::::manual\n' +
-'```poetry: js"js (poetry)"\n' +
-'/*\n' +
-'====\n' +
-'*/\n' +
-'```\n' +
-'::::::::::\n')
+      zeroAppendScriptMD(`
+::::::::::manual
+\`\`\`poetry: js"js (poetry)"
+/*
+====
+*/
+\`\`\`
+::::::::::`)
 
       await zero.render()
       expect(zeroBody$('code.code-js').innerText).to.equals('/*\n====\n*/')
