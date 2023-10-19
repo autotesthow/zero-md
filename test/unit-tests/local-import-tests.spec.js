@@ -21,7 +21,7 @@ export default function() {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      zero.remove()
+      // zero.remove()
     })
     
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
@@ -131,6 +131,87 @@ export default function() {
       await zero.render()
 
       expect(zeroBody$('iframe').src).to.equals('https://www.loom.com/embed/75f1210f206f49348541008c0cf2ad1d')
+    })
+
+    //TODO make it pass 
+    it.skip('import one translation variable work in one translation variable', async () => {
+      zeroAppendScriptMD(`
+<!--import(./variables-for-local-import-tests.md)-->
+<localized main="en"/>
+<codalized main="js"/>
+<!----js~{{newVariableType1}}~Here must be {{reuseVariableType1}}~-->
+
+<p>
+<uk-en-ru><py-js-ts-java-cs>{{newVariableType1}}</py-js-ts-java-cs></uk-en-ru>
+<p>`)
+      
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Here must be ReuseVariable')
+    })
+
+    it('import general translation variable work in one translation variable', async () => {
+      zeroAppendScriptMD(`
+<!--import(./variables-for-local-import-tests.md)-->
+<localized main="en"/>
+<codalized main="js"/>
+<!----js~{{newVariableType1}}~Here must be {{reuseVariableType2}}~-->
+
+<p>
+<uk-en-ru><py-js-ts-java-cs>{{newVariableType1}}</py-js-ts-java-cs></uk-en-ru>
+<p>`)
+      
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Here must be ReuseVariable')
+    })
+
+    it('import one translation variable work in general translation variable', async () => {
+      zeroAppendScriptMD(`
+<!--import(./variables-for-local-import-tests.md)-->
+<localized main="en"/>
+<codalized main="js"/>
+<!--~{{newVariableType2}}~Here must be {{reuseVariableType1}}~-->
+
+<p>
+<uk-en-ru><py-js-ts-java-cs>{{newVariableType2}}</py-js-ts-java-cs></uk-en-ru>
+<p>`)
+      
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Here must be ReuseVariable')
+    })
+
+    it('import general translation variable work in general translation variable', async () => {
+      zeroAppendScriptMD(`
+<!--import(./variables-for-local-import-tests.md)-->
+<localized main="en"/>
+<codalized main="js"/>
+<!--~{{newVariableType2}}~Here must be {{reuseVariableType2}}~-->
+
+<p>
+<uk-en-ru><py-js-ts-java-cs>{{newVariableType2}}</py-js-ts-java-cs></uk-en-ru>
+<p>`)
+      
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Here must be ReuseVariable')
+    })
+
+    it('import one translation variable dont work in general translation variable with wrong code language', async () => {
+      zeroAppendScriptMD(`
+<!--import(./variables-for-local-import-tests.md)-->
+<localized main="en"/>
+<codalized main="py"/>
+<!--~{{newVariableType2}}~Here must be {{reuseVariableType1}}~-->
+
+<p>
+<uk-en-ru><py-js-ts-java-cs>{{newVariableType2}}</py-js-ts-java-cs></uk-en-ru>
+<p>`)
+      
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('Here must be {{reuseVariableType1}}')
     })
   })
 }
