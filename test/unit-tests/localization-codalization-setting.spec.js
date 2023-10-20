@@ -20,7 +20,7 @@ export default function() {
     zero = add(`<zero-md manual-render></zero-md>`)
   })
   afterEach(() => {
-     zero.remove()
+    zero.remove()
   })
   
   let baseUrl = window.location.href
@@ -36,31 +36,18 @@ export default function() {
     zero.appendChild(script)
   }
 
-  describe('Localization testing', () => {
-    it('should load lang from <localized main="..."/ inside MD>', async () => {
+  describe('Localization', () => {
+    it('should set lang from "localized" tag inside MD', async () => {
       zeroAppendScriptMD(`
 <localized main="en"/>
 
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
-      
       await zero.render()
    
       expect(zeroBody$('localized').innerText).to.equal('Hello')
     })
 
-    it('should load lang from ZeroMdConfig', async () => {
-      zeroAppendScriptMD(`
-<localized main="en"/>
-
-<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
-
-      zero.config.lang = 'uk'
-      await zero.render()
-   
-      expect(zeroBody$('p').innerText).to.equal('Привіт')
-    })
-
-    it('should load lang from attributes', async () => {
+    it('should be overrided from attributes', async () => {
       zeroAppendScriptMD(`
 <localized main="en"/>
 
@@ -72,7 +59,7 @@ export default function() {
       expect(zeroBody$('p').innerText).to.equal('Привет')
     })
 
-    it('value from ZeroMdConfig should override value from <localized main="..."/>', async () => {
+    it('should be overrided from zeroMdConfig', async () => {
       zeroAppendScriptMD(`
 <localized main="en"/>
 
@@ -84,13 +71,13 @@ export default function() {
       expect(zeroBody$('localized').innerText).to.equal('Привет')
     })
 
-    it('value from attributes should override value from ZeroMdConfig', async () => {
+    it('should be overrided from attributes after zeroMdConfig', async () => {
       zeroAppendScriptMD(`
 <localized main="en"/>
 
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
-
       zero.config.lang = 'ru'
+
       zero.setAttribute('lang', 'uk')
       await zero.render()
 
@@ -101,7 +88,7 @@ export default function() {
       afterEach(() => {
         window.history.replaceState(null, null, baseUrl);
       })
-      it('should load lang from URLSearchParams>', async () => {
+      it('should be overrided from URLSearchParams', async () => {
         zeroAppendScriptMD(`
 <localized main="uk"/>
 
@@ -114,13 +101,13 @@ export default function() {
         expect(zeroBody$('p').innerText).to.equal('Hello')
       })
   
-      it('lang value from URLSearchParams should override value from attributes', async () => {
+      it('should be overrided from URLSearchParams after attributes', async () => {
         zeroAppendScriptMD(`
 <localized main="en"/>
 
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
-  
         zero.setAttribute('lang', 'ru')
+
         const newQueryString = '?lang=uk';
         window.history.pushState(null, null, baseUrl + newQueryString)
         await zero.render() 
@@ -128,14 +115,13 @@ export default function() {
         expect(zeroBody$('localized').innerText).to.equal('Привіт')
       })
   
-      it('should choose the most preferred lang option', async () => {
+      it('should be overrided from URLSearchParams after zeroMdConfig', async () => {
         zeroAppendScriptMD(`
 <localized main="en"/>
 
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
-  
         zero.config.lang = 'uk'
-        zero.setAttribute('lang', 'ru')
+
         const newQueryString = '?lang=en';
         window.history.pushState(null, null, baseUrl + newQueryString)
         await zero.render()
@@ -145,19 +131,18 @@ export default function() {
     })
   })
 
-  describe('Codalization testing', () => {
-    it('should load code from <codalized main="..."/ inside MD>', async () => {
+  describe('Codalization', () => {
+    it('should set code from "codalized" tag inside MD', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
 
 <js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
-      
       await zero.render()
    
       expect(zeroBody$('.inline-content.active').innerText).to.equal('JAVA')
     })
 
-    it('should load code from ZeroMdConfig', async () => {
+    it('should be overrided from zeroMdConfig', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
 
@@ -169,7 +154,7 @@ export default function() {
       expect(zeroBody$('.inline-content.active').innerText).to.equal('PY')
     })
 
-    it('should load code from attributes', async () => {
+    it('should be overrided from attributes', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
 
@@ -181,25 +166,13 @@ export default function() {
       expect(zeroBody$('.inline-content.active').innerText).to.equal('CS')
     })
 
-    it('valuе from ZeroMdConfig should override value from <codalized main="..."/>', async () => {
+    it('should be overrided from attributes after zeroMdConfig', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
 
 <js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
-
       zero.config.code = 'py'
-      await zero.render()
-   
-      expect(zeroBody$('.inline-content.active').innerText).to.equal('PY')
-    })
 
-    it('valuе from attributes should override value from ZeroMdConfig', async () => {
-      zeroAppendScriptMD(`
-<codalized main="java"/>
-
-<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
-     
-      zero.config.code = 'py'
       zero.setAttribute('code', 'cs')
       await zero.render()
    
@@ -211,7 +184,7 @@ export default function() {
         window.history.replaceState(null, null, baseUrl);
       })
   
-      it('should load code from URLSearchParams', async () => {
+      it('should be overrided from URLSearchParams', async () => {
         zeroAppendScriptMD(`
 <codalized main="java"/>
 
@@ -224,13 +197,13 @@ export default function() {
         expect(zeroBody$('.inline-content.active').innerText).to.equal('TS')
       })
   
-      it('code value from URLSearchParams should override value from attributes', async () => {
+      it('should be overrided from URLSearchParams after attributes', async () => {
         zeroAppendScriptMD(`
 <codalized main="java"/>
 
-<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
-        
+<js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`) 
         zero.setAttribute('code', 'cs')
+
         const newQueryString = '?code=ts';
         window.history.pushState(null, null, baseUrl + newQueryString)
         await zero.render() 
@@ -238,14 +211,13 @@ export default function() {
         expect(zeroBody$('.inline-content.active').innerText).to.equal('TS')
       })
   
-      it('should choose the most preferred code option', async () => {
+      it('should be overrided from URLSearchParams after zeroMdConfig', async () => {
         zeroAppendScriptMD(`
 <codalized main="java"/>
 
 <js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
-  
         zero.config.code = 'ts'
-        zero.setAttribute('code', 'cs')
+        
         const newQueryString = '?code=py';
         window.history.pushState(null, null, baseUrl + newQueryString)
         await zero.render() 
