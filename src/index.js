@@ -747,6 +747,11 @@ export class ZeroMd extends HTMLElement {
 
     const mdExtensionsWithId = /\.md#/gim
     md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
+    // const mdExtensions = /\.md\)/gim
+    // md = md.replace(mdExtensions, '-md)')
+
+    // const mdExtensionsWithId = /\.md#/gim
+    // md = md.replace(mdExtensionsWithId, '-md#')
 
     const poetryBoldOption = /<!--(.+?)poetryBold(.+?)-->/gi
     const [, poetryBoldStart, poetryBoldEnd] = [...md.matchAll(poetryBoldOption)].at(-1) || [
