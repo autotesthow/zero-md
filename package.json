@@ -6,7 +6,7 @@
   "type": "module",
   "exports": "./src/index.js",
   "scripts": {
-    "dev": "cross-env ENVIRONMENT=dev rollup -c -w ",
+    "dev": "cross-env ENVIRONMENT=dev rollup -c -w",
     "format": "prettier --write .",
     "lint": "eslint .",
     "test": "npm run dev",

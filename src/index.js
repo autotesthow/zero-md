@@ -743,10 +743,10 @@ export class ZeroMd extends HTMLElement {
 
     // todo: fix to skip links that start with http
     const mdExtensions = /\.md\)/gim
-    md = md.replace(mdExtensions, `-md${window.location.search})`)
+    md = md.replace(mdExtensions, '-md)')
 
     const mdExtensionsWithId = /\.md#/gim
-    md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
+    md = md.replace(mdExtensionsWithId, '-md#')
 
     const poetryBoldOption = /<!--(.+?)poetryBold(.+?)-->/gi
     const [, poetryBoldStart, poetryBoldEnd] = [...md.matchAll(poetryBoldOption)].at(-1) || [
