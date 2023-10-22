@@ -470,7 +470,18 @@ export class ZeroMd extends HTMLElement {
       }
       const resp =
         isReadingFromGitlabConfigured && this.path
-          ? await fetchDataFromGitlab(this.path)
+          ? await (async () => {
+              const id = this.config.gitlab.projectId
+              const branch = this.config.gitlab.branch
+              const absolutePath = encodeURIComponent(this.path.trim())
+              gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
+
+              return fetch(gitlabAbsoluteUrl, {
+                headers: {
+                  'PRIVATE-TOKEN': this.config.gitlab.token,
+                },
+              })
+            })()
           : await (async () => {
               const url = this.src.trim()
               gitlabAbsoluteUrl = url.startsWith('http') ? url : this.config.baseUrl + url
