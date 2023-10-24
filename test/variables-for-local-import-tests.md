@@ -23,5 +23,5 @@
 <!--java~{{lang}}~Java~-->
 <!----cs~{{lang}}~C#~-->
 
-<!----js~{{reuseVariableType1}}~ReuseVariable~-->
-<!--~{{reuseVariableType2}}~ReuseVariable~-->
+<!----js~{{one-lang-from-import}}~JavaScript~-->
+<!--~{{general-lang-from-import}}~Any~-->

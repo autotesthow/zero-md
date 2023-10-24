@@ -139,15 +139,15 @@ export default function() {
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="js"/>
-<!----js~{{newVariableType1}}~Here must be {{reuseVariableType1}}~-->
+<!----js~{{js-lang}}~{{one-lang-from-import}} language~-->
 
 <p>
-<uk-en-ru><py-js-ts-java-cs>{{newVariableType1}}</py-js-ts-java-cs></uk-en-ru>
+<uk-en-ru><py-js-ts-java-cs>{{js-lang}}</py-js-ts-java-cs></uk-en-ru>
 <p>`)
       
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Here must be ReuseVariable')
+      expect(zeroBody$('p').innerText).to.equals('JavaScript language')
     })
 
     it('import general translation variable work in one translation variable', async () => {
@@ -155,15 +155,15 @@ export default function() {
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="js"/>
-<!----js~{{newVariableType1}}~Here must be {{reuseVariableType2}}~-->
+<!----js~{{one-lang}}~{{general-lang-from-import}} language~-->
 
 <p>
-<uk-en-ru><py-js-ts-java-cs>{{newVariableType1}}</py-js-ts-java-cs></uk-en-ru>
+<uk-en-ru><py-js-ts-java-cs>{{one-lang}}</py-js-ts-java-cs></uk-en-ru>
 <p>`)
       
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Here must be ReuseVariable')
+      expect(zeroBody$('p').innerText).to.equals('Any language')
     })
 
     it('import one translation variable work in general translation variable', async () => {
@@ -171,15 +171,15 @@ export default function() {
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="js"/>
-<!--~{{newVariableType2}}~Here must be {{reuseVariableType1}}~-->
+<!--~{{general-lang}}~{{one-lang-from-import}} language~-->
 
 <p>
-<uk-en-ru><py-js-ts-java-cs>{{newVariableType2}}</py-js-ts-java-cs></uk-en-ru>
+<uk-en-ru><py-js-ts-java-cs>{{general-lang}}</py-js-ts-java-cs></uk-en-ru>
 <p>`)
       
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Here must be ReuseVariable')
+      expect(zeroBody$('p').innerText).to.equals('JavaScript language')
     })
 
     it('import general translation variable work in general translation variable', async () => {
@@ -187,15 +187,15 @@ export default function() {
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="js"/>
-<!--~{{newVariableType2}}~Here must be {{reuseVariableType2}}~-->
+<!--~{{general-lang}}~{{general-lang-from-import}} language~-->
 
 <p>
-<uk-en-ru><py-js-ts-java-cs>{{newVariableType2}}</py-js-ts-java-cs></uk-en-ru>
+<uk-en-ru><py-js-ts-java-cs>{{general-lang}}</py-js-ts-java-cs></uk-en-ru>
 <p>`)
       
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Here must be ReuseVariable')
+      expect(zeroBody$('p').innerText).to.equals('Any language')
     })
 
     it('import one translation variable dont work in general translation variable with wrong code language', async () => {
@@ -203,15 +203,15 @@ export default function() {
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="py"/>
-<!--~{{newVariableType2}}~Here must be {{reuseVariableType1}}~-->
+<!--~{{general-lang}}~{{one-lang-from-import}} language~-->
 
 <p>
-<uk-en-ru><py-js-ts-java-cs>{{newVariableType2}}</py-js-ts-java-cs></uk-en-ru>
+<uk-en-ru><py-js-ts-java-cs>{{general-lang}}</py-js-ts-java-cs></uk-en-ru>
 <p>`)
       
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Here must be {{reuseVariableType1}}')
+      expect(zeroBody$('p').innerText).to.equals('{{one-lang-from-import}} language')
     })
   })
 }
