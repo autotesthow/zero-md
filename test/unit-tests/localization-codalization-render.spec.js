@@ -37,7 +37,16 @@ export default function() {
   }
 
   describe('Localization', () => {
-    it('should set lang from "localized" tag inside MD', async () => {
+    it('does not render lang without localized option', async () => {
+      zeroAppendScriptMD(`
+<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
+
+      await zero.render()
+
+      expect(zeroBody$('p').innerHTML).to.equal('<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>')
+    })
+    
+    it('renders lang by main attribute in localized option', async () => {
       zeroAppendScriptMD(`
 <localized main="en"/>
 
@@ -47,31 +56,31 @@ export default function() {
       expect(zeroBody$('localized').innerText).to.equal('Hello')
     })
 
-    it('should be overrided from attributes', async () => {
+    it('renders lang by lang option of zero-md config', async () => {
       zeroAppendScriptMD(`
 <localized main="en"/>
 
-<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
+<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
 
-      zero.setAttribute('lang', 'ru')
+      zero.config = { ...zero.config, lang: 'uk' }
       await zero.render()
-  
-      expect(zeroBody$('p').innerText).to.equal('Привет')
+
+      expect(zeroBody$('p').innerHTML).to.equal('Привіт')
     })
 
-    it('should be overrided from zeroMdConfig', async () => {
+    it('renders lang by lang attribute of zero-md', async () => {
       zeroAppendScriptMD(`
 <localized main="en"/>
 
-<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
+<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
 
-      zero.config.lang = 'ru'
+      zero.lang = 'uk'
       await zero.render()
-   
-      expect(zeroBody$('localized').innerText).to.equal('Привет')
+
+      expect(zeroBody$('p').innerHTML).to.equal('Привіт')
     })
 
-    it('should be overrided from attributes after zeroMdConfig', async () => {
+    it('should be overrided from attributes after zero-md config', async () => {
       zeroAppendScriptMD(`
 <localized main="en"/>
 
@@ -82,6 +91,21 @@ export default function() {
       await zero.render()
 
       expect(zeroBody$('localized').innerText).to.equal('Привіт')
+    })
+
+    it('auto re-renders on change of lang attribute of zero-md', async () => {
+      zero.remove()
+      zero = add('<zero-md lang="en"></zero-md>')
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
+      await zero.render()
+
+      zero.lang = 'uk'
+      await zero.waitForRendered()
+
+      expect(zeroBody$('p').innerHTML).to.equal('Привіт')
     })
 
     describe('Depending on URLSearchParams behavior testing', () => {
@@ -132,7 +156,7 @@ export default function() {
   })
 
   describe('Codalization', () => {
-    it('should set code from "codalized" tag inside MD', async () => {
+    it('renders code by main attribute in codalized option', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
 
@@ -142,7 +166,7 @@ export default function() {
       expect(zeroBody$('.inline-content.active').innerText).to.equal('JAVA')
     })
 
-    it('should be overrided from zeroMdConfig', async () => {
+    it('renders by zero-md config', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
 
@@ -154,7 +178,7 @@ export default function() {
       expect(zeroBody$('.inline-content.active').innerText).to.equal('PY')
     })
 
-    it('should be overrided from attributes', async () => {
+    it('renders by attributes', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
 
@@ -177,6 +201,21 @@ export default function() {
       await zero.render()
    
       expect(zeroBody$('.inline-content.active').innerText).to.equal('CS')
+    })
+
+    it('auto re-renders on change of code attribute of zero-md', async () => {
+      zero.remove()
+      zero = add('<zero-md code="py"></zero-md>')
+      zeroAppendScriptMD(`
+<codalized main="js"/>
+
+<py>Pytest</py><js>Jest</js><java>Java</java>`)
+      await zero.render()
+
+      zero.code = 'java'
+      await zero.waitForRendered()
+
+      expect(zeroBody$('.inline-content.active').innerHTML).to.equal('Java')
     })
 
     describe('Depending on URLSearchParams behavior testing', () => {
