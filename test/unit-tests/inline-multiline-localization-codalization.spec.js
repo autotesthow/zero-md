@@ -15,7 +15,7 @@ export default function() {
     return document.body.appendChild(template.content.firstElementChild)
   }
 
-  describe('localized', () => {
+  describe('Localization/codalization', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)
@@ -35,178 +35,93 @@ export default function() {
       zero.appendChild(script)
     }
 
-    // TODO: improve coverage
-
-    it('does not render lang without localized option', async () => {
-      zeroAppendScriptMD(`
-      
-<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
-
-      await zero.render()
-
-      expect(zeroBody$('p').innerHTML).to.equal('<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>')
-    })
-
-    it('renders lang by main attribute in localized option', async () => {
-      zeroAppendScriptMD(`
-<localized main="en"/>
-
-<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
-
-      await zero.render()
-
-      expect(zeroBody$('p').innerHTML).to.equal('Hello')
-    })
-
-    it('renders lang by lang option of zero-md config', async () => {
-      zeroAppendScriptMD(`
-<localized main="en"/>
-
-<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
-
-      zero.config = { ...zero.config, lang: 'uk' }
-      await zero.render()
-
-      expect(zeroBody$('p').innerHTML).to.equal('Привіт')
-    })
-
-    it('renders lang by lang attribute of zero-md', async () => {
-      zeroAppendScriptMD(`
-<localized main="en"/>
-
-<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
-      zero.config = { ...zero.config, lang: 'ru' }
-
-      zero.lang = 'uk'
-      await zero.render()
-
-      expect(zeroBody$('p').innerHTML).to.equal('Привіт')
-    })
-
-    it('auto re-renders on change of lang attribute of zero-md', async () => {
-      zero.remove()
-      zero = add('<zero-md lang="en"></zero-md>')
-      zeroAppendScriptMD(`
-<localized main="en"/>
-
-<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
-
-      zero.lang = 'uk'
-      // await zero.waitForReady()
-      await zero.waitForRendered()
-
-      expect(zeroBody$('p').innerHTML).to.equal('Привіт')
-    })
-
-    // TODO: unfortunately we can't test search params in this test suite,
-    //       because after each hook will reload the whole html page reseting test execution
-    //     describe('with reset search params after test', () => {
-    //       afterEach(() => {
-    //         window.location.search = ''
-    //       })
-
-    //       it('renders lang by lang param of search params', async () => {
-    //         zeroAppendScriptMD(`
-    // <localized main="en"/>
-
-    // <ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
-    //         zero.config = { ...zero.config, lang: 'ru' }
-    //         zero.lang = 'en'
-
-    //         window.location.search = '?lang=uk'
-    //         await zero.render()
-
-    //         expect(zeroBody$('p').innerHTML).to.equal('Привіт')
-    //       })
-    //     })
-
     let scenarios = {
       'inline localization': {
-        given: 'Hello in selected language – «<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>».',
+        given: 'Hello in selected language - «<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>».',
         whenLang: 'uk',
         selector: 'p',
-        shouldBe: 'Hello in selected language – «Привіт».'
+        shouldBe: 'Hello in selected language - «Привіт».'
       },
       'inline codalization': {
-        given: 'Test Runner – <js>jest</js><py>pytest</py>.',
+        given: 'Test Runner - <js>jest</js><py>pytest</py>.',
         whenCode: 'py',
         selector: 'p span.active',
         shouldBe: 'pytest'
       },
       'inline codalization with "python" tag': {
-        given: 'Test Runner – <js>jest</js><python>pytest</python>.',
+        given: 'Test Runner - <js>jest</js><python>pytest</python>.',
         whenCode: 'py',
         selector: 'p span.active',
         shouldBe: 'pytest'
       },
       'inline codalization inverted via not- (js from <js>...<not-js>...)': {
-        given: 'Test Runner – <js>jest</js><not-js>pytest</not-js>',
+        given: 'Test Runner - <js>jest</js><not-js>pytest</not-js>',
         whenCode: 'js',
         selector: 'p span.active',
         shouldBe: 'jest'
       },
       'inline codalization inverted via not- (ts from <js-ts>...<not-js>...)': {
-        given: 'Test Runner – <js-ts>jest</js-ts><not-js>pytest</not-js>',
+        given: 'Test Runner - <js-ts>jest</js-ts><not-js>pytest</not-js>',
         whenCode: 'ts',
         selector: 'p',
         shouldBe:
-          'Test Runner – ' +
+          'Test Runner - ' +
           '<span class="inline-content active" id="js-ts">jest</span>' +
           '<span class="inline-content active" id="not-js">pytest</span>'
       }, // TODO: is such behaviour correct?
       'inline codalization inverted via not- (py from <js-ts>...<not-js-ts>...)': {
-        given: 'Test Runner – <js-ts>jest</js-ts><not-js-ts>pytest</not-js-ts>',
+        given: 'Test Runner - <js-ts>jest</js-ts><not-js-ts>pytest</not-js-ts>',
         whenCode: 'py',
         selector: 'p span.active',
         shouldBe: 'pytest'
       },
       'inline codalization inverted via not- (py from <js>...<not-js>...)': {
-        given: 'Test Runner – <js>jest</js><not-js>pytest</not-js>',
+        given: 'Test Runner - <js>jest</js><not-js>pytest</not-js>',
         whenCode: 'py',
         selector: 'p span.active',
         shouldBe: 'pytest'
       },
       'inline codalization inverted via not- (java from <js>...<not-js>...)': {
-        given: 'Test Runner – <js>jest</js><not-js>pytest</not-js>',
+        given: 'Test Runner - <js>jest</js><not-js>pytest</not-js>',
         whenCode: 'java',
         selector: 'p span.active',
         shouldBe: 'pytest'
       },
       'inline multi-codalization (ts from <js-ts>...<py>...)': {
-        given: 'Test Runner – <js-ts>jest</js-ts><py>pytest</py>.',
+        given: 'Test Runner - <js-ts>jest</js-ts><py>pytest</py>.',
         whenCode: 'ts',
         selector: 'p span.active',
         shouldBe: 'jest'
       },
       'inline multi-codalization (js from <js-ts>...<py>...)': {
-        given: 'Test Runner – <js-ts>jest</js-ts><py>pytest</py>.',
+        given: 'Test Runner - <js-ts>jest</js-ts><py>pytest</py>.',
         whenCode: 'js',
         selector: 'p span.active',
         shouldBe: 'jest'
       },
       'inline multi-codalization (py from <js-ts>...<py>...)': {
-        given: 'Test Runner – <js-ts>jest</js-ts><py>pytest</py>.',
+        given: 'Test Runner - <js-ts>jest</js-ts><py>pytest</py>.',
         whenCode: 'py',
         selector: 'p span.active',
         shouldBe: 'pytest'
       },
       'inline multi-localization (ru from <ru-uk>...<en>...)': {
-        given: 'Hello in selected language – «<ru-uk>Здоров</ru-uk><en>Hello</en>».',
+        given: 'Hello in selected language - «<ru-uk>Здоров</ru-uk><en>Hello</en>».',
         whenLang: 'ru',
         selector: 'p',
-        shouldBe: 'Hello in selected language – «Здоров».'
+        shouldBe: 'Hello in selected language - «Здоров».'
       },
       'inline multi-localization (uk from <ru-uk>...<en>...)': {
-        given: 'Hello in selected language – «<ru-uk>Здоров</ru-uk><en>Hello</en>».',
+        given: 'Hello in selected language - «<ru-uk>Здоров</ru-uk><en>Hello</en>».',
         whenLang: 'uk',
         selector: 'p',
-        shouldBe: 'Hello in selected language – «Здоров».'
+        shouldBe: 'Hello in selected language - «Здоров».'
       },
       'inline multi-localization (en from <ru-uk>...<en>...)': {
-        given: 'Hello in selected language – «<ru-uk>Здоров</ru-uk><en>Hello</en>».',
+        given: 'Hello in selected language - «<ru-uk>Здоров</ru-uk><en>Hello</en>».',
         whenLang: 'en',
         selector: 'p',
-        shouldBe: 'Hello in selected language – «Hello».'
+        shouldBe: 'Hello in selected language - «Hello».'
       },
       'of multiline localizations with tags on same line': {
         given: `
@@ -352,7 +267,7 @@ ${given}`)
         expect(zeroBody$$(selector).length).to.equal(1)
       })
 
-      it(`refactored localized/codalized tag, render: ${scenario}`, async () => {
+      it(`render: ${scenario} (NEW STYLE TAGS)`, async () => {
         zeroAppendScriptMD(`
 <!--localized(main="en")--> 
 <!--codalized(main="py")-->

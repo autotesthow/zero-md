@@ -2,17 +2,17 @@
 
 import coreTests from './core-tests.spec.js'
 import customTabNamesTests from './custom-tab-names.spec.js'
-import localizationCodalizationSettingTests from './localization-codalization-setting.spec.js'
+import localizationCodalizationRendering from './localization-codalization-render.spec.js'
 import tocTests from './toc-tests.spec.js'
 import translationsTests from './translations-tests.spec.js'
 import localImportTests from './local-import-tests.spec.js'
-import localizationsTests from './localizations-tests.spec.js'
+import inlineMultilineLocalizationCodalization from './inline-multiline-localization-codalization.spec.js'
 import codeblocksAndCodegroupsTests from './codeblocks-and-codegroups-tests.spec.js'
 
 coreTests()
-localizationsTests()
+inlineMultilineLocalizationCodalization()
 customTabNamesTests()
-localizationCodalizationSettingTests()
+localizationCodalizationRendering()
 tocTests()
 translationsTests()
 localImportTests()
