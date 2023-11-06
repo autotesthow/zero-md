@@ -14,13 +14,13 @@ export default function() {
     template.innerHTML = html
     return document.body.appendChild(template.content.firstElementChild)
   }
-  describe.only('example', () => {
+  describe.only('poetry', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      // zero.remove()
+      zero.remove()
     })
     
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
@@ -33,100 +33,11 @@ export default function() {
       script.text = text
       zero.appendChild(script)
     }
-
-    let scenarios = {
-      '"{{Review}}", "ru", "py"': {
-        whenLang: 'ru',
-        whenCode: 'py',
-        whatWeUse: '{{Review}}',
-        shouldBe: 'Ревью',
-      },
-      '"{{lang}}", "en", "cs"': {
-        whenLang: 'en',
-        whenCode: 'cs',
-        whatWeUse: '{{lang}}',
-        shouldBe: 'C#',
-      },
-      '"{{NO_CHANGES}}", "uk", "java"': {
-        whenLang: 'uk',
-        whenCode: 'java',
-        whatWeUse: '{{NO_CHANGES}}',
-        shouldBe: 'без змін',
-      },
-    }
-
-    let isOnly = false
-    Object.entries(scenarios).forEach((args) => {
-      if (args[1].only) {
-        isOnly = true
-      }
-    })
-
-    Object.entries(scenarios).forEach((args) => {
-      const [
-        scenario,
-        { only, whenLang: lang, whenCode: code, whatWeUse, shouldBe: text }
-      ] = args
-      if (!only && isOnly) {
-        return
-      }
-    it.skip(`<!--import()--> work with  ${scenario}`, async () => {
-        zeroAppendScriptMD(`
-<!--import(./variables-for-local-import-tests.md)-->
-<localized main="${lang}"/>
-<codalized main="${code}"/>
-
-<p> 
-<uk-en-ru><py-js-ts-java-cs>${whatWeUse}</py-js-ts-java-cs></uk-en-ru>
-<p>`)
-          
-        await zero.render()
-
-        expect(zeroBody$('p').innerText).to.equals(text)
-      })
-    })
-          
-    it.skip('values from URLSearchParams should be the highest priority', async () => {
+                       
+    it('work currently', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="clj"/>
-
-::::::::::::
-\`\`\`js
-<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
-\`\`\`
-\`\`\`ts
-<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
-\`\`\`
-\`\`\`py
-<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
-\`\`\`
-\`\`\`clojure
-<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
-\`\`\`
-\`\`\`sdfsdf
-<uk>sdfsdf</uk><ru>Привет</ru><en>Hello</en>
-\`\`\`
-::::::::::::
-\`\`\`clojure
-<uk>Привіт</uk><ru>Привет</ru><en>Hello</en>
-\`\`\`
-\`\`\`sdfsdf
-<uk>sdfsdf</uk><ru>Привет</ru><en>Hello</en>
-\`\`\`
-`)
-
-      await zero.render()
-
-      expect(zeroBody$('.tab-button.active').innerText).to.equal('cs')
-      expect(zeroBody$('.tab-content.active').innerText.split('\n')[0]).to.equal('Привіт')
-    })
-
-              
-    it('priority work currently', async () => {
-      zeroAppendScriptMD(`
-<localized main="uk"/>
-<codalized main="clj"/>
+<codalized main="js"/>
 
 \`\`\`poetry
 1.1
@@ -147,10 +58,10 @@ this is ____underlined____ in poetry
       expect(zeroBody$('span[style="text-decoration:underline"]').innerText).to.equal('underlined')
     })
 
-    it('priority work currently with code id', async () => {
+    it('work currently with code id', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="clj"/>
+<codalized main="js"/>
 
 \`\`\`poetry: java
 // 1.2 (with code id)
@@ -171,11 +82,12 @@ this is ____underlined____ in poetry
       expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
     })
 
-    //don't work how it work in poetry file
-    it.skip('priority work currently with code id, tabbed, mixed with not-poetry', async () => {
+    //need so big test?
+    it.skip('work currently with code id, tabbed, mixed with not-poetry', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
+<!--«tabNameBrackets»-->
 
 ::::::::::
 \`\`\`poetry: java
@@ -215,17 +127,13 @@ this is ____underlined____ in poetry
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
     })
 
-    it.skip('priority work currently with manual, without code id, tabbed, mixed with not-poetry where poetry is not in first tab', async () => {
+    //need so big test?
+    it.skip('work currently with manual, without code id, tabbed, mixed with not-poetry where poetry is not in first tab', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="java"/>
+<!--«tabNameBrackets»-->
 
 ::::::::::manual
 \`\`\`textile
@@ -259,50 +167,37 @@ this is **bold** in poetry
       expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
     })
 
-    it.skip('priority work currently with', async () => {
+    it('work currently with', async () => {
       zeroAppendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
-
 \`\`\`poetry
-2 this is «bold with custom syntax that disables default» in poetry
+this is «bold with custom syntax that disables default» in poetry
 \`\`\`
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.code-text').innerText).to.equal('this is «bold with custom syntax that disables default» in poetry')
     })
 
-    it.skip('priority work currently with', async () => {
+    it('work currently with', async () => {
       zeroAppendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
-
 :::::::::
 \`\`\`poetry
-3 this is **bold** in poetry tabbed
+this is **bold** in poetry tabbed
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.code-text b').innerText).to.equal('bold')
+      expect(zeroBody$('.code-text').innerText).to.equal('this is bold in poetry tabbed')
+
     })
 
-    it.skip('priority work currently with manual', async () => {
+    it('work currently with manual', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="java"/>
 
 :::::::::manual
 \`\`\`poetry
@@ -313,18 +208,12 @@ this is **bold** in poetry
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.code-text b').innerText).to.equal('bold')
     })
 
-    it.skip('priority work currently with manual, not poetry, with custom name', async () => {
+    //must work but dont work
+    it.skip('work currently with manual, not poetry, with custom name', async () => {
       zeroAppendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
-
 :::::::::manual
 \`\`\`md: «with custom name»
 5 this is **bold** in markdown tabbed manual with custom name
@@ -335,268 +224,254 @@ this is **bold** in poetry
       await zero.render()
 
       expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
     })
 
-        it.skip('priority work currently with manual ## 6', async () => {
+    //work but wrong
+    it.skip('work currently with manual', async () => {
       zeroAppendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
+<localized main="en"/>
+<!--«tabNameBrackets»-->
 
 :::::::::manual
 \`\`\`poetry: «with custom name» «same with another name»
 6 this is **bold** in poetry tabbed manual with custom name besides second tab with same content
 \`\`\`
 :::::::::
+
 `)
 
       await zero.render()
 
       expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
     })
 
-    it.skip('priority work currently with  ## 7', async () => {
+    //this functionality is broken 
+    it.skip('work currently with  ## 7', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
+<!--«tabNameBrackets»-->
 
 :::::::::
 \`\`\`poetry: «with custom name» java«same with another name»
-// 7 this is **asterisks bold** and «custom bold» and ___italic___ in poetry tabbed with custom name with code id besides second tab without code id with same content
+// this is **asterisks bold** and «custom bold» and ___italic___ in poetry tabbed with custom name with code id besides second tab without code id with same content
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
     })
 
-    it.skip('priority work currently with  ## 8.1', async () => {
+    //TODO: **bold** must fix in this case 
+    it.skip('work currently with manual, not poetry, with 2 custom names', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="java"/>
+<!--«tabNameBrackets»-->
 
 :::::::::manual
 \`\`\`md: «with custom name» «same with another name»
-8.1 this is **bold** in markdown tabbed manual with custom name besides second tab with same content
+this is **bold** in markdown tabbed manual with custom name besides second tab with same content
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.tab-button.active').innerText).to.equal('with custom name')
+      expect(zeroBody$('.tab-button:nth-of-type(2)').innerText).to.equal('same with another name')
+      // expect(zeroBody$('code.language-md:nth-of-type(2)').innerText).to.equal('bold')
+      // expect(zeroBody$('.tab-content:nth-of-type(2)').innerText).to.equal('bold')
+      expect(zeroBody$('code.language-md:nth-of-type(1)').innerText).to.equal('this is bold in markdown tabbed manual with custom name besides second tab with same content')
+      expect(zeroBody$('code.language-md:nth-of-type(2)').innerText).to.equal('this is bold in markdown tabbed manual with custom name besides second tab with same content')
     })
 
-    it.skip('priority work currently with  ## 8.2', async () => {
+    //TODO: **bold** must fix in this case 
+    it('work currently with manual, not poetry, with 2 custom namees with codes', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="java"/>
+<!--«tabNameBrackets»-->
 
 :::::::::manual
 \`\`\`js: js«js with custom name» ts«ts with another name»
-// 8.2 this is **bold** in markdown tabbed manual with custom name besides second tab with same content but another code id
+// this is **bold** in markdown tabbed manual with custom name besides second tab with same content but another code id
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.tab-button.active').innerText).to.equal('js with custom name')
+      expect(zeroBody$('.tab-button:nth-of-type(2)').innerText).to.equal('ts with another name')
+      expect(zeroBody$('.tab-content.active b').innerText).to.equal('bold')
+      expect(zeroBody$('.tab-content:nth-of-type(2)').innerText).to.equal('bold')
+      expect(zeroBody$('.tab-content.active').innerText).to.equal('// this is bold in markdown tabbed manual with custom name besides second tab with same content but another code id')
+      expect(zeroBody$('.tab-content:nth-of-type(2)').innerText).to.equal('// this is bold in markdown tabbed manual with custom name besides second tab with same content but another code id')
     })
 
-    it.skip('priority work currently with  ## 8.3', async () => {
+    //TODO: **bold** must fix in this case 
+    it('work currently with not manual, not poetry, with 2 custom namees with codes', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="java"/>
+<!--«tabNameBrackets»-->
 
 :::::::::
 \`\`\`js: js«js with custom name» ts«ts with another name»
-// 8.3 this is **bold** in markdown tabbed not manual with custom name besides second tab with same content but another code id
+// this is **bold** in markdown tabbed not manual with custom name besides second tab with same content but another code id
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.tab-button.active').innerText).to.equal('js with custom name')
+      expect(zeroBody$('.tab-button:nth-of-type(2)').innerText).to.equal('ts with another name')
+      expect(zeroBody$('.tab-content.active b').innerText).to.equal('bold')
+      expect(zeroBody$('.tab-content:nth-of-type(2)').innerText).to.equal('bold')
+      expect(zeroBody$('.tab-content.active').innerText).to.equal('// this is bold in markdown tabbed not manual with custom name besides second tab with same content but another code id')
+      expect(zeroBody$('.tab-content:nth-of-type(2)').innerText).to.equal('// this is bold in markdown tabbed not manual with custom name besides second tab with same content but another code id')
     })
 
-    it.skip('priority work currently with  ## 9', async () => {
+    it('work currently with visible on asked java or cs | invisible on asked not java or cs, like js', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
+<!--«tabNameBrackets»-->
 
 :::::::::
 \`\`\`poetry: cs
-9 this is **bold** in poetry tabbed with known name (i.e. = code id) - cs
+this is **bold** in poetry tabbed with known name (i.e. = code id) - cs
 \`\`\`
 \`\`\`poetry: java
-9 this is **bold** in poetry tabbed with known name (i.e. = code id) - java
+this is **bold** in poetry tabbed with known name (i.e. = code id) - java
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.tab-button:nth-of-type(1)').innerText).to.equal('cs')
+      expect(zeroBody$('.tab-button.active').innerText).to.equal('java')
+      expect(zeroBody$('.tab-content:nth-of-type(1) b').innerText).to.equal('bold')
+      expect(zeroBody$('.tab-content.active b').innerText).to.equal('bold')
+      expect(zeroBody$('.tab-content:nth-of-type(1)').innerText).to.equal('this is bold in poetry tabbed with known name (i.e. = code id) - cs')
+      expect(zeroBody$('.tab-content.active').innerText).to.equal('this is bold in poetry tabbed with known name (i.e. = code id) - java')
     })
 
-    it.skip('priority work currently with  ## 10', async () => {
+    //this functionality is broken 
+    it.skip('work currently with visible on no asked code | visible on asked java | invisible on asked not java, like js', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
+<!--«tabNameBrackets»-->
 
 :::::::::
 \`\`\`poetry: java«JAVA fuked it:)»
-10 this is **bold** in poetry tabbed with known name (i.e. = code id) and custom name
+this is **bold** in poetry tabbed with known name (i.e. = code id) and custom name
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
-
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
     })
 
-    it.skip('priority work currently with  ## 11', async () => {
+    it('work currently with manual => visible allways', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
 
 :::::::::manual
 \`\`\`poetry: java
-11 this is **bold** in poetry tabbed manual with known name
+this is **bold** in poetry tabbed manual with known name
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.tab-button.active').innerText).to.equal('java')
+      expect(zeroBody$('.tab-content.active b').innerText).to.equal('bold')
+      expect(zeroBody$('.tab-content.active').innerText).to.equal('this is bold in poetry tabbed manual with known name')
     })
 
-    it.skip('priority work currently with  ## 12', async () => {
+    //with codalized don't work
+    it('work currently with manual => visible allways', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="java"/>
+<!--«tabNameBrackets»-->
 
 :::::::::manual
 \`\`\`poetry: «java»
-12 this is **bold** in poetry tabbed manual with custom name of known code
+this is **bold** in poetry tabbed manual with custom name of known code
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.tab-button.active').innerText).to.equal('java')
+      expect(zeroBody$('.tab-content.active b').innerText).to.equal('bold')
+      expect(zeroBody$('.tab-content.active').innerText).to.equal('this is bold in poetry tabbed manual with custom name of known code')
     })
 
-    it.skip('priority work currently with  ## 13', async () => {
+    //todo: selectors in expect don't work
+    it.skip('work currently with manual, not poetry => visible both with first selected and working switch - allways', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="java"/>
+<codalized main="js"/>
 
 :::::::::manual
 \`\`\`js ts
-13 // some code
+// some code
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('code.language-typescript').innerText).to.equal('// some code')
+      // expect(zeroBody$('#ts span').innerText).to.equal('// some code')
     })
 
-    it.skip('priority work currently with  ## 14', async () => {
+    it('work currently with manual => visible allways with first selected and working switch', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="java"/>
+<codalized main="js"/>
+<!--«tabNameBrackets»-->
 
 :::::::::manual
 \`\`\`poetry: js ts
-14 // some code
+// some code
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.tab-content.active .code-js').innerText).to.equal('// some code')
+      expect(zeroBody$('.code-ts').innerText).to.equal('// some code')
     })
 
-    it.skip('priority work currently with  ## 15', async () => {
+    it('work currently visible on asked js or ts | invisible on asked not js or ts, like java', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
-<codalized main="java"/>
+<codalized main="js"/>
+<!--«tabNameBrackets»-->
 
 :::::::::
 \`\`\`poetry: js ts
-15 // some code
+// some code
 \`\`\`
 :::::::::
 `)
 
       await zero.render()
 
-      expect(zeroBody$('.code-java b:nth-of-type(1)').innerText).to.equal('bold')
-      expect(zeroBody$('.code-java b:nth-of-type(2)').innerText).to.equal('default bold (disabled)')
-      //TODO: understand how work custom bold
-      expect(zeroBody$('.code-java em').innerText).to.equal('italic')
-      expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
+      expect(zeroBody$('.tab-content.active .code-js').innerText).to.equal('// some code')
+      expect(zeroBody$('.code-ts').innerText).to.equal('// some code')
     })
 
-    it.skip('priority work currently with  ## 16', async () => {
+    it.skip('work currently with html and custom quotes in poetry for bold', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
@@ -613,7 +488,7 @@ bold with «...»
 <element attribute1="value1" attribute2="value2"> «какой-то текст» </element>
 \`\`\`
 
-bold with `**...**`and `__...__`
+bold with \`**...**\`and \`__...__\`
 
 \`\`\`poetry
 <element attribute1="value1" attribute2="value2"> **какой**-то __текст__ </element>
