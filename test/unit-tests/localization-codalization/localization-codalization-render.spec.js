@@ -112,6 +112,7 @@ export default function() {
       afterEach(() => {
         window.history.replaceState(null, null, baseUrl);
       })
+      
       it('should be overrided from URLSearchParams', async () => {
         zeroAppendScriptMD(`
 <localized main="uk"/>

@@ -15,7 +15,7 @@ export default function() {
     return document.body.appendChild(template.content.firstElementChild)
   }
 
-  describe('Localization/codalization', () => {
+  describe('Inline/multiline localization/codalization', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)

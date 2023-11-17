@@ -14,7 +14,7 @@ export default function() {
     template.innerHTML = html
     return document.body.appendChild(template.content.firstElementChild)
   }
-  describe.only('Code groups', () => {
+  describe('Poetry', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)

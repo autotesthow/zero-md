@@ -15,13 +15,13 @@ export default function() {
     return document.body.appendChild(template.content.firstElementChild)
   }
   
-    describe('Local import testing', () => {
+    describe('Local import', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      // zero.remove()
+      zero.remove()
     })
     
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)

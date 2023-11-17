@@ -6,7 +6,7 @@ export default function () {
     ui: 'bdd'
   })
 
-  describe('Custom tab name testing', () => {
+  describe('Custom tab name', () => {
     const assert = chai.assert
     const expect = chai.expect
 
