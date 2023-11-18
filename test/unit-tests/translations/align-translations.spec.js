@@ -15,7 +15,8 @@ export default function() {
     return document.body.appendChild(template.content.firstElementChild)
   }
 
-  describe('Align translations for easier refactoring', () => {
+  // Align translations for easier refactoring
+  describe('Align translations', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)

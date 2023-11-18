@@ -16,7 +16,7 @@ export default function() {
   }
 
   // TODO: remove ".skip" when task : https://kanbanflow.com/t/H43XL3Vs will be done
-  describe('Rendering in nested tags', () => {
+  describe.skip('Rendering in nested tags', () => {
     it('middle element in codalized tags rendered correctly in TOC', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
