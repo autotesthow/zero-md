@@ -20,7 +20,7 @@ export default function() {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      zero.remove()
+      //zero.remove()
     })
     
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
@@ -34,7 +34,7 @@ export default function() {
       zero.appendChild(script)
     }
                        
-    it('work currently', async () => {
+    it('codeblock renders all font transformation', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="js"/>
@@ -57,7 +57,7 @@ this is ____underlined____ in poetry
       expect(zeroBody$('span[style="text-decoration:underline"]').innerText).to.equal('underlined')
     })
 
-    it('work currently with code id', async () => {
+    it('codeblock renders with code id', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="js"/>
@@ -81,7 +81,7 @@ this is ____underlined____ in poetry
       expect(zeroBody$('.code-java span[style="text-decoration:underline"]').innerText).to.equal('underlined')
     })
 
-    it('work currently with code id, tabbed, mixed with not-poetry', async () => {
+    it('codegroup renders with code id, tabbed, mixed with not-poetry', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
@@ -135,7 +135,7 @@ this is ____underlined____ in poetry
       expect(zeroBody$('.tab-content:nth-of-type(2)').innerText).to.equal('// (with code id = java, NOT POETRY)\n// this is **bold** in poetry\n// this is __default bold (disabled)__ in poetry\n// this is «custom bold» in poetry\n// this is ___italic___ in poetry\n// this is ____underlined____ in poetry')
     })
 
-    it('work currently with manual, without code id, tabbed, mixed with not-poetry where poetry is not in first tab', async () => {
+    it('codegroup renders with manual, without code id, tabbed, mixed with not-poetry where poetry is not in first tab', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <!--«tabNameBrackets»-->
@@ -176,7 +176,7 @@ this is **bold** in poetry
       expect(zeroBody$('.tab-content:nth-of-type(4)').innerText).to.equal('this is **bold** in poetry\n')
     })
 
-    it('work currently with', async () => {
+    it('codeblock renders with custom syntax that disables default', async () => {
       zeroAppendScriptMD(`
 \`\`\`poetry
 this is «bold with custom syntax that disables default» in poetry
@@ -188,7 +188,7 @@ this is «bold with custom syntax that disables default» in poetry
       expect(zeroBody$('.code-text').innerText).to.equal('this is «bold with custom syntax that disables default» in poetry')
     })
 
-    it('work currently with', async () => {
+    it('codeblock renders in codegroup with bold text', async () => {
       zeroAppendScriptMD(`
 :::::::::
 \`\`\`poetry
@@ -204,7 +204,7 @@ this is **bold** in poetry tabbed
 
     })
 
-    it('work currently with manual', async () => {
+    it('codegroup renders with manual', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 
@@ -220,8 +220,8 @@ this is **bold** in poetry tabbed
       expect(zeroBody$('.code-text b').innerText).to.equal('bold')
     })
 
-    //bold work currently or not?
-    it('work currently with manual, not poetry, with custom name', async () => {
+    //bold work right or not?
+    it('codegroup renders with md codeblock with manual, not poetry, with custom name', async () => {
       zeroAppendScriptMD(`
 <!--«tabNameBrackets»-->
 
@@ -240,7 +240,7 @@ this is **bold** in markdown tabbed manual with custom name
       expect(zeroBody$('.tab-content.active').innerText).to.equal('this is **bold** in markdown tabbed manual with custom name')
     })
 
-    it('work currently with manual', async () => {
+    it('codegroup renders with poetry codeblock with manual', async () => {
       zeroAppendScriptMD(`
 <localized main="en"/>
 <!--«tabNameBrackets»-->
@@ -265,7 +265,7 @@ this is **bold** in poetry tabbed manual with custom name besides second tab wit
     })
 
     //custom bold don't work. wright expect when he start work
-    it('work currently with  ## 7', async () => {
+    it('codegroup renders with codeblocks with custom name', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
@@ -291,7 +291,7 @@ this is **bold** in poetry tabbed manual with custom name besides second tab wit
     })
 
     //TODO: **bold** must fix in this case
-    it('work currently with manual, not poetry, with 2 custom names', async () => {
+    it('codegroup renders with manual, not poetry, with 2 custom names', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <!--«tabNameBrackets»-->
@@ -315,7 +315,7 @@ this is **bold** in markdown tabbed manual with custom name besides second tab w
     })
 
     //TODO: understand must work **bold** or not
-    it('work currently with manual, not poetry, with 2 custom namees with codes', async () => {
+    it('codegroup renders with manual, not poetry, with 2 custom namees with codes', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <!--«tabNameBrackets»-->
@@ -336,7 +336,7 @@ this is **bold** in markdown tabbed manual with custom name besides second tab w
     })
 
     //TODO: understand must work **bold** or not
-    it('work currently with not manual, not poetry, with 2 custom names with codes', async () => {
+    it('codegroup renders with not manual, not poetry, with 2 custom names with codes', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <!--«tabNameBrackets»-->
@@ -356,7 +356,7 @@ this is **bold** in markdown tabbed manual with custom name besides second tab w
       expect(zeroBody$('.tab-content:nth-of-type(2)').innerText).to.equal('// this is **bold** in markdown tabbed not manual with custom name besides second tab with same content but another code id')
     })
 
-    it('work currently with visible on asked java or cs | invisible on asked not java or cs, like js', async () => {
+    it('codegroup renders with visible on asked java or cs | invisible on asked not java or cs, like js', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
@@ -382,7 +382,7 @@ this is **bold** in poetry tabbed with known name (i.e. = code id) - java
       expect(zeroBody$('.tab-content.active').innerText).to.equal('this is bold in poetry tabbed with known name (i.e. = code id) - java')
     })
 
-    it('work currently with visible on no asked code | visible on asked java | invisible on asked not java, like js', async () => {
+    it('codegroup renders with visible on no asked code | visible on asked java | invisible on asked not java, like js', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
@@ -405,7 +405,7 @@ this is **bold** in poetry tabbed with known name (i.e. = code id) and custom na
       expect(zeroBody$('.tab-content:nth-of-type(2)').innerText).to.equal('this is bold in poetry tabbed with known name (i.e. = code id) and custom name')
     })
 
-    it('work currently with manual => visible allways', async () => {
+    it('codegroup renders with manual => visible allways', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
@@ -425,7 +425,7 @@ this is **bold** in poetry tabbed manual with known name
     })
 
     //with codalized don't work
-    it('work currently with manual => visible allways', async () => {
+    it('codegroup renders with manual => visible allways', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <!--«tabNameBrackets»-->
@@ -445,7 +445,7 @@ this is **bold** in poetry tabbed manual with custom name of known code
     })
 
     //todo: selector two in expect don't work
-    it.skip('work currently with manual, not poetry => visible both with first selected and working switch - allways', async () => {
+    it.skip('codegroup renders with manual, not poetry => visible both with first selected and working switch - allways', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="js"/>
@@ -463,7 +463,7 @@ this is **bold** in poetry tabbed manual with custom name of known code
       //expect(zeroBody$('#ts span.token.comment').innerText).to.equal('// some code')
     })
 
-    it('work currently with manual => visible allways with first selected and working switch', async () => {
+    it('codegroup renders with manual => visible allways with first selected and working switch', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="js"/>
@@ -482,7 +482,7 @@ this is **bold** in poetry tabbed manual with custom name of known code
       expect(zeroBody$('.code-ts').innerText).to.equal('// some code')
     })
 
-    it('work currently visible on asked js or ts | invisible on asked not js or ts, like java', async () => {
+    it('codegroup renders visible on asked js or ts | invisible on asked not js or ts, like java', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="js"/>
@@ -501,7 +501,7 @@ this is **bold** in poetry tabbed manual with custom name of known code
       expect(zeroBody$('.code-ts').innerText).to.equal('// some code')
     })
 
-    it.skip('work currently with html and custom quotes in poetry for bold', async () => {
+    it.skip('codegroup renders with html and custom quotes in poetry for bold', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
 <codalized main="java"/>
