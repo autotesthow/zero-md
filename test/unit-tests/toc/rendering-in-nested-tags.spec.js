@@ -15,8 +15,26 @@ export default function() {
     return document.body.appendChild(template.content.firstElementChild)
   }
 
-  // TODO: remove ".skip" when task : https://kanbanflow.com/t/H43XL3Vs will be done
-  describe.skip('Rendering in nested tags', () => {
+  describe('Rendering in nested tags', () => {
+    let zero
+    beforeEach(() => {
+      zero = add(`<zero-md manual-render></zero-md>`)
+    })
+    afterEach(() => {
+      zero.remove()
+    })
+    
+    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
+    const zeroBody = () => zero$('.markdown-body')
+    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
+
+    const zeroAppendScriptMD = (text) => {
+      const script = document.createElement('script')
+      script.setAttribute('type', 'text/markdown')
+      script.text = text
+      zero.appendChild(script)
+    }
+
     it('middle element in codalized tags rendered correctly in TOC', async () => {
       zeroAppendScriptMD(`
 <codalized main="java"/>
