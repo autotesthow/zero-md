@@ -56,6 +56,46 @@ export default function() {
       expect(zeroBody$('localized').innerText).to.equal('Hello')
     })
 
+    it('lang by main attribute in localized option <not-en>', async () => {
+      zeroAppendScriptMD(`
+<localized main="uk"/>
+
+<not-en>NOT-EN</not-en>`)
+      await zero.render()
+   
+      expect(zeroBody$('localized').innerText).to.equal('NOT-EN')
+    })
+
+    it('lang by main attribute in localized option <not-uk-ru>', async () => {
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<not-uk-ru>NOT-UK-RU</not-uk-ru>`)
+      await zero.render()
+   
+      expect(zeroBody$('localized').innerText).to.equal('NOT-UK-RU')
+    })
+    
+    it('NO render lang by main attribute in localized option <not-en>', async () => {
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<not-en>NOT-EN</not-en>`)
+      await zero.render()
+   
+      expect(zeroBody$('localized p')).to.not.exist
+    })
+
+    it('NO render lang by main attribute in localized option <not-uk-ru>', async () => {
+      zeroAppendScriptMD(`
+<localized main="ru"/>
+
+<not-uk-ru>NOT-UK-RU</not-uk-ru>`)
+      await zero.render()
+   
+      expect(zeroBody$('localized p')).to.not.exist
+    })
+
     it('lang by lang option of zero-md config', async () => {
       zeroAppendScriptMD(`
 <localized main="en"/>
