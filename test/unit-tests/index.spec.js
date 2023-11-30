@@ -14,7 +14,7 @@ import localizationCodalizationLocalizationRendersTests from './localization-cod
 import localizationCodalizationRendersWithSearchparamsTests from './localization-codalization/renders-with-searchparams.spec.js'
 import localizationCodalizationWithCodegroupsTests from './localization-codalization/with-codegroups.spec.js'
 import translationsAlignTranslationsTests from './translations/align-translations.spec.js'
-import translationsGeneralTests from './translations/general.spec.js'
+import translationsGeneralTests from './translations/general-translation.spec.js'
 import translationsMultiCodeTests from './translations/multi-code.spec.js'
 import translationsMultiLangTests from './translations/multi-lang.spec.js'
 import translationsOneCodeTests from './translations/one-code.spec.js'

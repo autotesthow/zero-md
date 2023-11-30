@@ -15,7 +15,7 @@ export default function() {
     return document.body.appendChild(template.content.firstElementChild)
   }
 
-  describe('General', () => {
+  describe('General translation', () => {
     let zero
     beforeEach(() => {
       zero = add(`<zero-md manual-render></zero-md>`)
@@ -46,12 +46,36 @@ export default function() {
       expect(zeroBody$('p').innerText).to.equals('mustBeVisible')
     })
 
-    it('correct work case sensitive', async () => {
+    it('work correctly with case sensitive', async () => {
       zeroAppendScriptMD(`      
 <!--~{{Variable}}~mustBeNoVisible~-->
 <!--~{{variable}}~mustBeVisible~-->
  
 <p>{{variable}}</p>`)
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('mustBeVisible')
+    })
+
+    it('work correctly in localized tag', async () => {
+      zeroAppendScriptMD(`
+<localized main="en"/>
+<!--~{{Variable}}~mustBeVisible~-->
+
+<p><en>{{Variable}}</en></p>`)
+     
+      await zero.render()
+
+      expect(zeroBody$('p').innerText).to.equals('mustBeVisible')
+    })
+
+    it('work correctly in codalized tag', async () => {
+      zeroAppendScriptMD(`
+<codalized main="py"/>
+<!--~{{Variable}}~mustBeVisible~-->
+
+<p><py>{{Variable}}</py></p>`)
      
       await zero.render()
 

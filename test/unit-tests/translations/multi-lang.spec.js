@@ -49,14 +49,14 @@ export default function() {
 
     it('correct work with last lang', async () => {
       zeroAppendScriptMD(`
-<!--en-ru~{{Variable}}~Variable~-->
+<!--en-ru~{{toBeTranslated}}~Translation~-->
 <localized main="ru"/>
  
-<p><ru>{{Variable}}</ru></p>`)
+<p><ru>{{toBeTranslated}}</ru></p>`)
      
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Variable')
+      expect(zeroBody$('p').innerText).to.equals('Translation')
     })
         
     it('dont work with other lang', async () => {
