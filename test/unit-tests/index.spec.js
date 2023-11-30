@@ -19,6 +19,8 @@ import translationsMultiCodeTests from './translations/multi-code.spec.js'
 import translationsMultiLangTests from './translations/multi-lang.spec.js'
 import translationsOneCodeTests from './translations/one-code.spec.js'
 import translationsOneLangTests from './translations/one-lang.spec.js'
+import translationsNotCodeTests from './translations/not-code.spec.js'
+import translationsNotLangTests from './translations/not-lang.spec.js'
 
 
 coreTests()
@@ -40,5 +42,7 @@ translationsMultiCodeTests()
 translationsMultiLangTests()
 translationsOneCodeTests()
 translationsOneLangTests()
+translationsNotCodeTests()
+translationsNotLangTests()
 
 mocha.run()
