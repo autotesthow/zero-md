@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 /* global chai */
 
+import common from './../../utils/common.js'
+
 export default function() {
   mocha.setup({
     ui: 'bdd'
@@ -21,6 +23,7 @@ export default function() {
   })
   afterEach(() => {
     zero.remove()
+    common.clearSearchParams(baseUrl)
   })
   
   let baseUrl = window.location.href
@@ -36,11 +39,7 @@ export default function() {
     zero.appendChild(script)
   }
 
-  describe('Depending on URLSearchParams behavior testing', () => {
-  afterEach(() => {
-    window.history.replaceState(null, null, baseUrl);
-  })
-  
+  describe('Depending on URLSearchParams behavior testing', () => {  
     it('should be overrided from URLSearchParams', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>
