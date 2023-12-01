@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 /* global chai */
 
+import common from './../utils/common.js'
+
 export default function () {
   mocha.setup({
     ui: 'bdd'
@@ -10,15 +12,9 @@ export default function () {
     const assert = chai.assert
     const expect = chai.expect
 
-    const add = (html) => {
-      const template = document.createElement('template')
-      template.innerHTML = html
-      return document.body.appendChild(template.content.firstElementChild)
-    }
-
     let zero
     beforeEach(() => {
-      zero = add(`<zero-md manual-render></zero-md>`)
+      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()

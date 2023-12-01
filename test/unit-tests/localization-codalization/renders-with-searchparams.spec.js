@@ -11,15 +11,9 @@ export default function() {
   chai.config.truncateThreshold = 0
   const expect = chai.expect
 
-  const add = (html) => {
-    const template = document.createElement('template')
-    template.innerHTML = html
-    return document.body.appendChild(template.content.firstElementChild)
-  }
-
   let zero
   beforeEach(() => {
-    zero = add(`<zero-md manual-render></zero-md>`)
+    zero = common.addHtml(`<zero-md manual-render></zero-md>`)
   })
   afterEach(() => {
     zero.remove()
@@ -46,8 +40,8 @@ export default function() {
 
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
       
-      const newQueryString = '?lang=en';
-      window.history.pushState(null, null, baseUrl + newQueryString)
+      const queryString = '?lang=en';
+      common.setSearchParams(baseUrl, queryString)
       await zero.render()
     
       expect(zeroBody$('p').innerText).to.equal('Hello')
@@ -60,8 +54,8 @@ export default function() {
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
       zero.setAttribute('lang', 'ru')
 
-      const newQueryString = '?lang=uk';
-      window.history.pushState(null, null, baseUrl + newQueryString)
+      const queryString = '?lang=uk';
+      common.setSearchParams(baseUrl, queryString)
       await zero.render() 
     
       expect(zeroBody$('localized').innerText).to.equal('Привіт')
@@ -74,8 +68,8 @@ export default function() {
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
       zero.config.lang = 'uk'
 
-      const newQueryString = '?lang=en';
-      window.history.pushState(null, null, baseUrl + newQueryString)
+      const queryString = '?lang=en';
+      common.setSearchParams(baseUrl, queryString)
       await zero.render()
     
       expect(zeroBody$('localized').innerText).to.equal('Hello')
@@ -87,8 +81,8 @@ export default function() {
 
 <js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
 
-      const newQueryString = '?code=ts';
-      window.history.pushState(null, null, baseUrl + newQueryString)
+      const queryString = '?code=ts';
+      common.setSearchParams(baseUrl, queryString)
       await zero.render()
    
       expect(zeroBody$('.inline-content.active').innerText).to.equal('TS')
@@ -101,8 +95,8 @@ export default function() {
 <js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`) 
       zero.setAttribute('code', 'cs')
 
-      const newQueryString = '?code=ts';
-      window.history.pushState(null, null, baseUrl + newQueryString)
+      const queryString = '?code=ts';
+      common.setSearchParams(baseUrl, queryString)
       await zero.render() 
    
       expect(zeroBody$('.inline-content.active').innerText).to.equal('TS')
@@ -115,8 +109,8 @@ export default function() {
 <js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
       zero.config.code = 'ts'
       
-      const newQueryString = '?code=py';
-      window.history.pushState(null, null, baseUrl + newQueryString)
+      const queryString = '?code=py';
+      common.setSearchParams(baseUrl, queryString)
       await zero.render() 
    
       expect(zeroBody$('.inline-content.active').innerText).to.equal('PY')

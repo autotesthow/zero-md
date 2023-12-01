@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 /* global chai */
 
+import common from './../../utils/common.js'
+
 export default function() {
   mocha.setup({
     ui: 'bdd'
@@ -9,15 +11,9 @@ export default function() {
   chai.config.truncateThreshold = 0
   const expect = chai.expect
 
-  const add = (html) => {
-    const template = document.createElement('template')
-    template.innerHTML = html
-    return document.body.appendChild(template.content.firstElementChild)
-  }
-
   let zero
   beforeEach(() => {
-    zero = add(`<zero-md manual-render></zero-md>`)
+    zero = common.addHtml(`<zero-md manual-render></zero-md>`)
   })
   afterEach(() => {
     zero.remove()
@@ -84,7 +80,7 @@ export default function() {
 
     it('auto re-renders on change of code attribute of zero-md', async () => {
       zero.remove()
-      zero = add('<zero-md code="py"></zero-md>')
+      zero = common.addHtml('<zero-md code="py"></zero-md>')
       zeroAppendScriptMD(`
 <codalized main="js"/>
 

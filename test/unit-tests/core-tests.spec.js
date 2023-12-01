@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 /* global chai */
 
+import common from './../utils/common.js'
+
 export default function() {
 
   mocha.setup({
@@ -12,12 +14,6 @@ export default function() {
   const assert = chai.assert
   const expect = chai.expect
 
-  const add = (html) => {
-    const template = document.createElement('template')
-    template.innerHTML = html
-    return document.body.appendChild(template.content.firstElementChild)
-  }
-
   const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t))
 
   const tick = () => new Promise((resolve) => requestAnimationFrame(resolve))
@@ -27,7 +23,7 @@ export default function() {
     //Also if this test is skipped, next test fails: "should not load prism if prism already loaded"
     it.skip('should not load marked if marked already loaded', async () => {
       window.marked = true
-      const fixture = add(`<zero-md manual-render></zero-md>`)
+      const fixture = common.addHtml(`<zero-md manual-render></zero-md>`)
       await fixture.waitForReady()
       const nodes = document.head.querySelectorAll('script')
       for (let a = 0; a < nodes.length; a++) {
@@ -44,7 +40,7 @@ export default function() {
           nodes[a].remove()
         }
       }
-      const zero = add(`<zero-md manual-render></zero-md>`)
+      const zero = common.addHtml(`<zero-md manual-render></zero-md>`)
       await zero.loadScript(zero.config.markedUrl)
       await zero.waitForReady()
       nodes = document.head.querySelectorAll('script')
@@ -55,7 +51,7 @@ export default function() {
     })
 
     it('should merge ZeroMdConfig opts into config', async () => {
-      const zero = add(`<zero-md manual-render></zero-md>`)
+      const zero = common.addHtml(`<zero-md manual-render></zero-md>`)
       await zero.waitForReady()
       expect(zero.config.foo).to.equal('bar')
       zero.remove()
@@ -65,7 +61,7 @@ export default function() {
   describe('getters and setters', () => {
     let zero
     before(() => {
-      zero = add(`<zero-md src="dummy.md" manual-render></zero-md>`)
+      zero = common.addHtml(`<zero-md src="dummy.md" manual-render></zero-md>`)
     })
     after(() => zero.remove())
 
@@ -90,13 +86,13 @@ export default function() {
     afterEach(() => zero.remove())
 
     it('uses default styles if no template declared', () => {
-      zero = add(`<zero-md manual-render></zero-md>`)
+      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
       const s = zero.makeNode(zero.buildStyles()).outerHTML
       assert(s.includes('/github-markdown.min.css'))
     })
 
     it('uses template styles', () => {
-      zero = add(`
+      zero = common.addHtml(`
 <zero-md manual-render>
 <template><link rel="stylesheet" href="example.css"></template>
 </zero-md>`)
@@ -106,7 +102,7 @@ export default function() {
     })
 
     it('prepends correctly', () => {
-      zero = add(`
+      zero = common.addHtml(`
 <zero-md manual-render>
 <template data-merge="prepend"><style>p{color:red;}</style></template>
 </zero-md>`)
@@ -115,7 +111,7 @@ export default function() {
     })
 
     it('appends correctly', () => {
-      zero = add(`
+      zero = common.addHtml(`
 <zero-md manual-render>
 <template data-merge="append"><style>p{color:red;}</style></template>
 </zero-md>`)
@@ -124,7 +120,7 @@ export default function() {
     })
 
     it('allows passing an empty template to override default template', () => {
-      zero = add(`
+      zero = common.addHtml(`
 <zero-md manual-render>
 <template></template>
 </zero-md>`)
@@ -136,7 +132,7 @@ export default function() {
   describe('stampBody()', () => {
     let zero
     beforeEach(() => {
-      zero = add(`<zero-md manual-render></zero-md>`)
+      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => zero.remove())
 
@@ -147,7 +143,7 @@ export default function() {
 
     it('stamps html body into light dom if no-shadow set', () => {
       zero.remove()
-      zero = add(`<zero-md manual-render no-shadow></zero-md>`)
+      zero = common.addHtml(`<zero-md manual-render no-shadow></zero-md>`)
       zero.stampBody('<div class="test">hello</div>')
       expect(zero.querySelector('.test').innerHTML).to.equal('hello')
     })
@@ -156,7 +152,7 @@ export default function() {
   describe('stampStyles()', () => {
     let zero
     beforeEach(() => {
-      zero = add(`<zero-md manual-render></zero-md>`)
+      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => zero.remove())
 
@@ -190,7 +186,7 @@ export default function() {
     afterEach(() => zero.remove())
 
     it('auto re-renders when src change', (done) => {
-      zero = add(`<zero-md src="fixture.md"></zero-md>`)
+      zero = common.addHtml(`<zero-md src="fixture.md"></zero-md>`)
       zero.addEventListener('zero-md-rendered', () => {
         if (zero.src === 'fixture.md') {
           expect(zero.shadowRoot.querySelector('h1').innerText).to.equal('markdown-fixture')
@@ -203,7 +199,7 @@ export default function() {
     })
 
     it('prevents FOUC by ensuring styles are stamped and resolved first, before stamping md', async () => {
-      zero = add(`
+      zero = common.addHtml(`
 <zero-md manual-render>
   <template>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.css">
@@ -219,7 +215,7 @@ export default function() {
     })
 
     it('renders markdown-body with optional classes', async () => {
-      zero = add(`
+      zero = common.addHtml(`
 <zero-md manual-render>
 <script type="text/markdown"># test</script>
 </zero-md>`)
@@ -230,7 +226,7 @@ export default function() {
     })
 
     it('renders partially if body changes but styles do not', async () => {
-      zero = add(`
+      zero = common.addHtml(`
 <zero-md manual-render>
 <template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script>
 </zero-md>`)
@@ -249,7 +245,7 @@ export default function() {
     })
 
     it('renders partially if styles change but body does not', async () => {
-      zero = add(`
+      zero = common.addHtml(`
 <zero-md manual-render>
 <template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script>
 </zero-md>`)
@@ -279,7 +275,7 @@ export default function() {
     // TODO: make it pass
     it.skip('scrolls to element if location.hash set on first render', async () => {
       location.hash = 'tamen-et-veri'
-      zero = add(`
+      zero = common.addHtml(`
 <div style="height:200px;overflow:hidden;">
 <zero-md src="fixture.md"></zero-md>
 </div>`)
@@ -291,7 +287,7 @@ export default function() {
 
     // TODO: make it pass
     it.skip('hijacks same-doc hash links and scrolls id into view', async () => {
-      zero = add(`
+      zero = common.addHtml(`
 <div style="height:200px;overflow:hidden;">
 <zero-md src="fixture.md" manual-render></zero-md>
 </div>`)
@@ -312,7 +308,7 @@ export default function() {
     // TODO: make it pass
     it.skip('auto re-renders content when inline markdown script changes', (done) => {
       let isInitialRender = true
-      zero = add(`
+      zero = common.addHtml(`
 <zero-md>
 <script type="text/markdown"># markdown-fixture</script>
 </zero-md>`)
@@ -330,7 +326,7 @@ export default function() {
 
     it('auto re-renders styles when styles template changes', (done) => {
       let isInitialRender = true
-      zero = add(`
+      zero = common.addHtml(`
 <zero-md>
   <template>
     <style>h1 { color: rgb(255, 0, 0); }</style>
@@ -378,7 +374,7 @@ export default function() {
   describe('buildMd()', () => {
     let zero
     beforeEach(() => {
-      zero = add(`<zero-md manual-render></zero-md>`)
+      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()
