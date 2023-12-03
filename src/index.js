@@ -449,7 +449,7 @@ export class ZeroMd extends HTMLElement {
 
     /* DEFINE HOW TO GET MD */
 
-    async function fetchDataFromGitlab(fileUrl) {
+    const fetchDataFromGitlab = async fileUrl => {
       const id = this.config.gitlab.projectId
       const branch = this.config.gitlab.branch
       const absolutePath = encodeURIComponent(fileUrl.trim())
@@ -468,7 +468,7 @@ export class ZeroMd extends HTMLElement {
       if (!this.src && !this.path) {
         return ''
       }
-      const resp =
+      const responce =
         isReadingFromGitlabConfigured && this.path
           ? await fetchDataFromGitlab(this.path)
           : await (async () => {
@@ -478,12 +478,12 @@ export class ZeroMd extends HTMLElement {
               return fetch(gitlabAbsoluteUrl)
             })()
 
-      if (resp.ok) {
-        return await resp.text()
+      if (responce.ok) {
+        return await responce.text()
       } else {
         this.fire('zero-md-error', {
-          msg: `[zero-md] HTTP error ${resp.status} while fetching src`,
-          status: resp.status,
+          msg: `[zero-md] HTTP error ${responce.status} while fetching src`,
+          status: responce.status,
           src: this.src,
           path: this.path,
           lang: this.lang,
@@ -743,10 +743,10 @@ export class ZeroMd extends HTMLElement {
 
     // todo: fix to skip links that start with http
     const mdExtensions = /\.md\)/gim
-    md = md.replace(mdExtensions, `-md${window.location.search})`)
+    md = md.replace(mdExtensions, '-md)')
 
     const mdExtensionsWithId = /\.md#/gim
-    md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
+    md = md.replace(mdExtensionsWithId, '-md#')
 
     const poetryBoldOption = /<!--(.+?)poetryBold(.+?)-->/gi
     const [, poetryBoldStart, poetryBoldEnd] = [...md.matchAll(poetryBoldOption)].at(-1) || [
