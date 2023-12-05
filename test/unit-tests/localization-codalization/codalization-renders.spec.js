@@ -10,16 +10,17 @@ export default function() {
 
   chai.config.truncateThreshold = 0
   const expect = chai.expect
+
   const zero = new Zero()
 
-  beforeEach(() => {
-    zero.addHtml(`<zero-md manual-render></zero-md>`)
-  })
-  afterEach(() => {
-    zero.remove()
-  })
-  
   describe('Codalization', () => {
+    beforeEach(() => {
+      zero.addHtml(`<zero-md manual-render></zero-md>`)
+    })
+    afterEach(() => {
+      zero.remove()
+    })
+
     it('renders code by main attribute in codalized option', async () => {
       zero.appendScriptMD(`
 <codalized main="java"/>

@@ -24,6 +24,10 @@ export class Zero {
         this.zero.config.code = code
     }
 
+    setLangByConfig(lang) {
+        this.zero.config.lang = lang
+    }
+
     setCodeByAttribute(code) {
         this.zero.setAttribute('code', code)
     }
@@ -48,4 +52,7 @@ export class Zero {
         return this.body().querySelector(selector)
     }
 
+    body$$(selector) {
+        return this.body().querySelectorAll(selector)
+    }
 }
