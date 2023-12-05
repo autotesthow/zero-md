@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* global chai */
 
-import common from './../../utils/common.js'
+import { Zero } from '../../utils/Zero.js'
 
 export default function() {
   mocha.setup({
@@ -11,28 +11,18 @@ export default function() {
   chai.config.truncateThreshold = 0
   const expect = chai.expect
 
+  const zero = new Zero()
+
   describe('One-code', () => {
-    let zero
     beforeEach(() => {
-      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
+      zero.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()
     })
-    
-    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
-    const zeroBody = () => zero$('.markdown-body')
-    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-
-    const zeroAppendScriptMD = (text) => {
-      const script = document.createElement('script')
-      script.setAttribute('type', 'text/markdown')
-      script.text = text
-      zero.appendChild(script)
-    }
 
     it('correct work', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--java~{{Variable}}~Java~-->
 <codalized main="java"/>
 
@@ -40,11 +30,11 @@ export default function() {
      
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Java')
+      expect(zero.body$('p').innerText).to.equals('Java')
     })
 
     it('incorrect code must dont work with other codes', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--java~{{Variable}}~Java~-->
 <codalized main="js"/>
 
@@ -52,7 +42,7 @@ export default function() {
      
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('{{Variable}}')
+      expect(zero.body$('p').innerText).to.equals('{{Variable}}')
     })
   })
 }

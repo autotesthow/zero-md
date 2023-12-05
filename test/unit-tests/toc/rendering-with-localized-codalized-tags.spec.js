@@ -10,16 +10,17 @@ export default function() {
 
   chai.config.truncateThreshold = 0
   const expect = chai.expect
+
   const zero = new Zero()
 
-  beforeEach(() => {
-    zero.addHtml(`<zero-md manual-render></zero-md>`)
-  })
-  afterEach(() => {
-    zero.remove()
-  })
-
   describe('Rendering with localized/codalized ', () => {
+    beforeEach(() => {
+      zero.addHtml(`<zero-md manual-render></zero-md>`)
+    })
+    afterEach(() => {
+      zero.remove()
+    })
+
     it('first element in localized tags rendered correctly in TOC', async () => {
       zero.appendScriptMD(`
 <localized main="ru"/>

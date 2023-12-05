@@ -28,6 +28,10 @@ export class Zero {
         this.zero.setAttribute('code', code)
     }
 
+    setLangByAttribute(lang) {
+        this.zero.setAttribute('lang', lang)
+    }
+
     remove() {
         this.zero.remove()
     }

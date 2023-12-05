@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* global chai */
 
-import common from './../../utils/common.js'
+import { Zero } from '../../utils/Zero.js'
 
 export default function() {
   mocha.setup({
@@ -11,28 +11,18 @@ export default function() {
   chai.config.truncateThreshold = 0
   const expect = chai.expect
 
+  const zero = new Zero()
+
   describe('Multi-lang', () => {
-    let zero
     beforeEach(() => {
-      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
+      zero.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()
     })
     
-    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
-    const zeroBody = () => zero$('.markdown-body')
-    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-   
-    const zeroAppendScriptMD = (text) => {
-      const script = document.createElement('script')
-      script.setAttribute('type', 'text/markdown')
-      script.text = text
-      zero.appendChild(script)
-    }
-    
     it('correct work with first lang', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--en-ru~{{Variable}}~Variable~-->
 <localized main="en"/>
 
@@ -40,11 +30,11 @@ export default function() {
      
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Variable')
+      expect(zero.body$('p').innerText).to.equals('Variable')
     })
 
     it('correct work with last lang', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--en-ru~{{toBeTranslated}}~Translation~-->
 <localized main="ru"/>
  
@@ -52,11 +42,11 @@ export default function() {
      
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Translation')
+      expect(zero.body$('p').innerText).to.equals('Translation')
     })
         
     it('dont work with other lang', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--en-ru~{{Variable}}~Variable~-->
 <localized main="uk"/>
 
@@ -64,7 +54,7 @@ export default function() {
      
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('{{Variable}}')
+      expect(zero.body$('p').innerText).to.equals('{{Variable}}')
     })
   })
 }
