@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* global chai */
 
-import common from './../../utils/common.js'
+import { Zero } from '../../utils/Zero.js'
 
 export default function() {
   mocha.setup({
@@ -10,77 +10,66 @@ export default function() {
 
   chai.config.truncateThreshold = 0
   const expect = chai.expect
+  const zero = new Zero()
+
+  beforeEach(() => {
+    zero.addHtml(`<zero-md manual-render></zero-md>`)
+  })
+  afterEach(() => {
+    zero.remove()
+  })
 
   describe('Rendering simple scenarios', () => {
-    let zero
-    beforeEach(() => {
-      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
-    })
-    afterEach(() => {
-      zero.remove()
-    })
-    
-    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
-    const zeroBody = () => zero$('.markdown-body')
-    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-
-    const zeroAppendScriptMD = (text) => {
-      const script = document.createElement('script')
-      script.setAttribute('type', 'text/markdown')
-      script.text = text
-      zero.appendChild(script)
-    }
-
     it('# correctly', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>-->
       
 # 1 title {#first-item}`)
 
       await zero.render()
 
-      expect(zeroBody$('.toc div').style.marginLeft).to.equals('0px')
-      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
+      expect(zero.body$('.toc div').style.marginLeft).to.equals('0px')
+      expect(zero.body$('a[href="#first-item"]').innerText).to.equals('1 title')
     })
 
     it('## correctly', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>-->
       
 ## 1 title {#first-item}`)
 
       await zero.render()
 
-      expect(zeroBody$('.toc div').style.marginLeft).to.equals('40px')
-      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
+      expect(zero.body$('.toc div').style.marginLeft).to.equals('40px')
+      expect(zero.body$('a[href="#first-item"]').innerText).to.equals('1 title')
     })
     
     it('### correctly', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>-->
       
 ### 1 title {#first-item}`)
 
       await zero.render()
 
-      expect(zeroBody$('.toc div').style.marginLeft).to.equals('80px')
-      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
+      expect(zero.body$('.toc div').style.marginLeft).to.equals('80px')
+      expect(zero.body$('a[href="#first-item"]').innerText).to.equals('1 title')
     })
 
     it('#### correctly', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>-->
       
 #### 1 title {#first-item}`)
 
       await zero.render()
 
-      expect(zeroBody$('.toc div').style.marginLeft).to.equals('120px')
-      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
+      expect(zero.body$('.toc div').style.marginLeft).to.equals('120px')
+      expect(zero.body$('a[href="#first-item"]').innerText).to.equals('1 title')
     })
     
     it('by filter with level 0', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>-->
       
 # 1 title {#first-item}
@@ -90,18 +79,18 @@ export default function() {
 
       await zero.render()
 
-      expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
-      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('1 title')
-      expect(zeroBody$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
-      expect(zeroBody$('a[href="#second-item"]').innerText).to.equals('2 title')
-      expect(zeroBody$('.toc div:nth-child(3)').style.marginLeft).to.equals('80px')
-      expect(zeroBody$('a[href="#third-item"]').innerText).to.equals('3 title')
-      expect(zeroBody$('.toc div:nth-child(4)').style.marginLeft).to.equals('120px')
-      expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
+      expect(zero.body$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
+      expect(zero.body$('a[href="#first-item"]').innerText).to.equals('1 title')
+      expect(zero.body$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
+      expect(zero.body$('a[href="#second-item"]').innerText).to.equals('2 title')
+      expect(zero.body$('.toc div:nth-child(3)').style.marginLeft).to.equals('80px')
+      expect(zero.body$('a[href="#third-item"]').innerText).to.equals('3 title')
+      expect(zero.body$('.toc div:nth-child(4)').style.marginLeft).to.equals('120px')
+      expect(zero.body$('a[href="#fourth-item"]').innerText).to.equals('4 title')
     })
   
     it('by filter with level 1', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>1-->
 
 # 1 title {#first-item}
@@ -111,16 +100,16 @@ export default function() {
 
       await zero.render()
 
-      expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
-      expect(zeroBody$('a[href="#second-item"]').innerText).to.equals('2 title')
-      expect(zeroBody$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
-      expect(zeroBody$('a[href="#third-item"]').innerText).to.equals('3 title')
-      expect(zeroBody$('.toc div:nth-child(3)').style.marginLeft).to.equals('80px')
-      expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
+      expect(zero.body$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
+      expect(zero.body$('a[href="#second-item"]').innerText).to.equals('2 title')
+      expect(zero.body$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
+      expect(zero.body$('a[href="#third-item"]').innerText).to.equals('3 title')
+      expect(zero.body$('.toc div:nth-child(3)').style.marginLeft).to.equals('80px')
+      expect(zero.body$('a[href="#fourth-item"]').innerText).to.equals('4 title')
     })
   
     it('by filter with level 2', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>2-->
       
 # 1 title {#first-item}
@@ -130,14 +119,14 @@ export default function() {
 
       await zero.render()
 
-      expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
-      expect(zeroBody$('a[href="#third-item"]').innerText).to.equals('3 title')
-      expect(zeroBody$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
-      expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
+      expect(zero.body$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
+      expect(zero.body$('a[href="#third-item"]').innerText).to.equals('3 title')
+      expect(zero.body$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
+      expect(zero.body$('a[href="#fourth-item"]').innerText).to.equals('4 title')
     })
 
     it('by filter with level 3', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>3-->
       
 # 1 title {#first-item}
@@ -147,36 +136,36 @@ export default function() {
 
       await zero.render()
 
-      expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
-      expect(zeroBody$('a[href="#fourth-item"]').innerText).to.equals('4 title')
+      expect(zero.body$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
+      expect(zero.body$('a[href="#fourth-item"]').innerText).to.equals('4 title')
     })
     
     it('# correctly without anchor', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>-->
       
 # 1 title`)
 
       await zero.render()
 
-      expect(zeroBody$('.toc div').style.marginLeft).to.equals('0px')
-      expect(zeroBody$('a[href="#1-title"]').innerText).to.equals('1 title')
+      expect(zero.body$('.toc div').style.marginLeft).to.equals('0px')
+      expect(zero.body$('a[href="#1-title"]').innerText).to.equals('1 title')
     })
 
     it('# correctly without anchor with trouble naming', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>1-->
       
 ## 1        .   $%^*  title`)
 
       await zero.render()
 
-      expect(zeroBody$('.toc div').style.marginLeft).to.equals('0px')
-      expect(zeroBody$('a[href="#1-title"]').innerText).to.equals('1 . $%^* title')
+      expect(zero.body$('.toc div').style.marginLeft).to.equals('0px')
+      expect(zero.body$('a[href="#1-title"]').innerText).to.equals('1 . $%^* title')
     })
       
     it('by filter with level 2 without anchor', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 [TOC]<!--TOC>2-->
       
 # 1 title
@@ -186,10 +175,10 @@ export default function() {
 
       await zero.render()
 
-      expect(zeroBody$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
-      expect(zeroBody$('a[href="#3-title"]').innerText).to.equals('3 title')
-      expect(zeroBody$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
-      expect(zeroBody$('a[href="#4-title"]').innerText).to.equals('4 title')
+      expect(zero.body$('.toc div:nth-child(1)').style.marginLeft).to.equals('0px')
+      expect(zero.body$('a[href="#3-title"]').innerText).to.equals('3 title')
+      expect(zero.body$('.toc div:nth-child(2)').style.marginLeft).to.equals('40px')
+      expect(zero.body$('a[href="#4-title"]').innerText).to.equals('4 title')
     })
   })
 }

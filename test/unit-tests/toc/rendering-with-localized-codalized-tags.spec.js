@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* global chai */
 
-import common from './../../utils/common.js'
+import { Zero } from '../../utils/Zero.js'
 
 export default function() {
   mocha.setup({
@@ -10,29 +10,18 @@ export default function() {
 
   chai.config.truncateThreshold = 0
   const expect = chai.expect
+  const zero = new Zero()
+
+  beforeEach(() => {
+    zero.addHtml(`<zero-md manual-render></zero-md>`)
+  })
+  afterEach(() => {
+    zero.remove()
+  })
 
   describe('Rendering with localized/codalized ', () => {
-    let zero
-    beforeEach(() => {
-      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
-    })
-    afterEach(() => {
-      zero.remove()
-    })
-    
-    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
-    const zeroBody = () => zero$('.markdown-body')
-    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-
-    const zeroAppendScriptMD = (text) => {
-      const script = document.createElement('script')
-      script.setAttribute('type', 'text/markdown')
-      script.text = text
-      zero.appendChild(script)
-    }
-
     it('first element in localized tags rendered correctly in TOC', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <localized main="ru"/>
 
 [TOC]<!--TOC>2-->
@@ -41,11 +30,11 @@ export default function() {
 
       await zero.render()
 
-      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('Простой тест на')
+      expect(zero.body$('a[href="#first-item"]').innerText).to.equals('Простой тест на')
     })
 
     it('middle element in localized tags rendered correctly in TOC', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <localized main="uk"/>
 
 [TOC]<!--TOC>2-->
@@ -54,11 +43,11 @@ export default function() {
 
       await zero.render()
 
-      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('Простий тест на')
+      expect(zero.body$('a[href="#first-item"]').innerText).to.equals('Простий тест на')
     })
 
     it('last element in localized tags rendered correctly in TOC', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <localized main="en"/>
 
 [TOC]<!--TOC>2-->
@@ -67,11 +56,11 @@ export default function() {
 
       await zero.render()
 
-      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('Simple test in')
+      expect(zero.body$('a[href="#first-item"]').innerText).to.equals('Simple test in')
     })
 
     it('first element in codalized tags rendered correctly in TOC', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <codalized main="py"/>
 
 [TOC]<!--TOC>2-->
@@ -80,7 +69,7 @@ export default function() {
 
       await zero.render()
 
-      expect(zeroBody$('a[href="#first-item"]').innerText).to.equals('Header 1 PY')
+      expect(zero.body$('a[href="#first-item"]').innerText).to.equals('Header 1 PY')
     })
   })
 }
