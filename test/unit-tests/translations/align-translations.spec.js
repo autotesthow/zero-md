@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* global chai */
 
-import common from './../../utils/common.js'
+import { Zero } from '../../utils/Zero.js'
 
 export default function() {
   mocha.setup({
@@ -11,26 +11,16 @@ export default function() {
   chai.config.truncateThreshold = 0
   const expect = chai.expect
 
+  const zero = new Zero()
+
   // Align translations for easier refactoring
   describe('Align translations', () => {
-    let zero
     beforeEach(() => {
-      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
+      zero.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()
     })
-    
-    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
-    const zeroBody = () => zero$('.markdown-body')
-    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-
-    const zeroAppendScriptMD = (text) => {
-      const script = document.createElement('script')
-      script.setAttribute('type', 'text/markdown')
-      script.text = text
-      zero.appendChild(script)
-    }
 
     let scenarios = {
       '"en", "py"': {
@@ -69,7 +59,7 @@ export default function() {
         return
       }
       it(`${dashes} work with  ${scenario}`, async () => {
-        zeroAppendScriptMD(`
+        zero.appendScriptMD(`
 <localized main="uk"/>
 <codalized main="js"/>   
 <!${dashes}js-ts~{{browser.config.baseUrl}}~browser.config.baseUrl~-->
@@ -85,12 +75,12 @@ export default function() {
 
 <ru>Заглавие <py>{{browser.config.baseUrl}} PY</py><java>{{browser.config.baseUrl}} JAVA</java><js>{{browser.config.baseUrl}} JS</js>
 <ts>{{browser.config.baseUrl}} TS</ts><cs>{{browser.config.baseUrl}} CS</cs> любой текст</ru>`)
-        zero.lang = lang
-        zero.code = code
+        zero.setLangByAttribute(lang)
+        zero.setCodeByAttribute(code)
         
         await zero.render()
   
-        expect(zeroBody$('p').innerText).to.equals(text)
+        expect(zero.body$('p').innerText).to.equals(text)
       })
     }) 
   })

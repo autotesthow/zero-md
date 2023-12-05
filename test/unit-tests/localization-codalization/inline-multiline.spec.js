@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* global chai */
 
-import common from './../../utils/common.js'
+import { Zero } from '../../utils/Zero.js'
 
 export default function() {
   mocha.setup({
@@ -11,26 +11,16 @@ export default function() {
   chai.config.truncateThreshold = 0
   const expect = chai.expect
 
+  const zero = new Zero()
+  
   describe('Inline/multiline', () => {
-    let zero
     beforeEach(() => {
-      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
+      zero.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()
     })
-    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
-    const zeroBody = () => zero$('.markdown-body')
-    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
-
-    const zeroAppendScriptMD = (text) => {
-      const script = document.createElement('script')
-      script.setAttribute('type', 'text/markdown')
-      script.text = text
-      zero.appendChild(script)
-    }
-
+  
     let scenarios = {
       'inline localization': {
         given: 'Hello in selected language - «<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>».',
@@ -241,7 +231,7 @@ Test Runner {{TR}}
       }
 
       it(`render: ${scenario}`, async () => {
-        zeroAppendScriptMD(`
+        zero.appendScriptMD(`
 <localized main="en"/>
 <codalized main="ts"/>
 
@@ -249,39 +239,39 @@ Test Runner {{TR}}
 ${given}`)
 
         if (lang) {
-          zero.lang = lang
+          zero.setLangByConfig(lang)
         }
         if (code) {
-          zero.code = code
+          zero.setCodeByConfig(code)
         }
 
         await zero.render()
 
         // console.log(`=========\n${scenario}\n\nfrom\n---------\n`, given)
         // console.log('---------\nto:\n---------\n', zeroBody$(selector).innerHTML)
-        expect(zeroBody$(selector).innerHTML).to.equal(localized)
-        expect(zeroBody$$(selector).length).to.equal(1)
+        expect(zero.body$(selector).innerHTML).to.equal(localized)
+        expect(zero.body$$(selector).length).to.equal(1)
       })
 
       it(`render: ${scenario} (NEW STYLE TAGS)`, async () => {
-        zeroAppendScriptMD(`
+        zero.appendScriptMD(`
 <!--localized(main="en")--> 
 <!--codalized(main="py")-->
 
 ${given}`)
         if (lang) {
-          zero.lang = lang
+          zero.setLangByConfig(lang)
         }
         if (code) {
-          zero.code = code
+          zero.setCodeByConfig(code)
         }
 
         await zero.render()
 
         // console.log(`=========\n${scenario}\n\nfrom\n---------\n`, given)
         // console.log('---------\nto:\n---------\n', zeroBody$(selector).innerHTML)
-        expect(zeroBody$(selector).innerHTML).to.equal(localized)
-        expect(zeroBody$$(selector).length).to.equal(1)
+        expect(zero.body$(selector).innerHTML).to.equal(localized)
+        expect(zero.body$$(selector).length).to.equal(1)
       })
     })
   })

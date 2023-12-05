@@ -1,10 +1,12 @@
 export default {
-    clearSearchParams(baseUrl) {
-        window.history.replaceState(null, null, baseUrl)
+    baseUrl: window.location.href,
+
+    clearSearchParams() {
+        window.history.replaceState(null, null, this.baseUrl)
     },
 
-    setSearchParams(baseUrl, queryString) {
-        window.history.pushState(null, null, baseUrl + queryString)
+    setSearchParams(queryString) {
+        window.history.pushState(null, null, this.baseUrl + queryString)
     },
 
     addHtml(html) {
