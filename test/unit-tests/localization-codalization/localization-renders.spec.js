@@ -31,9 +31,7 @@ export default function() {
     })
     
     it('lang by main attribute in localized option', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
-
+      zero.appendScriptMdLocalized('en', `
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
       await zero.render()
    
@@ -41,9 +39,7 @@ export default function() {
     })
 
     it('lang by lang option of zero-md config', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
-
+      zero.appendScriptMdLocalized('en', `
 <ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
 
       zero.setLangByConfig('ru')
@@ -53,9 +49,7 @@ export default function() {
     })
 
     it('lang by lang attribute of zero-md', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
-
+      zero.appendScriptMdLocalized('en', `
 <ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
 
       zero.setLangByAttribute('uk')
@@ -65,9 +59,7 @@ export default function() {
     })
 
     it('should be overrided from attributes after zero-md config', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
-
+      zero.appendScriptMdLocalized('en', `
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
       zero.setLangByConfig('ru')
 
@@ -80,9 +72,7 @@ export default function() {
     it('auto re-renders on change of lang attribute of zero-md', async () => {
       zero.remove()
       zero.addHtml('<zero-md lang="ru"></zero-md>')
-      zero.appendScriptMD(`
-<localized main="en"/>
-
+      zero.appendScriptMdLocalized('en', `
 <ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
       await zero.render()
 

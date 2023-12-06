@@ -22,9 +22,7 @@ export default function() {
     })
    
     it('renders code by main attribute in codalized option <not-js>', async () => {
-      zero.appendScriptMD(`
-<codalized main="java"/>
-
+      zero.appendScriptMdCodalized('java', `
 <not-js>NOT-JS</not-js>`)
       await zero.render()
    
@@ -32,9 +30,7 @@ export default function() {
     })
 
     it('renders code by main attribute in codalized option <not-js-java>', async () => {
-      zero.appendScriptMD(`
-<codalized main="py"/>
-
+      zero.appendScriptMdCodalized('py', `
 <not-js-java>NOT-JS-JAVA</not-js-java>`)
       await zero.render()
    
@@ -42,9 +38,7 @@ export default function() {
     })
 
     it('renders code by main attribute in codalized option <not-ts-py-cs>', async () => {
-      zero.appendScriptMD(`
-<codalized main="java"/>
-
+      zero.appendScriptMdCodalized('java', `
 <not-ts-py-cs>NOT-TS-PY-CS</not-ts-py-cs>`)
       await zero.render()
    
@@ -52,9 +46,7 @@ export default function() {
     })
 
     it('NO renders code by main attribute in codalized option <not-js>', async () => {
-      zero.appendScriptMD(`
-<codalized main="js"/>
-
+      zero.appendScriptMdCodalized('js', `
 <not-js>NOT-JS</not-js>`)
       await zero.render()
    
@@ -62,9 +54,7 @@ export default function() {
     })
 
     it('NO renders code by main attribute in codalized option <not-js-java>', async () => {
-      zero.appendScriptMD(`
-<codalized main="java"/>
-
+      zero.appendScriptMdCodalized('java', `
 <not-js-java>NOT-JS-JAVA</not-js-java>`)
       await zero.render()
    
@@ -72,9 +62,7 @@ export default function() {
     })
 
     it('NO renders code by main attribute in codalized option <not-ts-py-cs>', async () => {
-      zero.appendScriptMD(`
-<codalized main="py"/>
-
+      zero.appendScriptMdCodalized('py', `
 <not-ts-py-cs>NOT-TS-PY-CS</not-ts-py-cs>`)
       await zero.render()
    

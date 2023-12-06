@@ -22,10 +22,7 @@ export default function() {
     })
                        
     it('codeblock renders all font transformation', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="js"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'js', `
 \`\`\`poetry
 this is **bold** in poetry
 this is __default bold (disabled)__ in poetry
@@ -45,10 +42,7 @@ this is ____underlined____ in poetry
     })
 
     it('codeblock renders with code id', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="js"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'js', `
 \`\`\`poetry: java
 // 1.2 (with code id)
 // this is **bold** in poetry
@@ -69,9 +63,7 @@ this is ____underlined____ in poetry
     })
 
     it('codegroup renders with code id, tabbed, mixed with not-poetry', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 <!--«tabNameBrackets»-->
 
 ::::::::::
@@ -123,8 +115,7 @@ this is ____underlined____ in poetry
     })
 
     it('codegroup renders with manual, without code id, tabbed, mixed with not-poetry where poetry is not in first tab', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
+      zero.appendScriptMdLocalized('uk', `
 <!--«tabNameBrackets»-->
 
 ::::::::::manual
@@ -192,9 +183,7 @@ this is **bold** in poetry tabbed
     })
 
     it('codegroup renders with manual', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-
+      zero.appendScriptMdLocalized('uk', `
 :::::::::manual
 \`\`\`poetry
 4 this is **bold** in poetry tabbed manual
@@ -228,8 +217,7 @@ this is **bold** in markdown tabbed manual with custom name
     })
 
     it('codegroup renders with poetry codeblock with manual', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
+      zero.appendScriptMdLocalized('en', `
 <!--«tabNameBrackets»-->
 
 :::::::::manual
@@ -253,9 +241,7 @@ this is **bold** in poetry tabbed manual with custom name besides second tab wit
 
     //custom bold don't work. wright expect when he start work
     it('codegroup renders with codeblocks with custom name', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 <!--«tabNameBrackets»-->
 
 :::::::::
@@ -279,8 +265,7 @@ this is **bold** in poetry tabbed manual with custom name besides second tab wit
 
     //TODO: **bold** must fix in this case
     it('codegroup renders with manual, not poetry, with 2 custom names', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
+      zero.appendScriptMdLocalized('uk', `
 <!--«tabNameBrackets»-->
 
 :::::::::manual
@@ -303,8 +288,7 @@ this is **bold** in markdown tabbed manual with custom name besides second tab w
 
     //TODO: understand must work **bold** or not
     it('codegroup renders with manual, not poetry, with 2 custom namees with codes', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
+      zero.appendScriptMdLocalized('uk', `
 <!--«tabNameBrackets»-->
 
 :::::::::manual
@@ -324,8 +308,7 @@ this is **bold** in markdown tabbed manual with custom name besides second tab w
 
     //TODO: understand must work **bold** or not
     it('codegroup renders with not manual, not poetry, with 2 custom names with codes', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
+      zero.appendScriptMdLocalized('uk', `
 <!--«tabNameBrackets»-->
 
 :::::::::
@@ -344,9 +327,7 @@ this is **bold** in markdown tabbed manual with custom name besides second tab w
     })
 
     it('codegroup renders with visible on asked java or cs | invisible on asked not java or cs, like js', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 <!--«tabNameBrackets»-->
 
 :::::::::
@@ -370,9 +351,7 @@ this is **bold** in poetry tabbed with known name (i.e. = code id) - java
     })
 
     it('codegroup renders with visible on no asked code | visible on asked java | invisible on asked not java, like js', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 <!--«tabNameBrackets»-->
 
 :::::::::
@@ -393,10 +372,7 @@ this is **bold** in poetry tabbed with known name (i.e. = code id) and custom na
     })
 
     it('codegroup renders with manual => visible allways', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 :::::::::manual
 \`\`\`poetry: java
 this is **bold** in poetry tabbed manual with known name
@@ -413,8 +389,7 @@ this is **bold** in poetry tabbed manual with known name
 
     //with codalized don't work
     it('codegroup renders with manual => visible allways', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
+      zero.appendScriptMdLocalized('uk', `
 <!--«tabNameBrackets»-->
 
 :::::::::manual
@@ -433,10 +408,7 @@ this is **bold** in poetry tabbed manual with custom name of known code
 
     //todo: selector two in expect don't work
     it.skip('codegroup renders with manual, not poetry => visible both with first selected and working switch - allways', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="js"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'js', `
 :::::::::manual
 \`\`\`js ts
 // some code
@@ -451,9 +423,7 @@ this is **bold** in poetry tabbed manual with custom name of known code
     })
 
     it('codegroup renders with manual => visible allways with first selected and working switch', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="js"/>
+      zero.appendScriptMdLocalizedCodalized('uk', 'js', `
 <!--«tabNameBrackets»-->
 
 :::::::::manual
@@ -470,9 +440,7 @@ this is **bold** in poetry tabbed manual with custom name of known code
     })
 
     it('codegroup renders visible on asked js or ts | invisible on asked not js or ts, like java', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="js"/>
+      zero.appendScriptMdLocalizedCodalized('uk', 'js', `
 <!--«tabNameBrackets»-->
 
 :::::::::
@@ -489,10 +457,7 @@ this is **bold** in poetry tabbed manual with custom name of known code
     })
 
     it.skip('codegroup renders with html and custom quotes in poetry for bold', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 Все html-элементы выглядят примерно так:
 
 \`\`\`html

@@ -59,9 +59,7 @@ export default function() {
         return
       }
       it(`${dashes} work with  ${scenario}`, async () => {
-        zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="js"/>   
+        zero.appendScriptMdLocalizedCodalized('uk', 'js', `
 <!${dashes}js-ts~{{browser.config.baseUrl}}~browser.config.baseUrl~-->
 <!${dashes}py~{{browser.config.baseUrl}}~browser.config.base_url~-->
 <!${dashes}java~{{browser.config.baseUrl}}~Configuration.baseUrl~-->

@@ -65,8 +65,7 @@ There should be long break above starting from the header.`)
     })
 
     it('Should have longBreak instead of ====+ from variable', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
+      zero.appendScriptMdLocalized('en', `
 <!--en-uk-ru~{{SOLUTION}}~,,,,,,,,,,,,
 **⇩SOLUTION⇩**
 ============~-->

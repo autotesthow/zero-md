@@ -45,8 +45,7 @@ export default function() {
     })
 
     it('work correctly in localized tag', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
+      zero.appendScriptMdLocalized('en', `
 <!--~{{Variable}}~mustBeVisible~-->
 
 <p><en>{{Variable}}</en></p>`)
@@ -57,8 +56,7 @@ export default function() {
     })
 
     it('work correctly in codalized tag', async () => {
-      zero.appendScriptMD(`
-<codalized main="py"/>
+      zero.appendScriptMdCodalized('py', `
 <!--~{{Variable}}~mustBeVisible~-->
 
 <p><py>{{Variable}}</py></p>`)

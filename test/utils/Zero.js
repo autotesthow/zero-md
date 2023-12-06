@@ -16,6 +16,31 @@ export class Zero {
         this.zero.appendChild(script)
     }
 
+    appendScriptMdLocalized(lang, text) {
+        const scriptMDLocalized = `
+<localized main="${lang}"/>
+
+${text}`
+        this.appendScriptMD(scriptMDLocalized)
+    } 
+
+    appendScriptMdCodalized(code, text) {
+        const scriptMDCodalized = `
+<codalized main="${code}"/>
+
+${text}`
+        this.appendScriptMD(scriptMDCodalized)
+    }
+
+    appendScriptMdLocalizedCodalized(lang, code, text) {
+        const scriptMDLocalizedCodalized = `
+<localized main="${lang}"/>
+<codalized main="${code}"/>
+
+${text}`
+        this.appendScriptMD(scriptMDLocalizedCodalized)
+    }
+
     src(src) {
         this.zero.src = src
     }

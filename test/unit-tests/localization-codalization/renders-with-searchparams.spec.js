@@ -24,9 +24,7 @@ export default function() {
     })
 
     it('should be overrided from URLSearchParams', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-
+      zero.appendScriptMdLocalized('uk', `
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
       
       const queryString = '?lang=en';
@@ -37,9 +35,7 @@ export default function() {
     })
 
     it('should be overrided from URLSearchParams after attributes', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
-
+      zero.appendScriptMdLocalized('en',`
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
       zero.setLangByAttribute('ru')
 
@@ -51,9 +47,7 @@ export default function() {
     })
 
     it('should be overrided from URLSearchParams after zeroMdConfig', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
-
+      zero.appendScriptMdLocalized('en', `
 <uk>Привіт</uk><ru>Привет</ru><en>Hello</en>`)
       zero.setLangByConfig('uk')
 
@@ -65,9 +59,7 @@ export default function() {
     }) 
 
     it('should be overrided from URLSearchParams', async () => {
-      zero.appendScriptMD(`
-<codalized main="java"/>
-
+      zero.appendScriptMdCodalized('java', `
 <js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
 
       const queryString = '?code=ts';
@@ -78,9 +70,7 @@ export default function() {
     })
 
     it('should be overrided from URLSearchParams after attributes', async () => {
-      zero.appendScriptMD(`
-<codalized main="java"/>
-
+      zero.appendScriptMdCodalized('java', `
 <js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`) 
       zero.setCodeByAttribute('cs')
 
@@ -92,9 +82,7 @@ export default function() {
     })
 
     it('should be overrided from URLSearchParams after zeroMdConfig', async () => {
-      zero.appendScriptMD(`
-<codalized main="java"/>
-
+      zero.appendScriptMdCodalized('java', `
 <js>JS</js><ts>TS</ts><java>JAVA</java><py>PY</py><cs>CS</cs>`)
       zero.setCodeByConfig('ts')
       

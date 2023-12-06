@@ -22,9 +22,8 @@ export default function() {
     })
     
     it('correct work with first lang', async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalized('en', `
 <!--en-ru~{{Variable}}~Variable~-->
-<localized main="en"/>
 
 <p><en>{{Variable}}</en></p>`)
      
@@ -34,9 +33,8 @@ export default function() {
     })
 
     it('correct work with last lang', async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalized('ru', `
 <!--en-ru~{{toBeTranslated}}~Translation~-->
-<localized main="ru"/>
  
 <p><ru>{{toBeTranslated}}</ru></p>`)
      
@@ -46,9 +44,8 @@ export default function() {
     })
         
     it('dont work with other lang', async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalized('uk', `
 <!--en-ru~{{Variable}}~Variable~-->
-<localized main="uk"/>
 
 <p><uk>{{Variable}}</uk></p>`)
      

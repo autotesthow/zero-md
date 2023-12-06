@@ -58,10 +58,8 @@ export default function() {
         return
       }
       it(`<!--import()--> work with  ${scenario}`, async () => {
-        zero.appendScriptMD(`
+        zero.appendScriptMdLocalizedCodalized(lang, code, `
 <!--import(./variables-for-local-import-tests.md)-->
-<localized main="${lang}"/>
-<codalized main="${code}"/>
 
 <p> 
 <uk-en-ru><py-js-ts-java-cs>${whatWeUse}</py-js-ts-java-cs></uk-en-ru>
@@ -74,10 +72,8 @@ export default function() {
     })
     
     it.skip(`<!--import()--> work in variables`, async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalizedCodalized('en', 'js', `
 <!--import(./variables-for-local-import-tests.md)-->
-<localized main="en"/>
-<codalized main="js"/>
 <!----js~{{var}}~({{lang}}) good job~-->
 
 <p> 
@@ -90,10 +86,8 @@ export default function() {
     })
 
     it(`<!--import()--> work with "{{YOUTUBE()}}", "uk", "java"`, async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 <!--import(./variables-for-local-import-tests.md)-->
-<localized main="uk"/>
-<codalized main="java"/>
 
 <p>  
 <uk-en-ru><py-js-ts-java-cs>{{YOUTUBE(https://youtu.be/I1SBGzclwE0)}}</py-js-ts-java-cs></uk-en-ru>
@@ -105,10 +99,8 @@ export default function() {
     })
           
     it(`<!--import()--> work with "{{LOOM()}}", "en", "js"`, async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalizedCodalized('en', 'js', `
 <!--import(./variables-for-local-import-tests.md)-->
-<localized main="en"/>
-<codalized main="js"/>
 
 <p>
 <uk-en-ru><py-js-ts-java-cs>{{LOOM(https://www.loom.com/share/75f1210f206f49348541008c0cf2ad1d)}}</py-js-ts-java-cs></uk-en-ru>
@@ -121,10 +113,8 @@ export default function() {
 
     //TODO make it pass 
     it.skip('import one translation variable work in one translation variable', async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalizedCodalized('en', 'js', `
 <!--import(./variables-for-local-import-tests.md)-->
-<localized main="en"/>
-<codalized main="js"/>
 <!----js~{{js-lang}}~{{one-lang-from-import}} language~-->
 
 <p>
@@ -137,10 +127,8 @@ export default function() {
     })
 
     it('import general translation variable work in one translation variable', async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalizedCodalized('en', 'js', `
 <!--import(./variables-for-local-import-tests.md)-->
-<localized main="en"/>
-<codalized main="js"/>
 <!----js~{{one-lang}}~{{general-lang-from-import}} language~-->
 
 <p>
@@ -153,10 +141,8 @@ export default function() {
     })
 
     it('import one translation variable work in general translation variable', async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalizedCodalized('en', 'js', `
 <!--import(./variables-for-local-import-tests.md)-->
-<localized main="en"/>
-<codalized main="js"/>
 <!--~{{general-lang}}~{{one-lang-from-import}} language~-->
 
 <p>
@@ -169,10 +155,8 @@ export default function() {
     })
 
     it('import general translation variable work in general translation variable', async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalizedCodalized('en', 'js', `
 <!--import(./variables-for-local-import-tests.md)-->
-<localized main="en"/>
-<codalized main="js"/>
 <!--~{{general-lang}}~{{general-lang-from-import}} language~-->
 
 <p>
@@ -185,10 +169,8 @@ export default function() {
     })
 
     it('import one translation variable dont work in general translation variable with wrong code language', async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdLocalizedCodalized('en', 'py', `
 <!--import(./variables-for-local-import-tests.md)-->
-<localized main="en"/>
-<codalized main="py"/>
 <!--~{{general-lang}}~{{one-lang-from-import}} language~-->
 
 <p>

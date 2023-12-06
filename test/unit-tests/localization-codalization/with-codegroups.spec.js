@@ -24,10 +24,7 @@ export default function() {
   describe('With codegroups', () => {
     it('should set lang and code from codalized and localized tag if other options wasn\'t set' +
     ' AND switch appropriate tab and language', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 <js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>
 <ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>
 <java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>
@@ -53,10 +50,7 @@ export default function() {
 
     it('values from ZeroMdConfig should override values from  codalized and localized' +
     ' AND switch appropriate tab and language', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 <js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>
 <ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>
 <java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>
@@ -84,10 +78,7 @@ export default function() {
 
     it('values from attributes should override values from ZeroMdConfig' +
     ' AND switch appropriate tab and language', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 <js>JS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></js>
 <ts>TS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></ts>
 <java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>
@@ -127,10 +118,7 @@ export default function() {
 
     it('values from URLSearchParams should be the highest priority' +
     ' AND switch appropriate tab and language', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-<codalized main="java"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 <java>JAVA CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></java>
 <py>PYTHON CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></py>
 <cs>CS CONTENT <uk>Привіт</uk><ru>Привет</ru><en>Hello</en></cs>

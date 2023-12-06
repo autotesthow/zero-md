@@ -22,9 +22,7 @@ export default function() {
     })
     
     it('middle element in codalized tags rendered correctly in TOC', async () => {
-      zero.appendScriptMD(`
-<codalized main="java"/>
-
+      zero.appendScriptMdCodalized('java', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js></en> {#first-item}`)
@@ -35,9 +33,7 @@ export default function() {
     })
 
     it('last element in codalized tags rendered correctly in TOC', async () => {
-      zero.appendScriptMD(`
-<codalized main="js"/>
-
+      zero.appendScriptMdCodalized('js', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js></en> {#first-item}`)
@@ -48,9 +44,7 @@ export default function() {
     })
 
     it('first element in codalized tags rendered correctly in TOC including any text behind the tag at the end', async () => {
-      zero.appendScriptMD(`
-<codalized main="py"/>
-
+      zero.appendScriptMdCodalized('py', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js> any text</en> {#first-item}`)
@@ -61,9 +55,7 @@ export default function() {
     })
 
     it('middle element in codalized tags rendered correctly in TOC including any text behind the tag at the end', async () => {
-      zero.appendScriptMD(`
-<codalized main="java"/>
-
+      zero.appendScriptMdCodalized('java', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js> any text</en> {#first-item}`)
@@ -74,9 +66,7 @@ export default function() {
     })
 
     it('last element in codalized tags rendered correctly in TOC including any text behind the tag at the end', async () => {
-      zero.appendScriptMD(`
-<codalized main="js"/>
-
+      zero.appendScriptMdCodalized('js', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js> any text</en> {#first-item}`)
@@ -87,10 +77,7 @@ export default function() {
     })
 
     it('first element in codalized tags rendered correctly in TOC including any text behind the tag at the end in UK in language', async () => {
-      zero.appendScriptMD(`
-<codalized main="py"/>
-<localized main="uk"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'py', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js> any text</en><ru>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> любой текст</ru><uk>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> будь-який текст</uk> {#first-item}`)
@@ -101,10 +88,7 @@ export default function() {
     })
 
     it('middle element in codalized tags rendered correctly in TOC including any text behind the tag at the end in UK in language', async () => {
-      zero.appendScriptMD(`
-<codalized main="java"/>
-<localized main="uk"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'java', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js> any text</en><ru>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> любой текст</ru><uk>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> будь-який текст</uk> {#first-item}`)
@@ -115,10 +99,7 @@ export default function() {
     })
 
     it('last element in codalized tags rendered correctly in TOC including any text behind the tag at the end in UK in language', async () => {
-      zero.appendScriptMD(`
-<codalized main="js"/>
-<localized main="uk"/>
-
+      zero.appendScriptMdLocalizedCodalized('uk', 'js', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js> any text</en><ru>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> любой текст</ru><uk>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> будь-який текст</uk> {#first-item}`)
@@ -129,10 +110,7 @@ export default function() {
     })
 
     it('first element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in language', async () => {
-      zero.appendScriptMD(`
-<codalized main="py"/>
-<localized main="ru"/>
-
+      zero.appendScriptMdLocalizedCodalized('ru', 'py', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js> any text</en><ru>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> любой текст</ru><uk>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> будь-який текст</uk> {#first-item}`)
@@ -143,10 +121,7 @@ export default function() {
     })
 
     it('middle element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in language', async () => {
-      zero.appendScriptMD(`
-<codalized main="java"/>
-<localized main="ru"/>
-
+      zero.appendScriptMdLocalizedCodalized('ru', 'java', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js> any text</en><ru>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> любой текст</ru><uk>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> будь-який текст</uk> {#first-item}`)
@@ -157,10 +132,7 @@ export default function() {
     })
 
     it('last element in codalized tags rendered correctly in TOC including any text behind the tag at the end in RU in language', async () => {
-      zero.appendScriptMD(`
-<codalized main="js"/>
-<localized main="ru"/>
-
+      zero.appendScriptMdLocalizedCodalized('ru', 'js', `
 [TOC]<!--TOC>2-->
     
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js> any text</en><ru>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> любой текст</ru><uk>Заголовок 1 <py>PY</py><java>JAVA</java><js>JS</js> будь-який текст</uk> {#first-item}`)
@@ -171,9 +143,7 @@ export default function() {
     })
 
     it('multiple links in codalized tags rendered correctly in TOC', async () => {
-      zero.appendScriptMD(`
-<codalized main="py"/>
-
+      zero.appendScriptMdCodalized('py', `
 [TOC]<!--TOC>2-->
 
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js> any text</en> {#first-item}

@@ -231,12 +231,7 @@ Test Runner {{TR}}
       }
 
       it(`render: ${scenario}`, async () => {
-        zero.appendScriptMD(`
-<localized main="en"/>
-<codalized main="ts"/>
-
-
-${given}`)
+        zero.appendScriptMdLocalizedCodalized('en', 'ts',`${given}`)
 
         if (lang) {
           zero.setLangByConfig(lang)
@@ -254,11 +249,7 @@ ${given}`)
       })
 
       it(`render: ${scenario} (NEW STYLE TAGS)`, async () => {
-        zero.appendScriptMD(`
-<!--localized(main="en")--> 
-<!--codalized(main="py")-->
-
-${given}`)
+        zero.appendScriptMdLocalizedCodalized('en', 'py',`${given}`)
         if (lang) {
           zero.setLangByConfig(lang)
         }

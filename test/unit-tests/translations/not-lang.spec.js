@@ -22,9 +22,7 @@ export default function() {
     })
 
     it('lang by main attribute in localized option <not-en>', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-
+      zero.appendScriptMdLocalized('uk',`
 <not-en>NOT-EN</not-en>`)
       await zero.render()
    
@@ -32,9 +30,7 @@ export default function() {
     })
 
     it('lang by main attribute in localized option <not-uk-ru>', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
-
+      zero.appendScriptMdLocalized('en', `
 <not-uk-ru>NOT-UK-RU</not-uk-ru>`)
       await zero.render()
    
@@ -42,9 +38,7 @@ export default function() {
     })
     
     it('NO render lang by main attribute in localized option <not-en>', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
-
+      zero.appendScriptMdLocalized('en', `
 <not-en>NOT-EN</not-en>`)
       await zero.render()
    
@@ -52,9 +46,7 @@ export default function() {
     })
 
     it('NO render lang by main attribute in localized option <not-uk-ru>', async () => {
-      zero.appendScriptMD(`
-<localized main="ru"/>
-
+      zero.appendScriptMdLocalized('ru', `
 <not-uk-ru>NOT-UK-RU</not-uk-ru>`)
       await zero.render()
    

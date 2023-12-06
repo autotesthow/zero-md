@@ -22,9 +22,7 @@ export default function() {
     })
 
     it('first element in localized tags rendered correctly in TOC', async () => {
-      zero.appendScriptMD(`
-<localized main="ru"/>
-
+      zero.appendScriptMdLocalized('ru', `
 [TOC]<!--TOC>2-->
       
 ### <ru>Простой тест на</ru><uk>Простий тест на</uk><en>Simple test in</en> {#first-item}`)
@@ -35,9 +33,7 @@ export default function() {
     })
 
     it('middle element in localized tags rendered correctly in TOC', async () => {
-      zero.appendScriptMD(`
-<localized main="uk"/>
-
+      zero.appendScriptMdLocalized('uk', `
 [TOC]<!--TOC>2-->
       
 ### <ru>Простой тест на</ru><uk>Простий тест на</uk><en>Simple test in</en> {#first-item}`)
@@ -48,9 +44,7 @@ export default function() {
     })
 
     it('last element in localized tags rendered correctly in TOC', async () => {
-      zero.appendScriptMD(`
-<localized main="en"/>
-
+      zero.appendScriptMdLocalized('en', `
 [TOC]<!--TOC>2-->
       
 ### <ru>Простой тест на</ru><uk>Простий тест на</uk><en>Simple test in</en> {#first-item}`)
@@ -61,9 +55,7 @@ export default function() {
     })
 
     it('first element in codalized tags rendered correctly in TOC', async () => {
-      zero.appendScriptMD(`
-<codalized main="py"/>
-
+      zero.appendScriptMdCodalized('py', `
 [TOC]<!--TOC>2-->
       
 ### <en>Header 1 <py>PY</py><java>JAVA</java><js>JS</js></en> {#first-item}`)

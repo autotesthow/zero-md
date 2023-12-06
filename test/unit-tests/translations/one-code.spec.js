@@ -22,9 +22,8 @@ export default function() {
     })
 
     it('correct work', async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdCodalized('java', `
 <!--java~{{Variable}}~Java~-->
-<codalized main="java"/>
 
 <p><java>{{Variable}}</java></p>`)
      
@@ -34,9 +33,8 @@ export default function() {
     })
 
     it('incorrect code must dont work with other codes', async () => {
-      zero.appendScriptMD(`
+      zero.appendScriptMdCodalized('js', `
 <!--java~{{Variable}}~Java~-->
-<codalized main="js"/>
 
 <p><js-ts-py-cs>{{Variable}}</js-ts-py-cs></p>`)
      
