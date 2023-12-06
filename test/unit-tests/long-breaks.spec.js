@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* global chai */
 
-import common from './../utils/common.js'
+import { Zero } from '../utils/Zero.js'
 
 export default function() {
   mocha.setup({
@@ -11,32 +11,22 @@ export default function() {
   chai.config.truncateThreshold = 0
   const expect = chai.expect
 
+  const zero = new Zero()
+
   describe('long breaks', () => {
-    let zero
     beforeEach(() => {
-      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
+      zero.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()
     })
     
-    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
-    const zeroBody = () => zero$('.markdown-body')
-    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-
-    const zeroAppendScriptMD = (text) => {
-      const script = document.createElement('script')
-      script.setAttribute('type', 'text/markdown')
-      script.text = text
-      zero.appendChild(script)
-    }
-
     const longBreaksNumber = 20
     const shortBreaksNumber = 2
   
     // TODO: cant find element
     it.skip('Should have no longBreak ====+ inside code blocks', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 \`\`\`js
 /*
 ====
@@ -44,11 +34,11 @@ export default function() {
 \`\`\``)
 
       await zero.render()
-      expect(zeroBody$('code.code-js').innerText).to.equals('/*\n====\n*/')
+      expect(zero.body$('code.code-js').innerText).to.equals('/*\n====\n*/')
     })
 
     it('Should have no longBreak ====+ inside code blocks', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 ::::::::::manual
 \`\`\`poetry: js"js (poetry)"
 /*
@@ -58,11 +48,12 @@ export default function() {
 ::::::::::`)
 
       await zero.render()
-      expect(zeroBody$('code.code-js').innerText).to.equals('/*\n====\n*/')
+
+      expect(zero.body$('code.code-js').innerText).to.equals('/*\n====\n*/')
     })
 
     it('Should have longBreak instead of ====+', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 
 ====
 
@@ -70,11 +61,11 @@ There should be long break above starting from the header.`)
 
       await zero.render()
 
-      expect(zeroBody().getElementsByTagName('br').length).to.equals(longBreaksNumber)
+      expect(zero.body().getElementsByTagName('br').length).to.equals(longBreaksNumber)
     })
 
     it('Should have longBreak instead of ====+ from variable', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <localized main="en"/>
 <!--en-uk-ru~{{SOLUTION}}~,,,,,,,,,,,,
 **⇩SOLUTION⇩**
@@ -88,7 +79,7 @@ You will see answer to the main question in the universe after long break below.
 
       await zero.render()
 
-      expect(zeroBody().getElementsByTagName('br').length).to.equals(shortBreaksNumber + longBreaksNumber)
+      expect(zero.body().getElementsByTagName('br').length).to.equals(shortBreaksNumber + longBreaksNumber)
     })
   })
 }

@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* global chai */
 
-import common from './../utils/common.js'
+import { Zero } from '../utils/Zero.js'
 
 export default function() {
   mocha.setup({
@@ -10,26 +10,16 @@ export default function() {
 
   chai.config.truncateThreshold = 0
   const expect = chai.expect
+
+  const zero = new Zero()
   
-    describe('Local import', () => {
-    let zero
+  describe('Local import', () => {
     beforeEach(() => {
-      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
+      zero.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()
     })
-    
-    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
-    const zeroBody = () => zero$('.markdown-body')
-    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-
-    const zeroAppendScriptMD = (text) => {
-      const script = document.createElement('script')
-      script.setAttribute('type', 'text/markdown')
-      script.text = text
-      zero.appendChild(script)
-    }
 
     let scenarios = {
       '"{{Review}}", "ru", "py"': {
@@ -68,7 +58,7 @@ export default function() {
         return
       }
       it(`<!--import()--> work with  ${scenario}`, async () => {
-        zeroAppendScriptMD(`
+        zero.appendScriptMD(`
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="${lang}"/>
 <codalized main="${code}"/>
@@ -79,12 +69,12 @@ export default function() {
         
         await zero.render()
   
-        expect(zeroBody$('p').innerText).to.equals(text)
+        expect(zero.body$('p').innerText).to.equals(text)
       })
     })
     
     it.skip(`<!--import()--> work in variables`, async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="js"/>
@@ -96,11 +86,11 @@ export default function() {
         
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('JavaScript good job')
+      expect(zero.body$('p').innerText).to.equals('JavaScript good job')
     })
 
     it(`<!--import()--> work with "{{YOUTUBE()}}", "uk", "java"`, async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="uk"/>
 <codalized main="java"/>
@@ -111,11 +101,11 @@ export default function() {
         
       await zero.render()
 
-      expect(zeroBody$('iframe').src).to.equals('https://www.youtube.com/embed/I1SBGzclwE0')
+      expect(zero.body$('iframe').src).to.equals('https://www.youtube.com/embed/I1SBGzclwE0')
     })
           
     it(`<!--import()--> work with "{{LOOM()}}", "en", "js"`, async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="js"/>
@@ -126,12 +116,12 @@ export default function() {
         
       await zero.render()
 
-      expect(zeroBody$('iframe').src).to.equals('https://www.loom.com/embed/75f1210f206f49348541008c0cf2ad1d')
+      expect(zero.body$('iframe').src).to.equals('https://www.loom.com/embed/75f1210f206f49348541008c0cf2ad1d')
     })
 
     //TODO make it pass 
     it.skip('import one translation variable work in one translation variable', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="js"/>
@@ -143,11 +133,11 @@ export default function() {
       
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('JavaScript language')
+      expect(zero.body$('p').innerText).to.equals('JavaScript language')
     })
 
     it('import general translation variable work in one translation variable', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="js"/>
@@ -159,11 +149,11 @@ export default function() {
       
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Any language')
+      expect(zero.body$('p').innerText).to.equals('Any language')
     })
 
     it('import one translation variable work in general translation variable', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="js"/>
@@ -175,11 +165,11 @@ export default function() {
       
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('JavaScript language')
+      expect(zero.body$('p').innerText).to.equals('JavaScript language')
     })
 
     it('import general translation variable work in general translation variable', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="js"/>
@@ -191,11 +181,11 @@ export default function() {
       
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('Any language')
+      expect(zero.body$('p').innerText).to.equals('Any language')
     })
 
     it('import one translation variable dont work in general translation variable with wrong code language', async () => {
-      zeroAppendScriptMD(`
+      zero.appendScriptMD(`
 <!--import(./variables-for-local-import-tests.md)-->
 <localized main="en"/>
 <codalized main="py"/>
@@ -207,7 +197,7 @@ export default function() {
       
       await zero.render()
 
-      expect(zeroBody$('p').innerText).to.equals('{{one-lang-from-import}} language')
+      expect(zero.body$('p').innerText).to.equals('{{one-lang-from-import}} language')
     })
   })
 }

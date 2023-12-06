@@ -1,68 +1,66 @@
 /* eslint-env mocha */
 /* global chai */
 
-import common from './../utils/common.js'
+import { Zero } from '../utils/Zero.js'
 
 export default function () {
   mocha.setup({
     ui: 'bdd'
   })
 
-  describe('Custom tab name', () => {
-    const assert = chai.assert
-    const expect = chai.expect
+  const assert = chai.assert
+  const expect = chai.expect
 
-    let zero
+  const zero = new Zero()
+
+  describe('Custom tab name', () => {
     beforeEach(() => {
-      zero = common.addHtml(`<zero-md manual-render></zero-md>`)
+      zero.addHtml(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
       zero.remove()
     })
-    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
-    const zeroBody = () => zero$('.markdown-body')
-    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
   
     it('should render correct number of tabs BUTTONS', async () => {
-      zero.src = './unit-tests/tabs-template.md'
+      zero.src('./unit-tests/tabs-template.md')
 
       await zero.render()
 
-      expect(zeroBody$('.buttonWrapper').children.length).to.equal(5)
+      expect(zero.body$('.buttonWrapper').children.length).to.equal(5)
     })
 
     it('should render correct number of tabs CONTENT', async () => {
-      zero.src = './unit-tests/tabs-template.md'
+      zero.src('./unit-tests/tabs-template.md')
 
       await zero.render()
 
-      expect(zeroBody$('.contentWrapper').children.length).to.equal(5)
+      expect(zero.body$('.contentWrapper').children.length).to.equal(5)
     })
 
     it.skip('renders ACTIVE tab by main attribute in codalized option', async () => {
-      zero.src = './unit-tests/tabs-template.md'
+      zero.src('./unit-tests/tabs-template.md')
 
       await zero.render()
 
-      assert.equal(zeroBody$('.tab-button.active').getAttribute('data-id'), zeroBody$('codalized').getAttribute('main'))
+      assert.equal(zero.body$('.tab-button.active').getAttribute('data-id'), zero.body$('codalized').getAttribute('main'))
     })
 
     it('renders ACTIVE tab by CODE', async () => {
-      zero.src = './unit-tests/tabs-template.md'
-      zero.code = 'ts'
+      zero.src('./unit-tests/tabs-template.md')
+      zero.setCodeByAttribute('ts')
 
       await zero.render()
 
-      expect(zeroBody$('.tab-button.active').getAttribute('data-id')).to.equal(zero.code)
+      expect(zero.body$('.tab-button.active').getAttribute('data-id')).to.equal('ts')
     })
 
     it('', async () => {
-      zero.src = './unit-tests/tabs-template.md'
-      zero.code = 'ts'
+      zero.src('./unit-tests/tabs-template.md')
+      zero.setCodeByAttribute('ts')
       
       await zero.render()
 
-      expect(zeroBody$('.tab-button.active').getAttribute('data-id')).to.equal(zero.code)
+      expect(zero.body$('.tab-button.active').getAttribute('data-id')).to.equal('ts')
     })
   })
 }

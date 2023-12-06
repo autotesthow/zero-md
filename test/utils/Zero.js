@@ -16,6 +16,10 @@ export class Zero {
         this.zero.appendChild(script)
     }
 
+    src(src) {
+        this.zero.src = src
+    }
+
     async render() {
         await this.zero.render()
     }
