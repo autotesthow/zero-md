@@ -181,5 +181,61 @@ export default function() {
 
       expect(zero.body$('p').innerText).to.equals('{{one-lang-from-import}} language')
     })
+
+    it('import variable with nested variable', async () => {
+      zero.appendScriptMdLocalized('en',`
+<!--import(./variables-for-local-import-tests.md)-->
+
+<p>
+<uk-en-ru>{{FromImportGeneral}}</uk-en-ru>
+<p>`)
+      
+      await zero.render()
+
+      expect(zero.body$('p').innerText).to.equals('NestedVariable from import')
+    })
+
+    it('import variable correct render', async () => {
+      zero.appendScriptMdLocalized('en',`
+<!--import(./variables-for-local-import-tests.md)-->
+<!--~{{Variable}}~{{NestedVariableGeneral}} display~-->
+
+<p>
+<uk-en-ru>{{Variable}}</uk-en-ru>
+<p>`)
+      
+      await zero.render()
+
+      expect(zero.body$('p').innerText).to.equals('NestedVariable display')
+    })
+ 
+    //TODO when bag fixed it must path
+    it.skip('import variable with nested variable and localized', async () => {
+      zero.appendScriptMdLocalized('uk',`
+<!--import(./variables-for-local-import-tests.md)-->
+
+<p>
+<uk-en-ru>{{FromImport}}</uk-en-ru>
+<p>`)
+      
+      await zero.render()
+
+      expect(zero.body$('p').innerText).to.equals('Вкладена змінна з імпорту')
+    })
+
+    //TODO when bag fixed it must path
+    it.skip('import variable with localized correct render', async () => {
+      zero.appendScriptMdLocalized('uk',`
+<!--import(./variables-for-local-import-tests.md)-->
+<!--uk~{{Variable}}~{{NestedVariable}} відображена~-->
+
+<p>
+<uk-en-ru>{{Variable}}</uk-en-ru>
+<p>`)
+      
+      await zero.render()
+
+      expect(zero.body$('p').innerText).to.equals('Вкладена змінна відображена')
+    })
   })
 }

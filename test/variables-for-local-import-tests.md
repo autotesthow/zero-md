@@ -1,4 +1,14 @@
 
+<!--~{{NestedVariableGeneral}}~NestedVariable~-->
+<!--ru~{{NestedVariable}}~Вложенная переменная~-->
+<!--uk~{{NestedVariable}}~Вкладена змінна~-->
+<!--en~{{NestedVariable}}~NestedVariable~-->
+
+<!--~{{FromImportGeneral}}~{{NestedVariableGeneral}} from import~-->
+<!--ru~{{FromImport}}~{{NestedVariable}} с импорта~-->
+<!--uk~{{FromImport}}~{{NestedVariable}} з імпорту~-->
+<!--en~{{FromImport}}~{{NestedVariable}} from import~-->
+
 <!--ru~{{Review}}~Ревью~-->
 <!--uk~{{Review}}~Рев’ю~-->
 <!--en~{{Review}}~Review~-->
