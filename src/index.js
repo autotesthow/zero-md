@@ -49,6 +49,14 @@ export class ZeroMd extends HTMLElement {
     )
   }
 
+  get showDrafts() {
+    return (
+      new URLSearchParams(window.location.search).get('show-drafts') ||
+      this.getAttribute('show-drafts') ||
+      this.config?.showDrafts
+    )
+  }
+
   set src(val) {
     this.reflect('src', val)
   }
@@ -1014,6 +1022,12 @@ export class ZeroMd extends HTMLElement {
 
     const languageJsMarker = /<pre><code class="language-(js|javascript)"/gim
     html = html.replace(languageJsMarker, '<pre><code class="language-typescript"')
+
+    //Cut text inside draft tags
+    const draft = /<draft>(.|\n)*?<\/draft>/gim
+    if (this.showDrafts !== 'true'){
+      html = html.replace(draft, '') 
+    }
 
     this.debug && console.log('===html after processing\n' + html)
 
