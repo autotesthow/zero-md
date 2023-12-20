@@ -593,6 +593,10 @@ export class ZeroMd extends HTMLElement {
       }
     }
 
+    const draftTags = /<draft>|<\/draft>/gm
+    const draftedText = /<draft>(.|\n)*?<\/draft>/gm
+    md = this.showDrafts === 'true' ? md.replace(draftTags, '') : md.replace(draftedText, '') 
+
     const codalizedOption = new RegExp(
       '<codalized(?: main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
         '|' +
@@ -1022,12 +1026,6 @@ export class ZeroMd extends HTMLElement {
 
     const languageJsMarker = /<pre><code class="language-(js|javascript)"/gim
     html = html.replace(languageJsMarker, '<pre><code class="language-typescript"')
-
-    //Cut text inside draft tags
-    const draft = /<draft>(.|\n)*?<\/draft>/gim
-    if (this.showDrafts !== 'true'){
-      html = html.replace(draft, '') 
-    }
 
     this.debug && console.log('===html after processing\n' + html)
 
