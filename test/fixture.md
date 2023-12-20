@@ -393,6 +393,19 @@ Here are some tasks:
 This is a dropdown with text!
 </details>
 
+## Draft test
+
+This text is visible, but below there is the text inside the draft tags that is not visible:
+HERE ->
+<draft>
+
+**This text is not visible (unless the search param 'show-drafts=true' is not set)**
+
+</draft>
+
+<- HERE
+This text will be visible if to set the search param 'show-drafts=true'
+
 ## Concidit caput certo flere pedum
 
 *Lorem* markdownum implet caedisque `dextrasque` doluit timor idcirco **isque
