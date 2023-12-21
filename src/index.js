@@ -593,6 +593,10 @@ export class ZeroMd extends HTMLElement {
       }
     }
 
+    const showDraftsOption = new RegExp(/<!--(.+)showDrafts(.+)-->/i)
+    if (showDraftsOption.test(md)) {
+      this.setAttribute('showDrafts', 'true') 
+    }
     const draftTags = /<draft>|<\/draft>/gm
     const draftedText = /<draft>(.|\n)*?<\/draft>/gm
     md = this.showDrafts === 'true' ? md.replace(draftTags, '') : md.replace(draftedText, '') 
