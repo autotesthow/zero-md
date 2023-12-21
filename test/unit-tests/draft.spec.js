@@ -61,7 +61,7 @@ Text to hide
 Other text
 `)
 
-      const queryString = '?show-drafts=true';
+      const queryString = '?showDrafts=true';
       common.setSearchParams(baseUrl, queryString)
 
       await zero.render()
@@ -109,7 +109,7 @@ Other text
  </draft>
  `)
  
-       const queryString = '?show-drafts=true';
+       const queryString = '?showDrafts=true';
        common.setSearchParams(baseUrl, queryString)
  
        await zero.render()

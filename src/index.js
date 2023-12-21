@@ -51,8 +51,8 @@ export class ZeroMd extends HTMLElement {
 
   get showDrafts() {
     return (
-      new URLSearchParams(window.location.search).get('show-drafts') ||
-      this.getAttribute('show-drafts') ||
+      new URLSearchParams(window.location.search).get('showDrafts') ||
+      this.getAttribute('showDrafts') ||
       this.config?.showDrafts
     )
   }
