@@ -593,7 +593,7 @@ export class ZeroMd extends HTMLElement {
       }
     }
 
-    const showDraftsOption = new RegExp(/<!--(.+)showDrafts(.+)-->/i)
+    const showDraftsOption = new RegExp(/<!---+showDrafts---+>/i)
     if (showDraftsOption.test(md)) {
       this.setAttribute('showDrafts', 'true') 
     }

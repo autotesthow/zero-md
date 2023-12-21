@@ -52,7 +52,7 @@ Other text`)
 
     it('shows text by showDrafts option', async () => {
       zeroAppendScriptMD(`
-<!--«showDrafts»-->
+<!---showDrafts--->
 
 One text
 
@@ -72,7 +72,7 @@ Other text
 
     it('hides text by showDrafts option overides by searchParam', async () => {
       zeroAppendScriptMD(`
-<!--«showDrafts»-->
+<!---showDrafts--->
 
 One text
 
