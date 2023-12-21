@@ -404,7 +404,9 @@ HERE ->
 </draft>
 
 <- HERE
-This text will be visible if to set the search param 'show-drafts=true'
+This text will be visible if to set the search param 'show-drafts=true',
+or to add showDrafts option <!---showDrafts--->,
+or to add the attribute to zero-md tag - showDrafts='true'
 
 ## Concidit caput certo flere pedum
 
