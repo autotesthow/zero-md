@@ -33,7 +33,7 @@ export default function() {
     zero.appendChild(script)
   }
 
-  describe('Depending on URLSearchParams behavior testing', () => {  
+  describe('Localization/Codalization renders with searchParams', () => {  
     it('should be overrided from URLSearchParams', async () => {
       zeroAppendScriptMD(`
 <localized main="uk"/>

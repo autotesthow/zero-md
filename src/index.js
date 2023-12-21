@@ -49,6 +49,14 @@ export class ZeroMd extends HTMLElement {
     )
   }
 
+  get showDrafts() {
+    return (
+      new URLSearchParams(window.location.search).get('showDrafts') ||
+      this.getAttribute('showDrafts') ||
+      this.config?.showDrafts
+    )
+  }
+
   set src(val) {
     this.reflect('src', val)
   }
@@ -584,6 +592,14 @@ export class ZeroMd extends HTMLElement {
         )
       }
     }
+
+    const showDraftsOption = /<!---+showDrafts-+-->/i
+    if (showDraftsOption.test(md)) {
+      this.setAttribute('showDrafts', 'true')
+    }
+    const draftTags = /<draft>|<\/draft>/gm
+    const draftedText = /<draft>(.|\n)*?<\/draft>/gm
+    md = this.showDrafts === 'true' ? md.replace(draftTags, '') : md.replace(draftedText, '')
 
     const codalizedOption = new RegExp(
       '<codalized(?: main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
