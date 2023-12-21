@@ -35,7 +35,7 @@ export default function() {
     }
 
     it('hides text', async () => {
-      zeroAppendScriptMD(`      
+      zeroAppendScriptMD(`
 One text
 
 <draft>
@@ -50,8 +50,56 @@ Other text`)
       expect(zeroBody$$('p').length).to.be.equal(2)
     })
 
-    it('shows text with searchParam show-draft=true', async () => {
-      zeroAppendScriptMD(`      
+    it('shows text by showDrafts option', async () => {
+      zeroAppendScriptMD(`
+<!--«showDrafts»-->
+
+One text
+
+<draft>
+Text to hide
+</draft>
+
+Other text
+`)
+
+      await zero.render()
+
+      expect(zeroBody$('draft')).not.exist
+      expect(zeroBody$$('p')[1].innerText).to.equals('Text to hide')
+      expect(zeroBody$$('p').length).to.be.equal(3)
+    })
+
+    it('hides text by showDrafts option overides by searchParam', async () => {
+      zeroAppendScriptMD(`
+<!--«showDrafts»-->
+
+One text
+
+<draft>
+Text to hide
+</draft>
+
+Other text
+
+<draft>
+Text to hide
+</draft>
+`)
+
+      const queryString = '?showDrafts=false';
+      common.setSearchParams(baseUrl, queryString)
+
+      await zero.render()
+
+      expect(zeroBody$('draft')).not.exist
+      expect(zeroBody$$('p').length).to.be.equal(2)
+
+      common.clearSearchParams(baseUrl)
+    })
+
+    it('shows text by searchParam', async () => {
+      zeroAppendScriptMD(`
 One text
 
 <draft>
@@ -94,7 +142,7 @@ Other text
        expect(zeroBody$$('a')[1].innerText).not.to.equals('2 To be hidden title')
      })
 
-    it('shows text with title in TOC with searchParam show-draft=true', async () => {
+    it('shows text with title in TOC by searchParam', async () => {
       zeroAppendScriptMD(`
  [TOC]<!--TOC>-->
        
