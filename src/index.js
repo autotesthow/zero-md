@@ -520,7 +520,11 @@ export class ZeroMd extends HTMLElement {
       if (importsMatch.length) {
         await Promise.all(
           importsMatch.map(async ([match, importURL]) => {
-            const response = await fetch(importURL)
+            const pathToImportFiles = this.getAttribute('pathToImportFiles')
+            const importAdaptedURL = pathToImportFiles
+              ? pathToImportFiles + importURL.slice(1)
+              : importURL
+            const response = await fetch(importAdaptedURL)
 
             if (response.ok) {
               const importedContent = await response.text()
