@@ -516,11 +516,15 @@ export class ZeroMd extends HTMLElement {
     const importRegex = /<!--import\(([\s\S]*?)\)-->/gim
     const importsMatch = [...md.matchAll(importRegex)]
 
-    if (process.env.ENVIRONMENT === 'dev') {
+    if (process.env.ENVIRONMENT === 'dev' || this.getAttribute('pathToImportFiles')) {
       if (importsMatch.length) {
         await Promise.all(
           importsMatch.map(async ([match, importURL]) => {
-            const response = await fetch(importURL)
+            const pathToImportFiles = this.getAttribute('pathToImportFiles')
+            const importAdaptedURL = pathToImportFiles
+              ? pathToImportFiles + importURL.slice(1)
+              : importURL
+            const response = await fetch(importAdaptedURL)
 
             if (response.ok) {
               const importedContent = await response.text()
