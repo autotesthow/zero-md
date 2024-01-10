@@ -341,12 +341,11 @@ export class ZeroMd extends HTMLElement {
   }
 
   loadScriptButtonsChangeAttributeObserver() {
-    const script = document.createElement('script');
-    script.text = 'document.addEventListener("visibilitychange", () => {\n' +
-      'location.reload()\n' +
-    '});';
-    
-    document.head.appendChild(script);
+    const script = document.createElement('script')
+    script.text =
+      'document.addEventListener("visibilitychange", () => {\n' + 'location.reload()\n' + '});'
+
+    document.head.appendChild(script)
   }
 
   // Scroll to selected element
@@ -665,7 +664,7 @@ export class ZeroMd extends HTMLElement {
         md = md.replace(fromExceptSelfVarDefinition, to)
       }
     })
-    
+
     const translationPerLangOption =
       /<!--(?:-*)((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
     ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
