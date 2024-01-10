@@ -49,6 +49,14 @@ export class ZeroMd extends HTMLElement {
     )
   }
 
+  get showDrafts() {
+    return (
+      new URLSearchParams(window.location.search).get('showDrafts') ||
+      this.getAttribute('showDrafts') ||
+      this.config?.showDrafts
+    )
+  }
+
   set src(val) {
     this.reflect('src', val)
   }
@@ -478,7 +486,7 @@ export class ZeroMd extends HTMLElement {
       if (!this.src && !this.path) {
         return ''
       }
-      const resp =
+      const responce =
         isReadingFromGitlabConfigured && this.path
           ? await fetchDataFromGitlab(this.path)
           : await (async () => {
@@ -488,12 +496,12 @@ export class ZeroMd extends HTMLElement {
               return fetch(gitlabAbsoluteUrl)
             })()
 
-      if (resp.ok) {
-        return await resp.text()
+      if (responce.ok) {
+        return await responce.text()
       } else {
         this.fire('zero-md-error', {
-          msg: `[zero-md] HTTP error ${resp.status} while fetching src`,
-          status: resp.status,
+          msg: `[zero-md] HTTP error ${responce.status} while fetching src`,
+          status: responce.status,
           src: this.src,
           path: this.path,
           lang: this.lang,
@@ -521,83 +529,92 @@ export class ZeroMd extends HTMLElement {
     if (process.env.ENVIRONMENT === 'dev') {
       if (importsMatch.length) {
         await Promise.all(
-          importsMatch.map(async([match, importURL]) => {
+          importsMatch.map(async ([match, importURL]) => {
             const response = await fetch(importURL)
 
             if (response.ok) {
               const importedContent = await response.text()
               md = md.replace(match, importedContent)
             }
-          })
+          }),
         )
       }
     } else {
-    if (importsMatch.length) {
-      await Promise.all(
-        importsMatch.map(async ([match, importURL]) => {
-          const currentZeroMdPath =
-            isReadingFromGitlabConfigured && this.path ? this.path : this.src
-          const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
+      if (importsMatch.length) {
+        await Promise.all(
+          importsMatch.map(async ([match, importURL]) => {
+            const currentZeroMdPath =
+              isReadingFromGitlabConfigured && this.path ? this.path : this.src
+            const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
 
-          let response
-          const isUrlRelative = !importURL.startsWith('http')
-          if (isUrlRelative) {
-            const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
+            let response
+            const isUrlRelative = !importURL.startsWith('http')
+            if (isUrlRelative) {
+              const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
 
-            if (
-              (importedFileNestingMatch &&
-                importedFileNestingMatch.length === 1 &&
-                importedFileNestingMatch[0] === '.') ||
-              importedFileNestingMatch === null
-            ) {
-              const thisPathLastElement = this.path.split('/').pop()
-              const filePathtoReplace = importedFileNestingMatch
-                ? importURL.split('./')[1]
-                : importURL.split('./')[0]
+              if (
+                (importedFileNestingMatch &&
+                  importedFileNestingMatch.length === 1 &&
+                  importedFileNestingMatch[0] === '.') ||
+                importedFileNestingMatch === null
+              ) {
+                const thisPathLastElement = this.path.split('/').pop()
+                const filePathtoReplace = importedFileNestingMatch
+                  ? importURL.split('./')[1]
+                  : importURL.split('./')[0]
 
-              importURL = this.path.replace(thisPathLastElement, filePathtoReplace)
-            }
-
-            if (
-              importedFileNestingMatch &&
-              !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
-            ) {
-              const importedFileNestingDepth = importedFileNestingMatch.filter(
-                item => item === '..',
-              ).length
-
-              if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
-                const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
-                const importedFileFolderIndex =
-                  currentZeroMdFileNestingDepth - importedFileNestingDepth
-                importURL = currentZeroMdPath
-                  .split('/')
-                  .slice(0, importedFileFolderIndex)
-                  .concat(importURLPurePath)
-                  .join('/')
-              } else {
-                console.error('Provided relative path to the file does not exist')
-                return
+                importURL = this.path.replace(thisPathLastElement, filePathtoReplace)
               }
-            }
-            
-            response = await fetchDataFromGitlab(importURL)
-          } else {
-            response = await fetch(importURL)
-          }
 
-          if (response.ok) {
-            const importedContent = await response.text()
-            md = md.replace(match, importedContent)
-          }
-        }),
-      )
-    }}
+              if (
+                importedFileNestingMatch &&
+                !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
+              ) {
+                const importedFileNestingDepth = importedFileNestingMatch.filter(
+                  item => item === '..',
+                ).length
+
+                if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
+                  const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
+                  const importedFileFolderIndex =
+                    currentZeroMdFileNestingDepth - importedFileNestingDepth
+                  importURL = currentZeroMdPath
+                    .split('/')
+                    .slice(0, importedFileFolderIndex)
+                    .concat(importURLPurePath)
+                    .join('/')
+                } else {
+                  console.error('Provided relative path to the file does not exist')
+                  return
+                }
+              }
+
+              response = await fetchDataFromGitlab(importURL)
+            } else {
+              response = await fetch(importURL)
+            }
+
+            if (response.ok) {
+              const importedContent = await response.text()
+              md = md.replace(match, importedContent)
+            }
+          }),
+        )
+      }
+    }
+
+    const showDraftsOption = /<!---+showDrafts-+-->/i
+    if (showDraftsOption.test(md)) {
+      this.setAttribute('showDrafts', 'true')
+    }
+    const draftTags = /<draft>|<\/draft>/gm
+    const draftedText = /<draft>(.|\n)*?<\/draft>/gm
+    md = this.showDrafts === 'true' ? md.replace(draftTags, '') : md.replace(draftedText, '')
 
     const codalizedOption = new RegExp(
-      '<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
+      '<codalized(?: main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
         '|' +
-        '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
+        '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
       'gim',
     )
     const [shouldBeCodalized, $1, $2] = [...md.matchAll(codalizedOption)].at(-1) || []
@@ -633,7 +650,7 @@ export class ZeroMd extends HTMLElement {
     this.debug && console.log('===md after general translations\n' + md)
 
     const translationPerCodeOption =
-      /<!--(?:-*)((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
+      /<!--(?:-*)((?:js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
     ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
       if (perCode.split('-').length > 1) {
         perCode = perCode.split('-')
@@ -670,8 +687,7 @@ export class ZeroMd extends HTMLElement {
 
     if (shouldBeCodalized) {
       const codalizable =
-      /(?<!<!--.*)<((not-)?(?:js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>(?!.*-->)/gim
-
+        /<((not-)?(?:js|ts|py|python|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-python|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
       const codalize = (match, tag, inverted, content) => {
         let candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
         candidates = candidates.map(item => (item === 'python' ? 'py' : item))
@@ -716,18 +732,22 @@ export class ZeroMd extends HTMLElement {
     const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0]
     renderer.heading = (text, level) => {
       const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/im) || [null, text]
-      const pureWithoutTags = pure.replace(/<\/?\w+>/g, '')
+      const pureWithoutTagsExceptSpan = pure.replace(/<\/?((?!span)\w+)>/g, '')
       const anchorIdsToLowerCase = this.config.anchorIdsToLowerCase
       const id =
         userId ||
-        (anchorIdsToLowerCase ? IDfy(pureWithoutTags) : IDfy(pureWithoutTags, { lowerCase: false }))
+        (anchorIdsToLowerCase
+          ? IDfy(pureWithoutTagsExceptSpan)
+          : IDfy(pureWithoutTagsExceptSpan, { lowerCase: false }))
       const pixelsNumber = this.config.indentInsideTocByPixels
 
       if (level > tocStartLevel) {
         const indentInsideToc = `style="margin-left: ${
           pixelsNumber * (level - 1 - tocStartLevel)
         }px"`
-        tocLinks.push(`<div ${indentInsideToc}><a href="#${id}">${pureWithoutTags}</a></div>`)
+        tocLinks.push(
+          `<div ${indentInsideToc}><a href="#${id}">${pureWithoutTagsExceptSpan}</a></div>`,
+        )
       }
 
       return `<h${level}>${encodeURI(id) === id ? '' : `<span id="${encodeURI(id)}"></span>`}
@@ -751,15 +771,11 @@ export class ZeroMd extends HTMLElement {
     md = md.replace(articleTypeExtension, `-$1.md$2`)
 
     // todo: fix to skip links that start with http
+    const mdExtensions = /\.md\)/gim
+    md = md.replace(mdExtensions, '-md)')
 
-      //This comment was created for solving this task on the board [https://kanbanflow.com/t/6j2hhxp2].
-      //It was not deleted because it wasn't clear whether it could affect other functionality zero MD.
-      
-      // const mdExtensions = /\.md\)/gim
-      // md = md.replace(mdExtensions, `-md${window.location.search})`)
-
-      // const mdExtensionsWithId = /\.md#/gim
-      // md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
+    const mdExtensionsWithId = /\.md#/gim
+    md = md.replace(mdExtensionsWithId, '-md#')
 
     const poetryBoldOption = /<!--(.+?)poetryBold(.+?)-->/gi
     const [, poetryBoldStart, poetryBoldEnd] = [...md.matchAll(poetryBoldOption)].at(-1) || [
@@ -797,10 +813,10 @@ export class ZeroMd extends HTMLElement {
     const processPoetry = rules => (match, info, content) => {
       // const titles = info.split(/\s+/)
       // const maybeCodeOrCustomNameOrBoth =
-      // /(?:^|\s+)(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?(?:"(.+?)")?"/g
+      // /(?:^|\s+)(js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?(?:"(.+?)")?"/g
       const maybeCodeOrCustomNameOrBoth = new RegExp(
         '(?:^|\\s+)' +
-          '(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
+          '(js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
           `(?:${tabNameStart}(.+?)${tabNameEnd})?`,
         'g',
       )
@@ -874,7 +890,7 @@ export class ZeroMd extends HTMLElement {
       const customNameAndMaybeCode = [
         ...info.matchAll(
           new RegExp(
-            '(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
+            '(js|ts|java|py|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
               tabNameStart +
               '(.+?)' +
               tabNameEnd,
@@ -1120,7 +1136,7 @@ export class ZeroMd extends HTMLElement {
         }
 
         const codalizedOption =
-          /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
+          /<codalized(?: main="(js|ts|py|java|cs|clj|clojure|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
         const [shouldBeCodalized, defaultCodeFromMd] =
           [...md.matchAll(codalizedOption)].at(-1) || []
         const codeValueFromAttributesSetByButtons = document

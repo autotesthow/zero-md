@@ -1,3 +1,5 @@
+<codalized main="js"/>
+
 # markdown-fixture
 
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
@@ -23,6 +25,28 @@ Option to configure base url: `{{browser.config.baseUrl}}`
 Father's {{CHILD}} is a good boy.
 
 {{PARENT_AND_CHILD}}.
+
+## Clojure support
+
+```clojure
+;; simple clojure block
+```
+
+Clojure in code group:
+
+::::::::::manual
+```clojure
+(defn foo1 [x]
+  (println x))
+```
+```poetry: clojure"clojure fn"
+(defn foo2 [x]
+  (println x))
+```
+```poetry: clj"clojure lambda"
+#(println %)
+```
+::::::::::
 
 ## Should have no longBreak ====+ inside code blocks
 
@@ -368,6 +392,21 @@ Here are some tasks:
 <summary>Example dropdown</summary>
 This is a dropdown with text!
 </details>
+
+## Draft test
+
+This text is visible, but below there is the text inside the draft tags that is not visible:
+HERE ->
+<draft>
+
+**This text is not visible (unless the search param 'show-drafts=true' is not set)**
+
+</draft>
+
+<- HERE
+This text will be visible if to set the search param 'show-drafts=true',
+or to add showDrafts option <!---showDrafts--->,
+or to add the attribute to zero-md tag - showDrafts='true'
 
 ## Concidit caput certo flere pedum
 
