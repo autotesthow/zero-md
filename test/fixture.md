@@ -377,6 +377,15 @@ Hello World!
 \end{document}
 ```
 
+## Fixed links with md, if there is link, don't change .md to -md
+
+This is still the link:
+(https://github.com/yashaka/NSelene/blob/master/README.md)
+This one not the external link:
+(github.com/yashaka/NSelene/blob/master/README.md)
+
+Checks if there is http:// or https:// in the link
+
 ## GFM task list
 
 Here are some tasks:

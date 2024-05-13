@@ -761,11 +761,9 @@ export class ZeroMd extends HTMLElement {
     const articleTypeExtension = /\.(\w+)\.md(\)|#)/gim
     md = md.replace(articleTypeExtension, `-$1.md$2`)
 
-    // todo: fix to skip links that start with http
-    const mdExtensions = /\.md\)/gim
+    const mdExtensions = /(?<!https?:\/\/[a-zA-Z0-9_.-/]+)\.md\)/gim
     md = md.replace(mdExtensions, '-md)')
-
-    const mdExtensionsWithId = /\.md#/gim
+    const mdExtensionsWithId = /(?<!https?:\/\/[a-zA-Z0-9_.-/]+)\.md#/gim
     md = md.replace(mdExtensionsWithId, '-md#')
 
     const poetryBoldOption = /<!--(.+?)poetryBold(.+?)-->/gi
