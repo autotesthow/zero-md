@@ -5,6 +5,7 @@ import customTabNamesTests from './custom-tab-names.spec.js'
 import localImportTests from './local-import.spec.js'
 import longBreaksTests from './long-breaks.spec.js'
 import poetryTests from './poetry.spec.js'
+import mdLinks from './md-links.spec.js'
 import tocRenderingInNestedTagsTests from './toc/rendering-in-nested-tags.spec.js'
 import tocRenderingSimpleScenariosTests from './toc/rendering-simple-scenarios.spec.js'
 import tocRenderingWithLocalizedCodalizedTagsTests from './toc/rendering-with-localized-codalized-tags.spec.js'
@@ -29,6 +30,7 @@ customTabNamesTests()
 localImportTests()
 longBreaksTests()
 poetryTests()
+mdLinks()
 tocRenderingInNestedTagsTests()
 tocRenderingSimpleScenariosTests()
 tocRenderingWithLocalizedCodalizedTagsTests()
