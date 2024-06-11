@@ -145,6 +145,7 @@ export class ZeroMd extends HTMLElement {
           font-weight: 200;
           cursor: pointer;
           transition: 0.5s;
+          border-bottom: rgba(27,31,35,.05) 1px solid;
         }
         
         button:hover {
@@ -208,6 +209,66 @@ export class ZeroMd extends HTMLElement {
         }
         :not(pre)>code,pre{
           background:#F7F7F7 !important;
+        }
+
+        details {
+          padding: 0 0.5em 0 0.75em;
+          margin-top: 2em;
+          margin-bottom: 2em;
+          border: 1px solid #F7F7F7;
+          box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 10px 0px;
+          transition: background-color 0.3s ease;
+          position: relative;
+          border-radius: 10px;
+        }
+        
+        details summary {
+          cursor: pointer;
+          list-style: none;
+          padding: 0.75em;
+          margin: 0 -0.5em 0em -0.75em;
+          display: flex;
+          align-items: center;
+          border-left: 1px solid #EBEBEB;
+          background-color: rgba(27, 31, 35, 0.05);
+          color: #778796;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+        }
+        
+        details summary:hover {
+          background-color: #DEF1F3;
+        }
+        
+        details summary::-webkit-details-marker {
+          display: none;
+        }
+        
+        details summary::before {
+          display: inline-block;
+          height: 0.75em;
+          width: 0.75em;
+          content: "";
+          background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 12 12"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42Z" fill="rgb(153, 155, 157)"/></svg>');
+          background-size: contain;
+          background-repeat: no-repeat;
+          margin-right: 0.5em;
+          transform: rotate(0deg);
+          transition: transform 0.3s ease;
+        }
+        
+        details[open] {
+          padding-bottom: 1em;
+        }
+        
+        details[open] summary {
+          margin-bottom: 0.5em;
+          border-left: 1px solid #00B7CE;
+          box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 10px 0px;
+        }
+        
+        details[open] summary::before {
+          transform: rotate(90deg);
         }
         `,
       baseUrl: '',
