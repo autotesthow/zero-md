@@ -245,11 +245,15 @@ export class ZeroMd extends HTMLElement {
         }
         
         details summary::before {
-          content: "❯";
-          color: rgb(153, 155, 157);
-          font-size: 0.9em;
-          margin-right: 1em;
-          margin-left: 0.5em;
+          display: inline-block;
+          height: 0.75em;
+          width: 0.75em;
+          content: "";
+          background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 12 12"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42Z" fill="rgb(153, 155, 157)"/></svg>');
+          background-size: contain;
+          background-repeat: no-repeat;
+          margin-right: 0.5em;
+          transform: rotate(0deg);
           transition: transform 0.3s ease;
         }
         
